@@ -188,3 +188,20 @@ def test_a_qualified_super_call_keeps_its_qualifier(parser: ASTParser) -> None:
     source = b"package b;\nclass Sub extends Base {\n  class In { void q() { Sub.super.m(); } }\n}\n"
     calls = parser.parse_file(_make_file_info("b/Sub.java", "java"), source).calls
     assert [(c.receiver_name, c.scope_name, c.target_name) for c in calls] == [("super", "Sub", "m")]
+
+
+def test_java_methods_record_keyword_modifiers(parser: ASTParser) -> None:
+    src = (
+        b"interface H { void handle(int x); default void a() {} static void b() {} }\n"
+        b"class K { static void s() {} @Deprecated public final void p() {} private abstract void q(); }\n"
+    )
+    result = parser.parse_file(_make_file_info("H.java", "java"), src)
+    mods = {s.name: tuple(s.modifiers) for s in result.symbols if s.kind == "method"}
+    assert mods["handle"] == ()
+    assert mods["a"] == ("default",)
+    assert mods["b"] == ("static",)
+    assert mods["s"] == ("static",)
+    assert set(mods["p"]) == {"public", "final"}
+    assert set(mods["q"]) == {"private", "abstract"}
+    p = next(s for s in result.symbols if s.name == "p")
+    assert "deprecated" not in p.modifiers and any("Deprecated" in d for d in p.decorators)

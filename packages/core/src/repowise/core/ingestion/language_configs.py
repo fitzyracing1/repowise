@@ -254,6 +254,9 @@ LANGUAGE_CONFIGS: dict[str, LanguageConfig] = {
         import_node_types=["import_declaration"],
         export_node_types=[],
         visibility_fn=java_visibility,
+        # Java wraps declaration keywords (``static``, ``default``, ...) in a
+        # ``modifiers`` node; annotations inside it stay decorators.
+        modifier_node_types=frozenset({"modifiers"}),
         parent_extraction="nesting",
         parent_class_types=frozenset(
             {
