@@ -43,17 +43,8 @@ Warmup = Callable[["ResolverContext"], None]
 # the header that declares it, and missing it leaves the symbol marked
 # non-exported, which is what the dead-code pass then acts on.
 _CPP_MACRO_SCAN_EXTS: tuple[str, ...] = (
-    ".h",
-    ".hpp",
-    ".hxx",
-    ".hh",
-    ".h++",
-    ".inc",
-    ".c",
-    ".cc",
-    ".cpp",
-    ".cxx",
-    ".c++",
+    ".h", ".hpp", ".hxx", ".hh", ".h++", ".inc",
+    ".c", ".cc", ".cpp", ".cxx", ".c++",
     *sorted(INCLUDE_FRAGMENT_EXTENSIONS),
 )
 
@@ -238,7 +229,9 @@ def _warmup_jvm(ctx: ResolverContext) -> None:
 
         pom_paths = [
             p
-            for p in glob_via(snapshot, repo_path, "pom.xml", prune_nested_git=ctx.prune_nested_git)
+            for p in glob_via(
+                snapshot, repo_path, "pom.xml", prune_nested_git=ctx.prune_nested_git
+            )
             if p.is_file()
         ]
         if pom_paths:
@@ -845,9 +838,7 @@ def _stamp_cpp_build_listed(ctx: ResolverContext, graph: Any, index: Any) -> Non
 
     # 2. MSBuild .vcxproj files (ClCompile only; ClInclude headers are not compiled TUs)
     item_re = re.compile(r"""<ClCompile\s+Include=["']([^"']+)["']""", re.IGNORECASE)
-    for vcxproj in glob_via(
-        ctx.walk_snapshot, root, "*.vcxproj", prune_nested_git=ctx.prune_nested_git
-    ):
+    for vcxproj in glob_via(ctx.walk_snapshot, root, "*.vcxproj", prune_nested_git=ctx.prune_nested_git):
         try:
             content = vcxproj.read_text(encoding="utf-8", errors="ignore")
         except OSError:

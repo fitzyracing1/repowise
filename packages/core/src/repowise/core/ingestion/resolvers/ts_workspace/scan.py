@@ -16,42 +16,32 @@ if TYPE_CHECKING:
     from ..context import ResolverContext
 
 
-_SCAN_PRUNE_DIRS: frozenset[str] = frozenset(
-    {
-        "node_modules",
-        ".git",
-        ".hg",
-        ".svn",
-        ".venv",
-        "venv",
-        ".tox",
-        "__pycache__",
-        ".repowise",
-        ".repowise.prebench-bak",
-        ".next",
-        ".nuxt",
-        ".turbo",
-        ".cache",
-        ".parcel-cache",
-        ".yarn",
-        ".pnpm-store",
-    }
-)
+_SCAN_PRUNE_DIRS: frozenset[str] = frozenset({
+    "node_modules",
+    ".git",
+    ".hg",
+    ".svn",
+    ".venv",
+    "venv",
+    ".tox",
+    "__pycache__",
+    ".repowise",
+    ".repowise.prebench-bak",
+    ".next",
+    ".nuxt",
+    ".turbo",
+    ".cache",
+    ".parcel-cache",
+    ".yarn",
+    ".pnpm-store",
+})
 
-_VITEST_CONFIG_NAMES: frozenset[str] = frozenset(
-    {
-        "vitest.config.ts",
-        "vitest.config.js",
-        "vitest.config.mts",
-        "vitest.config.mjs",
-        "vitest.config.cjs",
-        "vitest.config.cts",
-        "vite.config.ts",
-        "vite.config.js",
-        "vite.config.mts",
-        "vite.config.mjs",
-    }
-)
+_VITEST_CONFIG_NAMES: frozenset[str] = frozenset({
+    "vitest.config.ts", "vitest.config.js", "vitest.config.mts",
+    "vitest.config.mjs", "vitest.config.cjs", "vitest.config.cts",
+    "vite.config.ts", "vite.config.js", "vite.config.mts",
+    "vite.config.mjs",
+})
 
 
 @dataclass

@@ -47,7 +47,9 @@ def _has_marker_annotation(node: Node, marker: str, src: str) -> bool:
     return False
 
 
-def jvm_codegen_synthetic_symbols(root: Node, src: str, file_info: FileInfo) -> list[Symbol]:
+def jvm_codegen_synthetic_symbols(
+    root: Node, src: str, file_info: FileInfo
+) -> list[Symbol]:
     """Emit ``XMapperImpl`` / ``AutoValue_X`` / ``ImmutableX`` symbol stubs."""
     # Cheap reject path — no annotations means no generated names.
     if "@" not in src:
@@ -72,44 +74,29 @@ def jvm_codegen_synthetic_symbols(root: Node, src: str, file_info: FileInfo) -> 
             # ``XMapper`` → ``XMapperImpl`` (file-level, since the generated
             # class lives in its own file).
             impl_name = f"{type_name}Impl"
-            out.append(
-                build_synthetic_symbol(
-                    name=impl_name,
-                    kind="class",
-                    signature=f"public class {impl_name} implements {type_name}",
-                    start_line=line,
-                    end_line=line,
-                    file_info=file_info,
-                    parent_name=None,
-                )
-            )
+            out.append(build_synthetic_symbol(
+                name=impl_name, kind="class",
+                signature=f"public class {impl_name} implements {type_name}",
+                start_line=line, end_line=line,
+                file_info=file_info, parent_name=None,
+            ))
         if _has_marker_annotation(node, "AutoValue", src):
-            out.append(
-                build_synthetic_symbol(
-                    name=f"AutoValue_{type_name}",
-                    kind="class",
-                    signature=f"public class AutoValue_{type_name} extends {type_name}",
-                    start_line=line,
-                    end_line=line,
-                    file_info=file_info,
-                    parent_name=None,
-                )
-            )
+            out.append(build_synthetic_symbol(
+                name=f"AutoValue_{type_name}", kind="class",
+                signature=f"public class AutoValue_{type_name} extends {type_name}",
+                start_line=line, end_line=line,
+                file_info=file_info, parent_name=None,
+            ))
         # Qualified marker only: a bare ``@Immutable`` is the unrelated
         # thread-safety annotation, which generates nothing. Ceiling: a file
         # that statically imports ``Value.Immutable`` and then writes a bare
         # ``@Immutable`` is missed, which needs the import table to tell apart.
         if _has_marker_annotation(node, "Value.Immutable", src):
-            out.append(
-                build_synthetic_symbol(
-                    name=f"Immutable{type_name}",
-                    kind="class",
-                    signature=f"public class Immutable{type_name} extends {type_name}",
-                    start_line=line,
-                    end_line=line,
-                    file_info=file_info,
-                    parent_name=None,
-                )
-            )
+            out.append(build_synthetic_symbol(
+                name=f"Immutable{type_name}", kind="class",
+                signature=f"public class Immutable{type_name} extends {type_name}",
+                start_line=line, end_line=line,
+                file_info=file_info, parent_name=None,
+            ))
 
     return out

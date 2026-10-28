@@ -68,7 +68,9 @@ class TypeDecl:
 
     __slots__ = ("arity", "is_partial", "name", "namespace", "qualified")
 
-    def __init__(self, name: str, qualified: str, namespace: str, is_partial: bool, arity: int = 0):
+    def __init__(
+        self, name: str, qualified: str, namespace: str, is_partial: bool, arity: int = 0
+    ):
         self.name = name
         self.qualified = qualified
         self.namespace = namespace
@@ -197,7 +199,9 @@ _VB_IDENT = r"[^\W\d]\w*"
 
 # The ``Global.`` prefix is kept in the captured name, not stripped: it is the
 # only thing that says a namespace escapes the project's <RootNamespace>.
-_VB_NAMESPACE_RE = re.compile(r"^Namespace\s+(Global\.)?([^\W\d][\w.]*)", re.IGNORECASE)
+_VB_NAMESPACE_RE = re.compile(
+    r"^Namespace\s+(Global\.)?([^\W\d][\w.]*)", re.IGNORECASE
+)
 _VB_GLOBAL_PREFIX = "Global."
 _VB_END_NAMESPACE_RE = re.compile(r"^End\s+Namespace\b", re.IGNORECASE)
 _VB_MODIFIERS = (

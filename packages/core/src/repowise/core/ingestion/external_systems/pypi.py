@@ -77,9 +77,7 @@ def _parse_pyproject(manifest_path: Path, repo_root: Path) -> list[ExternalSyste
                 continue
             if _is_path_dep(spec):
                 continue
-            _add_simple(
-                records, seen, str(raw_name), _spec_version(spec), declared_in, is_dev=False
-            )
+            _add_simple(records, seen, str(raw_name), _spec_version(spec), declared_in, is_dev=False)
         groups = poetry.get("group")
         if isinstance(groups, dict):
             for group_name, group_data in groups.items():
@@ -90,14 +88,7 @@ def _parse_pyproject(manifest_path: Path, repo_root: Path) -> list[ExternalSyste
                 for raw_name, spec in deps.items():
                     if _is_path_dep(spec):
                         continue
-                    _add_simple(
-                        records,
-                        seen,
-                        str(raw_name),
-                        _spec_version(spec),
-                        declared_in,
-                        is_dev=is_dev,
-                    )
+                    _add_simple(records, seen, str(raw_name), _spec_version(spec), declared_in, is_dev=is_dev)
 
     return records
 

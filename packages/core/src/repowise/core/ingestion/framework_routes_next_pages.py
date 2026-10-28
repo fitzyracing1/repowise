@@ -34,9 +34,7 @@ _VERBS = "GET|POST|PUT|DELETE|PATCH|HEAD|OPTIONS"
 _METHOD_COMPARE_RE = re.compile(rf"""\.method\s*[!=]==?\s*['"`](?P<verb>{_VERBS})['"`]""")
 _METHOD_SWITCH_RE = re.compile(r"switch\s*\(\s*[\w$.]*\.method\s*\)")
 _METHOD_CASE_RE = re.compile(rf"""\bcase\s+['"`](?P<verb>{_VERBS})['"`]\s*:""")
-_DEFAULT_EXPORT_RE = re.compile(
-    r"^[^\S\n]*(?:export\s+default\b|module\.exports\s*=)", re.MULTILINE
-)
+_DEFAULT_EXPORT_RE = re.compile(r"^[^\S\n]*(?:export\s+default\b|module\.exports\s*=)", re.MULTILINE)
 
 
 def next_pages_api_path(rel_path: str) -> str | None:

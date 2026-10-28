@@ -75,7 +75,9 @@ def _read_workspace_declaration(repo_path: Path) -> _WorkspaceDeclaration:
         return _WorkspaceDeclaration((), (), include_root=False)
     if not isinstance(data, dict):
         return _WorkspaceDeclaration((), (), include_root=False)
-    return _WorkspaceDeclaration(tuple(read_workspaces_field(data)), (), include_root=False)
+    return _WorkspaceDeclaration(
+        tuple(read_workspaces_field(data)), (), include_root=False
+    )
 
 
 def _expand_member_dirs(repo_path: Path, declared: _WorkspaceDeclaration) -> list[Path]:

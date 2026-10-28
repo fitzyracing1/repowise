@@ -194,13 +194,18 @@ def collect_cpp_export_types(
     found = CppExportTypes(namespace_ids=_misread_namespace_ids(matches))
     found.macro_names.update(blanked_macros)
     cpp_export_matches = [
-        capture_dict for capture_dict in matches if capture_dict.get("symbol.cpp_export_type", [])
+        capture_dict
+        for capture_dict in matches
+        if capture_dict.get("symbol.cpp_export_type", [])
     ]
     has_forward_candidate = any(
-        capture_dict["symbol.cpp_export_type"][0].type in _CPP_EXPORT_FORWARD_DECLARATION_NODES
+        capture_dict["symbol.cpp_export_type"][0].type
+        in _CPP_EXPORT_FORWARD_DECLARATION_NODES
         for capture_dict in cpp_export_matches
     )
-    cpp_macro_facts = _build_cpp_macro_facts(matches, src) if has_forward_candidate else None
+    cpp_macro_facts = (
+        _build_cpp_macro_facts(matches, src) if has_forward_candidate else None
+    )
 
     for capture_dict in cpp_export_matches:
         def_nodes = capture_dict.get("symbol.def", [])
@@ -251,7 +256,9 @@ def _forward_declaration_macro(
     """The empty macro definition that makes a bodiless decorated type safe to recover."""
     if facts is None:
         return None
-    macro_names = {_cpp_normalize_identifier(_node_text(node, src)) for node in macro_nodes} - {""}
+    macro_names = {
+        _cpp_normalize_identifier(_node_text(node, src)) for node in macro_nodes
+    } - {""}
     if len(macro_names) != 1:
         return None
     # A bodiless decorated type parses like ``struct Tag variable;``.

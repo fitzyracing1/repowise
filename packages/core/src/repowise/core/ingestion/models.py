@@ -307,9 +307,7 @@ class Import:
     is_reexport: bool = False  # True for `pub use` (Rust) or re-export patterns
     # Rust ``mod child;``: declares the child module, uses nothing from it.
     is_module_declaration: bool = False
-    type_only: bool = (
-        False  # True when the statement is purely type-level (e.g. TypeScript import type)
-    )
+    type_only: bool = False  # True when the statement is purely type-level (e.g. TypeScript import type)
     # Inside a function or lambda body: runs on first call, not at module load.
     deferred: bool = False
 
@@ -372,9 +370,7 @@ class CallSite:
     # writes the ``S`` of ``S.super.m()`` here.
     scope_name: str | None = None
     edge_type: CallSiteEdgeType = "calls"  # see ``CallSiteEdgeType``
-    supplied_props: set[str] | None = (
-        None  # prop names supplied in JSX element (None if unknown/spread)
-    )
+    supplied_props: set[str] | None = None  # prop names supplied in JSX element (None if unknown/spread)
     # The grammar's bare-call pattern also matched this member call (Java
     # ``obj.m()``, Ruby ``obj.m(x)``). Its bare-name reading is asked only
     # when no receiver strategy answers, never beside one.
@@ -711,7 +707,9 @@ def is_dynamic_edge(edge_type: str | None) -> bool:
     return edge_type is not None and edge_type.startswith("dynamic_")
 
 
-def combine_load_kinds(first: tuple[bool, bool], second: tuple[bool, bool]) -> tuple[bool, bool]:
+def combine_load_kinds(
+    first: tuple[bool, bool], second: tuple[bool, bool]
+) -> tuple[bool, bool]:
     """``(type_only, deferred)`` for two imports of one target folded together.
 
     Each side is runtime ``R`` (neither flag), type-only ``T`` or deferred

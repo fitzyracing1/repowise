@@ -54,11 +54,15 @@ _GO_HTTP_PKG = "net/http"
 # gRPC generated registration: ``pb.RegisterGreeterServer(s, &greeter{})`` or
 # ``RegisterGreeterServer(srv, impl)``. Capture the implementation argument
 # (the second positional arg); we resolve its leading type identifier.
-_GO_GRPC_REGISTER_RE = re.compile(r"\bRegister\w+Server\s*\(\s*[\w.]+\s*,\s*&?\s*([A-Za-z_][\w.]*)")
+_GO_GRPC_REGISTER_RE = re.compile(
+    r"\bRegister\w+Server\s*\(\s*[\w.]+\s*,\s*&?\s*([A-Za-z_][\w.]*)"
+)
 
 
 def _imports_any(parsed: Any, *prefixes: str) -> bool:
-    return any(imp.module_path.startswith(pkg) for pkg in prefixes for imp in parsed.imports)
+    return any(
+        imp.module_path.startswith(pkg) for pkg in prefixes for imp in parsed.imports
+    )
 
 
 def _has_go_web_imports(parsed_files: dict[str, Any]) -> bool:
@@ -97,7 +101,9 @@ def _add_go_route_edges(
         for route in chain(go_routes(text), title_case_routes(text), gorilla_routes(text)):
             if not route.handler:
                 continue  # an inline `func(c *gin.Context)` names nothing to link to
-            targets = _resolve_go_handler(route.handler, parsed, func_to_files, class_to_file)
+            targets = _resolve_go_handler(
+                route.handler, parsed, func_to_files, class_to_file
+            )
             for target in targets:
                 if target != path and target in path_set and _add_edge_if_new(graph, path, target):
                     count += 1
@@ -170,8 +176,7 @@ def _resolve_go_handler(
 class _GoWebHandler:
     def detect(self, dctx: DetectionContext) -> bool:
         go_web_in_stack = any(
-            token in dctx.stack_lower
-            for token in ("gin", "echo", "chi", "fiber", "gorilla", "grpc")
+            token in dctx.stack_lower for token in ("gin", "echo", "chi", "fiber", "gorilla", "grpc")
         )
         return go_web_in_stack or _has_go_web_imports(dctx.parsed_files)
 

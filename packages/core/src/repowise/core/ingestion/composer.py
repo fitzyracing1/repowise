@@ -140,9 +140,7 @@ def parse_composer(data: object, rel_dir: str = "") -> ComposerManifest | None:
     path_repos = tuple(
         repo["url"]
         for repo in (repositories if isinstance(repositories, list) else [])
-        if isinstance(repo, dict)
-        and repo.get("type") == "path"
-        and isinstance(repo.get("url"), str)
+        if isinstance(repo, dict) and repo.get("type") == "path" and isinstance(repo.get("url"), str)
     )
     name, kind, extra = data.get("name"), data.get("type"), data.get("extra")
     return ComposerManifest(
@@ -206,7 +204,9 @@ def find_composer_manifests(
     ):
         rel = dirpath.relative_to(root).as_posix()
         rel = "" if rel == "." else rel
-        dirnames[:] = sorted(d for d in dirnames if is_package_dir(f"{rel}/{d}" if rel else d))
+        dirnames[:] = sorted(
+            d for d in dirnames if is_package_dir(f"{rel}/{d}" if rel else d)
+        )
         if COMPOSER_JSON in filenames and is_package_dir(rel):
             manifest = read_composer(dirpath / COMPOSER_JSON, rel)
             if manifest is not None:
@@ -237,7 +237,8 @@ def repo_composer_manifests(ctx: ResolverContext) -> list[ComposerManifest]:
     if cached is None:
         repo_path = ctx.repo_path
         has_php = repo_path is not None and (
-            (repo_path / COMPOSER_JSON).is_file() or any(p.endswith(".php") for p in ctx.path_set)
+            (repo_path / COMPOSER_JSON).is_file()
+            or any(p.endswith(".php") for p in ctx.path_set)
         )
         cached = (
             find_composer_manifests(repo_path, prune_nested_git=ctx.prune_nested_git)

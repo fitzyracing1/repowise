@@ -165,11 +165,13 @@ def _enclosing_module(
     if best is None:
         return None
     module_dir, mod_path = best
-    suffix = pkg_dir[len(module_dir) :].lstrip("/") if module_dir else pkg_dir
+    suffix = pkg_dir[len(module_dir):].lstrip("/") if module_dir else pkg_dir
     return module_dir, mod_path, suffix
 
 
-def _import_path_for_dir(pkg_dir: str, go_modules: tuple[tuple[str, str], ...]) -> str | None:
+def _import_path_for_dir(
+    pkg_dir: str, go_modules: tuple[tuple[str, str], ...]
+) -> str | None:
     """Compute a package's import path from the enclosing module."""
     found = _enclosing_module(pkg_dir, go_modules)
     if found is None:

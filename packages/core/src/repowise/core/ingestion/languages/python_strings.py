@@ -67,7 +67,9 @@ def live_text(path: str, blob: bytes) -> bytes:
     if not is_python(path):
         return _COMMENT_LINE_RE.sub(b"", blob)
     try:
-        tokens = [t for t in tokenize.tokenize(io.BytesIO(blob).readline) if t.type not in _TRIVIA]
+        tokens = [
+            t for t in tokenize.tokenize(io.BytesIO(blob).readline) if t.type not in _TRIVIA
+        ]
     except (tokenize.TokenError, SyntaxError, ValueError):
         return blob
     return b"\n".join(

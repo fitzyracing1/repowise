@@ -106,25 +106,16 @@ _ARG_RE = re.compile(r'"((?:\\.|[^"\\])*)"|(\S+)')
 # ``set(VAR <literal>)`` capture — only the literal-RHS form. Anything with
 # ``CACHE``, generator expressions, or list expansion falls back to whatever
 # the variable map already had (typically nothing).
-_SET_RHS_TERMINATORS: frozenset[str] = frozenset(
-    {
-        "CACHE",
-        "PARENT_SCOPE",
-        "FORCE",
-    }
-)
+_SET_RHS_TERMINATORS: frozenset[str] = frozenset({
+    "CACHE", "PARENT_SCOPE", "FORCE",
+})
 
 _VAR_REF_RE = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
 # Include fragments bucket with the headers: a target that lists one is
 # shipping it as part of its interface, not compiling it on its own.
 _HEADER_EXTS: tuple[str, ...] = (
-    ".h",
-    ".hpp",
-    ".hxx",
-    ".hh",
-    ".h++",
-    ".inc",
+    ".h", ".hpp", ".hxx", ".hh", ".h++", ".inc",
     *sorted(INCLUDE_FRAGMENT_EXTENSIONS),
 )
 _SOURCE_EXTS: tuple[str, ...] = (".c", ".cc", ".cpp", ".cxx", ".c++", ".cppm", ".ixx", ".mxx")
@@ -149,7 +140,6 @@ def _split_args(args_text: str) -> list[str]:
 
 def _expand_vars(token: str, variables: dict[str, str]) -> str:
     """Expand ``${VAR}`` references in *token* using *variables*."""
-
     def repl(m: re.Match[str]) -> str:
         name = m.group(1)
         return variables.get(name, m.group(0))
@@ -269,7 +259,7 @@ def _resolve_repo_rel(
     if not raw_path or "${" in raw_path:
         return raw_path  # unexpanded — let caller stem-match
     if raw_path.startswith("/") and repo_root_posix and raw_path.startswith(repo_root_posix + "/"):
-        return raw_path[len(repo_root_posix) + 1 :]
+        return raw_path[len(repo_root_posix) + 1:]
     if raw_path.startswith("/"):
         return raw_path  # outside repo — caller will discard
     joined = (PurePosixPath(cmakelists_dir) / raw_path).as_posix() if cmakelists_dir else raw_path
@@ -357,11 +347,8 @@ def parse_cmake_lists(
 
         elif name == "add_executable" and cmd.args:
             target = _parse_add_target(
-                cmd,
-                kind="executable",
-                cmakelists=rel_self,
-                cmakelists_dir=cmakelists_dir,
-                cm=cm,
+                cmd, kind="executable", cmakelists=rel_self,
+                cmakelists_dir=cmakelists_dir, cm=cm,
                 repo_root_posix=repo_root_posix,
             )
             if target:
@@ -373,40 +360,25 @@ def parse_cmake_lists(
             kind = "library_static"
             sources_start = 1
             if len(cmd.args) >= 2 and cmd.args[1].upper() in (
-                "STATIC",
-                "SHARED",
-                "MODULE",
-                "OBJECT",
-                "INTERFACE",
-                "IMPORTED",
+                "STATIC", "SHARED", "MODULE", "OBJECT", "INTERFACE", "IMPORTED",
             ):
                 kind = _classify_target_kind(cmd.args[1])
                 sources_start = 2
             t = CMakeTarget(name=target_name, kind=kind, cmakelists=rel_self)
             _ingest_sources(
-                t,
-                cmd.args[sources_start:],
-                cmakelists_dir,
-                cm,
-                conditional=cmd.in_conditional,
-                repo_root_posix=repo_root_posix,
+                t, cmd.args[sources_start:], cmakelists_dir, cm,
+                conditional=cmd.in_conditional, repo_root_posix=repo_root_posix,
             )
             cm.targets.append(t)
 
         elif name == "target_sources" and cmd.args:
             _apply_target_sources(
-                cmd,
-                cm,
-                cmakelists_dir,
-                repo_root_posix=repo_root_posix,
+                cmd, cm, cmakelists_dir, repo_root_posix=repo_root_posix,
             )
 
         elif name == "target_include_directories" and cmd.args:
             _apply_target_include_dirs(
-                cmd,
-                cm,
-                cmakelists_dir,
-                repo_root_posix=repo_root_posix,
+                cmd, cm, cmakelists_dir, repo_root_posix=repo_root_posix,
             )
 
         elif name == "target_compile_definitions" and cmd.args:
@@ -450,12 +422,8 @@ def _parse_add_target(
     # there are; ``_apply_target_sources`` fills in the rest.
     t = CMakeTarget(name=name, kind=kind, cmakelists=cmakelists)
     _ingest_sources(
-        t,
-        cmd.args[1:],
-        cmakelists_dir,
-        cm,
-        conditional=cmd.in_conditional,
-        repo_root_posix=repo_root_posix,
+        t, cmd.args[1:], cmakelists_dir, cm,
+        conditional=cmd.in_conditional, repo_root_posix=repo_root_posix,
     )
     return t
 
@@ -480,9 +448,7 @@ def _ingest_sources(
             if not tok or tok.startswith("$<"):
                 continue
             rel = _resolve_repo_rel(
-                cmakelists_dir,
-                tok,
-                repo_root_posix=repo_root_posix,
+                cmakelists_dir, tok, repo_root_posix=repo_root_posix,
             )
             if not rel or rel.startswith("/"):
                 continue
@@ -648,11 +614,7 @@ def discover_cmake_reactor(
     def visit(rel_dir: str) -> None:
         if len(out) >= max_files:
             return
-        target = (
-            (repo_root / rel_dir / "CMakeLists.txt").resolve()
-            if rel_dir
-            else (repo_root / "CMakeLists.txt").resolve()
-        )
+        target = (repo_root / rel_dir / "CMakeLists.txt").resolve() if rel_dir else (repo_root / "CMakeLists.txt").resolve()
         try:
             target_rel = target.relative_to(repo_root).as_posix()
         except ValueError:
@@ -675,18 +637,8 @@ def discover_cmake_reactor(
 
     # Catch any orphan CMakeLists not referenced via add_subdirectory.
     # Cap the rglob to a reasonable depth to avoid pathological monorepos.
-    skip_dirs = {
-        ".git",
-        "build",
-        "_build",
-        "out",
-        "_deps",
-        "cmake-build-debug",
-        "cmake-build-release",
-        "node_modules",
-        ".venv",
-        "venv",
-    }
+    skip_dirs = {".git", "build", "_build", "out", "_deps", "cmake-build-debug",
+                 "cmake-build-release", "node_modules", ".venv", "venv"}
     if len(out) < max_files:
         from repowise.core.fs_walk import glob_via
 

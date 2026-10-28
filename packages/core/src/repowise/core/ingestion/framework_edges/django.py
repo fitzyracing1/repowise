@@ -78,7 +78,9 @@ def _module_index(path_set: set[str]) -> dict[str, str]:
     return {m: p for m, p in seen.items() if p is not None}
 
 
-def _add_urlconf_edges(graph: nx.DiGraph, parsed_files: dict[str, Any], path_set: set[str]) -> int:
+def _add_urlconf_edges(
+    graph: nx.DiGraph, parsed_files: dict[str, Any], path_set: set[str]
+) -> int:
     """``urls.py`` -> the view module and the sub-URLconf each entry names."""
     count = 0
     by_module = _module_index(path_set)

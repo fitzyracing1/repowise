@@ -46,7 +46,9 @@ class FrameworkFacts:
             return []
         prefix = f"{root}/" if root else ""
         pattern = _compiled(self.entry_globs)
-        return sorted(p for p in paths if p.startswith(prefix) and pattern.match(p, len(prefix)))
+        return sorted(
+            p for p in paths if p.startswith(prefix) and pattern.match(p, len(prefix))
+        )
 
 
 @cache
@@ -139,9 +141,7 @@ LWC = FrameworkFacts(name="Lightning Web Components", anchor="framework:lwc")
 ANGULAR_WORKSPACE_FILES = frozenset({"angular.json", "project.json"})
 # Build and test options whose value is a file loaded with no importer. A
 # package (`"polyfills": ["zone.js"]`) is dropped by the path check.
-_ANGULAR_ENTRY_OPTIONS = frozenset(
-    {"main", "browser", "server", "polyfills", "karmaConfig", "scripts"}
-)
+_ANGULAR_ENTRY_OPTIONS = frozenset({"main", "browser", "server", "polyfills", "karmaConfig", "scripts"})
 # Options holding objects that name such a file: `fileReplacements: [{ with }]`,
 # `ssr: { entry }`, `scripts: [{ input }]`.
 _ANGULAR_ENTRY_KEYS = ("with", "entry", "input")

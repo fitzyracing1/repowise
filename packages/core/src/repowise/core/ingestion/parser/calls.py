@@ -27,10 +27,7 @@ _node_text = node_text
 
 # ``Outer.Inner``: capitalised names, each after the first holding a lower-case
 # letter, so ``X.CONST`` is not one. Same shape as the java.scm member-type pattern.
-_JAVA_MEMBER_TYPE_PATH = re.compile(
-    r"[A-Z][A-Za-z0-9_]*(?:\.[A-Z][A-Za-z0-9_]*[a-z][A-Za-z0-9_]*)+"
-)
-
+_JAVA_MEMBER_TYPE_PATH = re.compile(r"[A-Z][A-Za-z0-9_]*(?:\.[A-Z][A-Za-z0-9_]*[a-z][A-Za-z0-9_]*)+")
 
 def _call_receiver_from_node(node: Node, src: str) -> CallReceiver | None:
     """Describe an inner call captured as another call's receiver.
@@ -88,7 +85,9 @@ def _kotlin_call_receiver(call: Node, src: str) -> CallReceiver | None:
     """Describe a Kotlin call captured as another call's receiver."""
     named = call.named_children
     callee = named[0] if named else None
-    arguments = next((child for child in named if child.type == "value_arguments"), None)
+    arguments = next(
+        (child for child in named if child.type == "value_arguments"), None
+    )
     if callee is None or arguments is None:
         return None
     count = _count_arguments(arguments)
@@ -106,7 +105,8 @@ def _kotlin_call_receiver(call: Node, src: str) -> CallReceiver | None:
         receiver_name = None
     elif receiver.type in ("identifier", "this_expression") or (
         receiver.type == "navigation_expression"
-        and [child.type for child in receiver.named_children] == ["this_expression", "identifier"]
+        and [child.type for child in receiver.named_children]
+        == ["this_expression", "identifier"]
     ):
         receiver_name = _receiver_text("kotlin", receiver, src)
     else:
@@ -184,6 +184,7 @@ def _dart_argument_count(selector: Node | None) -> int | None:
     parts = selector.named_children if selector is not None else ()
     found = [arg for part in parts for arg in part.named_children if arg.type == "arguments"]
     return _count_arguments(found[0]) if found else None
+
 
 
 def _dart_receiver_path(head: Node, target: Node, src: str) -> str | None:
@@ -278,11 +279,7 @@ def _jsx_supplied_props(site_node: Node, src: str) -> frozenset[str] | None:
     for child in site_node.children:
         if child.type == "jsx_attribute":
             name = next(
-                (
-                    sub
-                    for sub in child.children
-                    if sub.type in ("property_identifier", "identifier")
-                ),
+                (sub for sub in child.children if sub.type in ("property_identifier", "identifier")),
                 None,
             )
             if name is not None:
@@ -402,7 +399,9 @@ def _call_from_match(
     arg_nodes = capture_dict.get("call.arguments", [])
     receiver_call_nodes = capture_dict.get("call.receiver_call", [])
     receiver_call = (
-        _call_receiver_from_node(receiver_call_nodes[0], src) if receiver_call_nodes else None
+        _call_receiver_from_node(receiver_call_nodes[0], src)
+        if receiver_call_nodes
+        else None
     )
     if language == "java" and receiver_call is not None and receiver_call.receiver_name is None:
         receiver_call = _java_member_type_receiver(receiver_call_nodes[0], receiver_call, src)
@@ -422,7 +421,9 @@ def _call_from_match(
         argument_types=_argument_literal_types(arguments, src, language),
         argument_names=_argument_names(arguments, src),
         scope_name=_node_text(scope_nodes[0], src).strip() if scope_nodes else None,
-        edge_type=("references" if site_node.type in config.reference_call_node_types else "calls"),
+        edge_type=(
+            "references" if site_node.type in config.reference_call_node_types else "calls"
+        ),
         supplied_props=_jsx_supplied_props(site_node, src),
         # Ceiling: schedulers matched by name, the task followed within its
         # own function only (see ``python_tasks``).

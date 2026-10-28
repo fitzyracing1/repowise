@@ -64,7 +64,9 @@ def _is_file_path_call(node: ast.AST) -> bool:
     if not isinstance(node, ast.Call):
         return False
     func = node.func
-    is_path = (isinstance(func, ast.Name) and func.id == "Path") or (
+    is_path = (
+        isinstance(func, ast.Name) and func.id == "Path"
+    ) or (
         isinstance(func, ast.Attribute)
         and func.attr == "Path"
         and isinstance(func.value, ast.Name)
@@ -73,7 +75,9 @@ def _is_file_path_call(node: ast.AST) -> bool:
     if not is_path:
         return False
     return (
-        len(node.args) == 1 and isinstance(node.args[0], ast.Name) and node.args[0].id == "__file__"
+        len(node.args) == 1
+        and isinstance(node.args[0], ast.Name)
+        and node.args[0].id == "__file__"
     )
 
 

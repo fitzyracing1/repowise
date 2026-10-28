@@ -17,7 +17,5 @@ class ResolvedCall:
     line: int  # call site line number (for diagnostics)
     origin: ResolutionOrigin  # which strategy produced it
     edge_type: CallSiteEdgeType = "calls"  # carried through from the CallSite
-    supplied_props: frozenset[str] | None = (
-        None  # prop names supplied in JSX element (None if unknown/spread)
-    )
+    supplied_props: frozenset[str] | None = None  # prop names supplied in JSX element (None if unknown/spread)
     spawned: bool = False  # carried through from the CallSite

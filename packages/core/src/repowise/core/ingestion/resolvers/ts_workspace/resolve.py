@@ -110,25 +110,21 @@ class _WorkspaceProbe:
                 return resolved
         if not self.sub:
             # Bare package with no ``exports["."]`` hit.
-            return _first_found(
-                (
-                    self.index_entry,
-                    self.main_entry,
-                    self.spare_export_target,
-                    self.source_root_index,
-                    self.built_export_source,
-                )
-            )
-        # Subpath under a plain layout, then build output, then a nested sub-package.
-        return _first_found(
-            (
-                self.direct_subpath,
-                self.source_root_subpath,
+            return _first_found((
+                self.index_entry,
+                self.main_entry,
                 self.spare_export_target,
+                self.source_root_index,
                 self.built_export_source,
-                self.nested_subpackage,
-            )
-        )
+            ))
+        # Subpath under a plain layout, then build output, then a nested sub-package.
+        return _first_found((
+            self.direct_subpath,
+            self.source_root_subpath,
+            self.spare_export_target,
+            self.built_export_source,
+            self.nested_subpackage,
+        ))
 
     def probe(self, rel: str) -> str | None:
         return _probe_path(f"{self.dir_posix}/{rel}", self.ctx.path_set)

@@ -147,7 +147,9 @@ _LANGUAGE_CALL_STRATEGIES: dict[str, _LanguageCallStrategies] = {
     ),
     # A chained call keeps no bare-name fallback: ``.send()`` on a result the
     # return type does not type is not the repo's ``send``.
-    "kotlin": replace(_JVM_STRATEGIES, member_fallback=_TYPED_RECEIVER, chain_bare_fallback=False),
+    "kotlin": replace(
+        _JVM_STRATEGIES, member_fallback=_TYPED_RECEIVER, chain_bare_fallback=False
+    ),
     "csharp": _LanguageCallStrategies(
         free_fallback=("_resolve_csharp_constructed_type",), member_fallback=_TYPED_RECEIVER
     ),
@@ -371,7 +373,9 @@ class LanguageStrategiesMixin:
         # actually includes; failing that accept a repo-wide unique one, and
         # otherwise leave it, because the qualifier has not settled which.
         imported = self._import_targets.get(file_path, ())
-        preferred = [sym_id for f, sym_id in candidates if f == file_path or f in imported]
+        preferred = [
+            sym_id for f, sym_id in candidates if f == file_path or f in imported
+        ]
         # A header's declaration and the .cc's definition are ONE symbol, and a
         # translation unit routinely sees both, so count them after the pairing
         # redirect or every paired method reads as ambiguous.
@@ -929,9 +933,7 @@ class LanguageStrategiesMixin:
             *self._field_types_in(file_path, "apex").get(self._caller_class_id(caller_id), {}),
         )
         folded = receiver.lower()
-        return next(
-            (name for name in declared if name.lower() == folded and name != receiver), None
-        )
+        return next((name for name in declared if name.lower() == folded and name != receiver), None)
 
     def _apex_variable(self, file_path: str, caller_id: str, receiver: str) -> bool:
         """Is the head of *receiver* a local, parameter or field the caller declares?"""

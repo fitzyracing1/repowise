@@ -124,15 +124,15 @@ class DotNetDynamicHints(DynamicHintExtractor):
             except ValueError:
                 continue
             edges.extend(self._di_edges(rel, text, _files_for))
-            edges.extend(
-                self._pattern_edges(rel, text, _files_for, ((_CONFIGURE_RE, "configure_options"),))
-            )
+            edges.extend(self._pattern_edges(rel, text, _files_for, ((_CONFIGURE_RE, "configure_options"),)))
             edges.extend(self._subscribe_edges(rel, text, _files_for))
             edges.extend(self._pattern_edges(rel, text, _files_for, _REFLECTION_PATTERNS))
             edges.extend(self._internals_visible_edges(rel, text))
         return edges
 
-    def _index_types(self, repo_root: Path) -> tuple[dict[str, list[str]], list[tuple[Path, str]]]:
+    def _index_types(
+        self, repo_root: Path
+    ) -> tuple[dict[str, list[str]], list[tuple[Path, str]]]:
         """``(type name -> declaring files, [(path, text)])`` over the repo's C# files.
 
         A short type name can map to several files when projects reuse names

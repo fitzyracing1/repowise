@@ -85,7 +85,9 @@ class DotNetProjectIndex:
     # and each call previously paid a fresh ``Path.resolve()`` (a stat
     # per component on Windows). Memoising collapses that to one
     # resolve per unique source file across the entire indexing run.
-    _from_proj_cache: dict[Path, tuple[Path, Path | None]] = field(default_factory=dict, repr=False)
+    _from_proj_cache: dict[Path, tuple[Path, Path | None]] = field(
+        default_factory=dict, repr=False
+    )
 
     # ------------------------------------------------------------------
     # Lookups
@@ -119,7 +121,9 @@ class DotNetProjectIndex:
     def files_for_type(self, type_name: str) -> list[Path]:
         return self.type_map.get(type_name, [])
 
-    def rank_namespace_candidates(self, namespace: str, importer_csproj: Path | None) -> list[Path]:
+    def rank_namespace_candidates(
+        self, namespace: str, importer_csproj: Path | None
+    ) -> list[Path]:
         """Return files declaring *namespace*, best candidate first.
 
         Same project, then a directly-referenced project, then anywhere in
@@ -381,7 +385,9 @@ def build_index(
     for proj in index.projects.values():
         # Heuristic: presence of any AspNetCore PackageReference flags the
         # web SDK's expanded implicit-using set.
-        sdk_is_web = any(pkg.startswith("Microsoft.AspNetCore") for pkg in proj.package_references)
+        sdk_is_web = any(
+            pkg.startswith("Microsoft.AspNetCore") for pkg in proj.package_references
+        )
         globals_set = collect_project_global_usings(
             proj.project_dir,
             proj.implicit_usings,

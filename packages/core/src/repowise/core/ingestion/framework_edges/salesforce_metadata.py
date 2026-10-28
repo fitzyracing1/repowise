@@ -56,7 +56,9 @@ _VISUALFORCE_FLOW_RE = re.compile(
     r"<flow:interview\b[^>]*?\bname\s*=\s*[\"']([A-Za-z]\w*)[\"']", re.IGNORECASE
 )
 # An Apex comment, or a string literal kept as-is so a `//` inside one is not a comment.
-_APEX_COMMENT_OR_STRING_RE = re.compile(r"//[^\n]*|/\*.*?(?:\*/|\Z)|'(?:[^'\\\n]|\\.)*'", re.DOTALL)
+_APEX_COMMENT_OR_STRING_RE = re.compile(
+    r"//[^\n]*|/\*.*?(?:\*/|\Z)|'(?:[^'\\\n]|\\.)*'", re.DOTALL
+)
 _INVOCABLE_RE = re.compile(r"@\s*InvocableMethod\b", re.IGNORECASE)
 # `Flow.Interview.createInterview('Name', ...)` or `('ns', 'Name', ...)`.
 _CREATE_INTERVIEW_RE = re.compile(
@@ -75,10 +77,10 @@ _SFDX_NS_RE = re.compile(r'"namespace"\s*:\s*"(\w+)"')
 _CCI_NS_RE = re.compile(r"^\s+namespace:\s*['\"]?(\w+)", re.MULTILINE)
 
 # Liveness metadata: glob -> (element names that hold a component, a flow, an Apex class).
-_COMPONENT_TAGS = (
-    r"componentName|lightningComponent|lightningWebComponent|lwcComponent|auraComponent"
+_COMPONENT_TAGS = r"componentName|lightningComponent|lightningWebComponent|lwcComponent|auraComponent"
+_TAG_VALUE_RE = re.compile(
+    rf"<({_COMPONENT_TAGS}|flowDefinition|apexClass)>\s*([^<\s]+)\s*</\1>"
 )
-_TAG_VALUE_RE = re.compile(rf"<({_COMPONENT_TAGS}|flowDefinition|apexClass)>\s*([^<\s]+)\s*</\1>")
 _FLEXIPAGE_FLOW_RE = re.compile(
     r"<componentInstanceProperties\b[^>]*>"
     r"(?:(?!</componentInstanceProperties>).)*?"
@@ -239,12 +241,7 @@ def _own_namespaces(ctx: ResolverContext) -> frozenset[str]:
 
 
 def _link(
-    graph: nx.DiGraph,
-    src: str,
-    target: str,
-    names: list[str],
-    src_sym: str | None,
-    target_sym: str | None,
+    graph: nx.DiGraph, src: str, target: str, names: list[str], src_sym: str | None, target_sym: str | None
 ) -> int:
     added = _add_edge_if_new(graph, src, target, names)
     if src_sym is not None and target_sym is not None:
@@ -269,9 +266,7 @@ def _flow_edges(graph: nx.DiGraph, idx: _Index, ctx: ResolverContext) -> int:
     return count
 
 
-def _one_flow_edges(
-    graph: nx.DiGraph, idx: _Index, path: str, flow_sym: str, refs: FlowRefs
-) -> int:
+def _one_flow_edges(graph: nx.DiGraph, idx: _Index, path: str, flow_sym: str, refs: FlowRefs) -> int:
     count = 0
     for cls in filter(None, (idx.apex_class(n, path) for n in refs.apex_actions)):
         target_sym = idx.invocable(cls) or idx.symbol_of(cls)
@@ -348,9 +343,7 @@ def _lwc_flow_refs(graph: nx.DiGraph, idx: _Index, ctx: ResolverContext) -> int:
         for m in _LIGHTNING_FLOW_RE.finditer(text):
             target = idx.flow(m.group(1), path)
             if target is not None:
-                count += _link(
-                    graph, path, target, [], f"{path}::__module__", idx.symbol_of(target)
-                )
+                count += _link(graph, path, target, [], f"{path}::__module__", idx.symbol_of(target))
     return count
 
 
@@ -368,9 +361,7 @@ def _aura_flow_refs(graph: nx.DiGraph, idx: _Index, ctx: ResolverContext) -> int
         bundle = PurePosixPath(bundle_dir).name
         markup = [p for p in paths if idx.parsed_files[p].file_info.language == "aura"]
         if not any(
-            _AURA_FLOW_TAG_RE.search(
-                _mask(source_text(p, idx.parsed_files[p], source_map), _XML_COMMENT_RE)
-            )
+            _AURA_FLOW_TAG_RE.search(_mask(source_text(p, idx.parsed_files[p], source_map), _XML_COMMENT_RE))
             for p in markup
         ):
             continue
@@ -387,12 +378,7 @@ def _aura_flow_refs(graph: nx.DiGraph, idx: _Index, ctx: ResolverContext) -> int
             target = idx.flow(m.group(2), controller)
             if target is not None:
                 count += _link(
-                    graph,
-                    controller,
-                    target,
-                    [],
-                    f"{controller}::__module__",
-                    idx.symbol_of(target),
+                    graph, controller, target, [], f"{controller}::__module__", idx.symbol_of(target)
                 )
     return count
 
@@ -408,9 +394,7 @@ def _visualforce_flow_refs(graph: nx.DiGraph, idx: _Index, ctx: ResolverContext)
         for m in _VISUALFORCE_FLOW_RE.finditer(text):
             target = idx.flow(m.group(1), path)
             if target is not None:
-                count += _link(
-                    graph, path, target, [], f"{path}::__module__", idx.symbol_of(target)
-                )
+                count += _link(graph, path, target, [], f"{path}::__module__", idx.symbol_of(target))
     return count
 
 
@@ -477,9 +461,7 @@ def _placed_targets(idx: _Index, kind: str, value: str, rel: str) -> list[str]:
     return idx.components(value, rel)
 
 
-def _liveness_edges(
-    graph: nx.DiGraph, idx: _Index, ctx: ResolverContext, path_set: set[str]
-) -> int:
+def _liveness_edges(graph: nx.DiGraph, idx: _Index, ctx: ResolverContext, path_set: set[str]) -> int:
     if ctx.repo_path is None:
         return 0
     count = 0

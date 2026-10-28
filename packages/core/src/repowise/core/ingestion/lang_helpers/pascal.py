@@ -39,7 +39,9 @@ def _qualified_pascal_parent(name_node: Node, src: str) -> str | None:
     return text or None
 
 
-def _dedupe_pascal_interface_symbols(symbols: list[Symbol], node_types: list[str]) -> list[Symbol]:
+def _dedupe_pascal_interface_symbols(
+    symbols: list[Symbol], node_types: list[str]
+) -> list[Symbol]:
     """Drop an interface-section method signature once its implementation
     is also present, so the two don't become two graph nodes for one method.
 

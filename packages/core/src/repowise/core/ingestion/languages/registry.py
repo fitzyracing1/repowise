@@ -355,7 +355,9 @@ class LanguageRegistry:
         """Per-language single-segment test-dir tokens (unambiguous for
         that language's files — ruby's ``spec/``)."""
         return {
-            s.tag: frozenset(s.test_dir_tokens) for s in self._specs.values() if s.test_dir_tokens
+            s.tag: frozenset(s.test_dir_tokens)
+            for s in self._specs.values()
+            if s.test_dir_tokens
         }
 
     def test_dir_suffixes(self) -> tuple[str, ...]:

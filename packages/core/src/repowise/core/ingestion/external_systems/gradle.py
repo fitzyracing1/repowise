@@ -50,9 +50,7 @@ _RECORD_ECOSYSTEM = "maven"
 
 _CATALOG = Path("gradle") / "libs.versions.toml"
 #: Scripts that configure Gradle itself, not a project's dependencies.
-_NOT_PROJECT_SCRIPTS = frozenset(
-    {"settings.gradle", "settings.gradle.kts", "init.gradle", "init.gradle.kts"}
-)
+_NOT_PROJECT_SCRIPTS = frozenset({"settings.gradle", "settings.gradle.kts", "init.gradle", "init.gradle.kts"})
 
 _PRUNED = PRUNED_DIRS | {"build"}
 _CONF_SUFFIXES = (
@@ -207,11 +205,7 @@ def _catalog(repo_root: Path) -> tuple[dict[str, tuple[str, str | None]], dict[s
             ref = entry.get("version.ref") or (
                 entry["version"].get("ref") if isinstance(entry.get("version"), dict) else None
             )
-            version = (
-                version_of(versions.get(ref))
-                if isinstance(ref, str)
-                else version_of(entry.get("version"))
-            )
+            version = version_of(versions.get(ref)) if isinstance(ref, str) else version_of(entry.get("version"))
         if coord:
             libraries[_accessor_key(alias)] = (coord, version)
     bundles = {
@@ -253,9 +247,7 @@ def _read(path: Path) -> str:
         return ""
 
 
-def _properties(
-    directory: Path, repo_root: Path, cache: dict[Path, dict[str, str]]
-) -> dict[str, str]:
+def _properties(directory: Path, repo_root: Path, cache: dict[Path, dict[str, str]]) -> dict[str, str]:
     """``gradle.properties`` values seen from *directory*: nearer files win."""
     if directory in cache:
         return cache[directory]

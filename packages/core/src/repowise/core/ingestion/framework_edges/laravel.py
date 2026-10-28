@@ -325,7 +325,8 @@ def _add_laravel_edges(
     files = [
         f
         for path, parsed in parsed_files.items()
-        if parsed.file_info.language == "php" and (f := _PhpFile(path, parsed, source_map)).text
+        if parsed.file_info.language == "php"
+        and (f := _PhpFile(path, parsed, source_map)).text
     ]
     aliases = _aliases(link, files)
     commands = _commands(files)

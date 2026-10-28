@@ -88,7 +88,9 @@ def _fsharp_binding_has_params(left_node: Node) -> bool:
     identifier_pattern. A plain let x: int = 5 leaves that node with
     the name alone, which is what separates the two.
     """
-    holder = next((c for c in left_node.named_children if c.type == "identifier_pattern"), None)
+    holder = next(
+        (c for c in left_node.named_children if c.type == "identifier_pattern"), None
+    )
     return holder is not None and holder.named_child_count > 1
 
 

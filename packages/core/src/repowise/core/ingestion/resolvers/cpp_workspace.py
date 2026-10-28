@@ -66,215 +66,54 @@ log = structlog.get_logger(__name__)
 # ---------------------------------------------------------------------------
 
 
-_CPP_STDLIB_HEADERS: frozenset[str] = frozenset(
-    {
-        # C++ standard library — bare names without extension
-        "algorithm",
-        "any",
-        "array",
-        "atomic",
-        "barrier",
-        "bit",
-        "bitset",
-        "cassert",
-        "ccomplex",
-        "cctype",
-        "cerrno",
-        "cfenv",
-        "cfloat",
-        "charconv",
-        "chrono",
-        "cinttypes",
-        "ciso646",
-        "climits",
-        "clocale",
-        "cmath",
-        "codecvt",
-        "compare",
-        "complex",
-        "concepts",
-        "condition_variable",
-        "coroutine",
-        "csetjmp",
-        "csignal",
-        "cstdalign",
-        "cstdarg",
-        "cstdbool",
-        "cstddef",
-        "cstdint",
-        "cstdio",
-        "cstdlib",
-        "cstring",
-        "ctgmath",
-        "ctime",
-        "cuchar",
-        "cwchar",
-        "cwctype",
-        "deque",
-        "exception",
-        "execution",
-        "expected",
-        "filesystem",
-        "format",
-        "forward_list",
-        "fstream",
-        "functional",
-        "future",
-        "initializer_list",
-        "iomanip",
-        "ios",
-        "iosfwd",
-        "iostream",
-        "istream",
-        "iterator",
-        "latch",
-        "limits",
-        "list",
-        "locale",
-        "map",
-        "memory",
-        "memory_resource",
-        "mutex",
-        "new",
-        "numbers",
-        "numeric",
-        "optional",
-        "ostream",
-        "queue",
-        "random",
-        "ranges",
-        "ratio",
-        "regex",
-        "scoped_allocator",
-        "semaphore",
-        "set",
-        "shared_mutex",
-        "source_location",
-        "span",
-        "sstream",
-        "stack",
-        "stacktrace",
-        "stdexcept",
-        "stop_token",
-        "streambuf",
-        "string",
-        "string_view",
-        "syncstream",
-        "system_error",
-        "thread",
-        "tuple",
-        "typeindex",
-        "typeinfo",
-        "type_traits",
-        "unordered_map",
-        "unordered_set",
-        "utility",
-        "valarray",
-        "variant",
-        "vector",
-        "version",
-        "print",
-        # std experimental
-        "experimental/optional",
-        "experimental/string_view",
-    }
-)
+_CPP_STDLIB_HEADERS: frozenset[str] = frozenset({
+    # C++ standard library — bare names without extension
+    "algorithm", "any", "array", "atomic", "barrier", "bit", "bitset",
+    "cassert", "ccomplex", "cctype", "cerrno", "cfenv", "cfloat",
+    "charconv", "chrono", "cinttypes", "ciso646", "climits", "clocale",
+    "cmath", "codecvt", "compare", "complex", "concepts", "condition_variable",
+    "coroutine", "csetjmp", "csignal", "cstdalign", "cstdarg", "cstdbool",
+    "cstddef", "cstdint", "cstdio", "cstdlib", "cstring", "ctgmath",
+    "ctime", "cuchar", "cwchar", "cwctype",
+    "deque", "exception", "execution", "expected", "filesystem",
+    "format", "forward_list", "fstream", "functional", "future",
+    "initializer_list", "iomanip", "ios", "iosfwd", "iostream",
+    "istream", "iterator", "latch", "limits", "list", "locale",
+    "map", "memory", "memory_resource", "mutex", "new", "numbers",
+    "numeric", "optional", "ostream", "queue", "random", "ranges",
+    "ratio", "regex", "scoped_allocator", "semaphore", "set", "shared_mutex",
+    "source_location", "span", "sstream", "stack", "stacktrace",
+    "stdexcept", "stop_token", "streambuf", "string", "string_view",
+    "syncstream", "system_error", "thread", "tuple", "typeindex",
+    "typeinfo", "type_traits", "unordered_map", "unordered_set",
+    "utility", "valarray", "variant", "vector", "version", "print",
+    # std experimental
+    "experimental/optional", "experimental/string_view",
+})
 
 
-_C_STDLIB_HEADERS: frozenset[str] = frozenset(
-    {
-        "assert.h",
-        "complex.h",
-        "ctype.h",
-        "errno.h",
-        "fenv.h",
-        "float.h",
-        "inttypes.h",
-        "iso646.h",
-        "limits.h",
-        "locale.h",
-        "math.h",
-        "setjmp.h",
-        "signal.h",
-        "stdalign.h",
-        "stdarg.h",
-        "stdatomic.h",
-        "stdbool.h",
-        "stddef.h",
-        "stdint.h",
-        "stdio.h",
-        "stdlib.h",
-        "stdnoreturn.h",
-        "string.h",
-        "tgmath.h",
-        "threads.h",
-        "time.h",
-        "uchar.h",
-        "wchar.h",
-        "wctype.h",
-        # POSIX / commonly-bundled
-        "unistd.h",
-        "fcntl.h",
-        "sys/types.h",
-        "sys/stat.h",
-        "sys/mman.h",
-        "sys/socket.h",
-        "sys/wait.h",
-        "sys/ioctl.h",
-        "sys/select.h",
-        "sys/time.h",
-        "sys/uio.h",
-        "sys/un.h",
-        "sys/file.h",
-        "sys/syscall.h",
-        "sys/resource.h",
-        "sys/utsname.h",
-        "sys/epoll.h",
-        "sys/eventfd.h",
-        "sys/timerfd.h",
-        "sys/inotify.h",
-        "sys/sysinfo.h",
-        "sys/random.h",
-        "sys/prctl.h",
-        "netdb.h",
-        "netinet/in.h",
-        "netinet/tcp.h",
-        "netinet/udp.h",
-        "arpa/inet.h",
-        "poll.h",
-        "pthread.h",
-        "sched.h",
-        "semaphore.h",
-        "syslog.h",
-        "termios.h",
-        "dirent.h",
-        "dlfcn.h",
-        "ftw.h",
-        "glob.h",
-        "grp.h",
-        "pwd.h",
-        "regex.h",
-        "spawn.h",
-        "strings.h",
-        "tar.h",
-        "ulimit.h",
-        "utime.h",
-        "wordexp.h",
-        "libgen.h",
-        # Windows SDK common
-        "windows.h",
-        "winsock2.h",
-        "ws2tcpip.h",
-        "io.h",
-        "process.h",
-        "direct.h",
-        "intrin.h",
-        "mmintrin.h",
-        "xmmintrin.h",
-        "emmintrin.h",
-        "immintrin.h",
-    }
-)
+_C_STDLIB_HEADERS: frozenset[str] = frozenset({
+    "assert.h", "complex.h", "ctype.h", "errno.h", "fenv.h", "float.h",
+    "inttypes.h", "iso646.h", "limits.h", "locale.h", "math.h", "setjmp.h",
+    "signal.h", "stdalign.h", "stdarg.h", "stdatomic.h", "stdbool.h",
+    "stddef.h", "stdint.h", "stdio.h", "stdlib.h", "stdnoreturn.h",
+    "string.h", "tgmath.h", "threads.h", "time.h", "uchar.h", "wchar.h",
+    "wctype.h",
+    # POSIX / commonly-bundled
+    "unistd.h", "fcntl.h", "sys/types.h", "sys/stat.h", "sys/mman.h",
+    "sys/socket.h", "sys/wait.h", "sys/ioctl.h", "sys/select.h", "sys/time.h",
+    "sys/uio.h", "sys/un.h", "sys/file.h", "sys/syscall.h", "sys/resource.h",
+    "sys/utsname.h", "sys/epoll.h", "sys/eventfd.h", "sys/timerfd.h",
+    "sys/inotify.h", "sys/sysinfo.h", "sys/random.h", "sys/prctl.h",
+    "netdb.h", "netinet/in.h", "netinet/tcp.h", "netinet/udp.h",
+    "arpa/inet.h", "poll.h", "pthread.h", "sched.h", "semaphore.h",
+    "syslog.h", "termios.h", "dirent.h", "dlfcn.h", "ftw.h", "glob.h",
+    "grp.h", "pwd.h", "regex.h", "spawn.h", "strings.h", "tar.h",
+    "ulimit.h", "utime.h", "wordexp.h", "libgen.h",
+    # Windows SDK common
+    "windows.h", "winsock2.h", "ws2tcpip.h", "io.h", "process.h", "direct.h",
+    "intrin.h", "mmintrin.h", "xmmintrin.h", "emmintrin.h", "immintrin.h",
+})
 
 
 def is_stdlib_include(raw_include: str) -> bool:
@@ -431,15 +270,13 @@ def _classify_dir(root_dir: str) -> dict[str, bool]:
         "is_demo": any(p in ("demos", "demo") for p in parts),
         "is_example": any(p in ("examples", "example", "samples", "sample") for p in parts),
         "is_benchmark": any(p in ("benchmarks", "benchmark", "bench") for p in parts)
-        or any("perf" in p for p in parts),
+            or any("perf" in p for p in parts),
         "is_test_dir": any(p in ("tests", "test", "testing") for p in parts),
     }
 
 
 def _cmake_target_to_cpp(t: CMakeTarget, *, path_set: set[str]) -> CppTarget:
-    classification = _classify_dir(
-        PurePosixPath(t.cmakelists).parent.as_posix() if "/" in t.cmakelists else ""
-    )
+    classification = _classify_dir(PurePosixPath(t.cmakelists).parent.as_posix() if "/" in t.cmakelists else "")
     is_test = (t.kind == "test") or classification["is_test_dir"]
     # Filter sources / headers to those actually present in the path_set
     # so downstream lookups never resolve to phantom files.
@@ -522,7 +359,7 @@ def _register_target(index: CppWorkspaceIndex, t: CppTarget) -> None:
         for root in search_roots:
             prefix = root.rstrip("/") + "/"
             if hdr.startswith(prefix):
-                rel = hdr[len(prefix) :]
+                rel = hdr[len(prefix):]
                 # Always prefer the most-specific include-key first match.
                 index.public_header_includes.setdefault(rel, hdr)
 
@@ -569,7 +406,9 @@ def build_cpp_workspace_index(ctx: ResolverContext) -> CppWorkspaceIndex:
 
     # Same reason as ``source_map`` above: the stand-in context has no
     # snapshot, and None means the live walk this always did.
-    cmake_files = discover_cmake_reactor(repo_path, snapshot=getattr(ctx, "walk_snapshot", None))
+    cmake_files = discover_cmake_reactor(
+        repo_path, snapshot=getattr(ctx, "walk_snapshot", None)
+    )
     file_api_targets = parse_cmake_file_api_reply(repo_path)
     bazel_files = discover_bazel_packages(repo_path) if is_bazel_repo(repo_path) else []
 
@@ -610,9 +449,7 @@ def build_cpp_workspace_index(ctx: ResolverContext) -> CppWorkspaceIndex:
     if not header_candidates:
         # Sorted: the 200-candidate cap below must cut deterministically.
         for p in sorted(path_set):
-            if p.startswith(("include/", "include\\")) and p.lower().endswith(
-                (".h", ".hpp", ".hxx")
-            ):
+            if p.startswith(("include/", "include\\")) and p.lower().endswith((".h", ".hpp", ".hxx")):
                 header_candidates.append(p)
                 if len(header_candidates) > 200:
                     break
@@ -630,12 +467,7 @@ def build_cpp_workspace_index(ctx: ResolverContext) -> CppWorkspaceIndex:
     _scan_header_for_export_macros.cache_clear()
 
     # Filter out anything that doesn't look like an export marker name.
-    cleaned = {
-        m
-        for m in macros
-        if _EXPORT_LIKE_NAME_RE.match(m)
-        or m.endswith(("_EXPORT", "_API", "_DLL", "_PUBLIC", "_VISIBLE"))
-    }
+    cleaned = {m for m in macros if _EXPORT_LIKE_NAME_RE.match(m) or m.endswith(("_EXPORT", "_API", "_DLL", "_PUBLIC", "_VISIBLE"))}
     index.project_export_macros = frozenset(cleaned)
 
     log.debug(

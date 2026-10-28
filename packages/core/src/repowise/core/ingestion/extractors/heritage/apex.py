@@ -22,7 +22,5 @@ def _extract_apex_heritage(
     if superclass is not None and superclass.named_children:
         parent = bare_type_name(node_text(superclass.named_children[-1], src))
         if parent:
-            out.append(
-                HeritageRelation(child_name=name, parent_name=parent, kind="extends", line=line)
-            )
+            out.append(HeritageRelation(child_name=name, parent_name=parent, kind="extends", line=line))
     _interfaces(def_node, name, line, src, out)

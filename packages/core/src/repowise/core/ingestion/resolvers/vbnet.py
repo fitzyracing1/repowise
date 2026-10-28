@@ -46,7 +46,9 @@ def _legacy_stem_resolve(module_path: str, ctx: ResolverContext) -> str | None:
     return None
 
 
-def resolve_vbnet_import(module_path: str, importer_path: str, ctx: ResolverContext) -> str | None:
+def resolve_vbnet_import(
+    module_path: str, importer_path: str, ctx: ResolverContext
+) -> str | None:
     """Resolve a VB.NET ``Imports`` target to a repo-relative path or external key."""
     # ``Imports Global.MyApp.Data`` pins the lookup to the root of the
     # namespace tree; the prefix is not part of the name.

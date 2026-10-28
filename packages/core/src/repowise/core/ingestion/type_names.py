@@ -178,25 +178,11 @@ _POINTER_LIKE_HEADS = frozenset({"shared_ptr", "unique_ptr", "auto_ptr", "option
 # never lets a ``p.get()`` bind to one. Measured over aria2's 2,242 wrapper
 # receivers: it covers every one of the 355 real dot calls and gives up 57
 # arrows.
-POINTER_LIKE_MEMBERS = frozenset(
-    {
-        "get",
-        "reset",
-        "release",
-        "swap",
-        "use_count",
-        "unique",
-        "owner_before",
-        "get_deleter",
-        "value",
-        "has_value",
-        "value_or",
-        "emplace",
-        "and_then",
-        "transform",
-        "or_else",
-    }
-)
+POINTER_LIKE_MEMBERS = frozenset({
+    "get", "reset", "release", "swap", "use_count", "unique", "owner_before",
+    "get_deleter", "value", "has_value", "value_or", "emplace",
+    "and_then", "transform", "or_else",
+})
 
 
 def unwrap_pointer_like(raw: str) -> str | None:

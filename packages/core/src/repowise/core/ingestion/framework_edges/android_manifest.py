@@ -37,7 +37,8 @@ if TYPE_CHECKING:
 
 # XML allows either quote and spaces around ``=``.
 _ANDROID_NAME_RE = re.compile(r"""android:name\s*=\s*['"]([\w.$]+)['"]""")
-_ANDROID_COMPONENT_TAGS = ("<activity", "<service", "<receiver", "<provider", "<application")
+_ANDROID_COMPONENT_TAGS = ("<activity", "<service", "<receiver",
+                           "<provider", "<application")
 
 
 _MANIFEST_PACKAGE_RE = re.compile(r"""<manifest\b[^>]*?\bpackage\s*=\s*['"]([\w.]+)['"]""")
@@ -94,9 +95,7 @@ def _manifest_package(manifest: Path, text: str) -> str:
     """
     if m := _MANIFEST_PACKAGE_RE.search(text):
         return m.group(1)
-    module = (
-        manifest.parent.parent.parent if manifest.parent.parent.name == "src" else manifest.parent
-    )
+    module = manifest.parent.parent.parent if manifest.parent.parent.name == "src" else manifest.parent
     for build_name in ("build.gradle.kts", "build.gradle"):
         try:
             build_text = (module / build_name).read_text(encoding="utf-8", errors="ignore")

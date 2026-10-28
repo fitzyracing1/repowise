@@ -132,9 +132,7 @@ def _add_mainframe_edges(
                         scores = {}
                         for candidate in candidates:
                             shared = 0
-                            for left, right in zip(
-                                PurePosixPath(candidate).parts, ref, strict=False
-                            ):
+                            for left, right in zip(PurePosixPath(candidate).parts, ref, strict=False):
                                 if left != right:
                                     break
                                 shared += 1
@@ -144,8 +142,9 @@ def _add_mainframe_edges(
                             candidate
                             for candidate in candidates
                             if scores[candidate] == closest
-                            and "cobol"
-                            in {part.lower() for part in PurePosixPath(candidate).parts[:-1]}
+                            and "cobol" in {
+                                part.lower() for part in PurePosixPath(candidate).parts[:-1]
+                            }
                         ]
                         if len(cobol) == 1:
                             target = cobol[0]

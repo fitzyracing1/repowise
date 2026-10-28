@@ -57,7 +57,6 @@ def find_mdx_import_targets(ctx: ResolverContext) -> set[str]:
             # The TS resolver leaves ``..`` unflattened, so flatten it here.
             if spec.startswith("."):
                 import os as _os
-
                 joined = _os.path.normpath(_os.path.join(_os.path.dirname(rel), spec))
                 joined = joined.replace("\\", "/")
                 spec_for_resolve = "./" + joined
@@ -144,10 +143,7 @@ def find_vitest_include_targets(ctx: ResolverContext) -> set[str]:
 
 
 _GRAFANA_ENTRY_EXTS: tuple[str, ...] = (
-    ".ts",
-    ".tsx",
-    ".js",
-    ".jsx",
+    ".ts", ".tsx", ".js", ".jsx",
 )
 
 
@@ -176,54 +172,26 @@ def find_grafana_plugin_targets(ctx: ResolverContext) -> set[str]:
 
 
 _NPM_SCRIPT_SOURCE_EXTS: tuple[str, ...] = (
-    ".ts",
-    ".tsx",
-    ".js",
-    ".jsx",
-    ".mjs",
-    ".cjs",
-    ".mts",
-    ".cts",
+    ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".mts", ".cts",
 )
 
-_NPM_SCRIPT_RUNNERS: frozenset[str] = frozenset(
-    {
-        "tsx",
-        "ts-node",
-        "ts-node-esm",
-        "vite-node",
-        "swc-node",
-        "node",
-        "deno",
-        "bun",
-        "esbuild",
-        "rollup",
-        "vite",
-        "webpack",
-    }
-)
+_NPM_SCRIPT_RUNNERS: frozenset[str] = frozenset({
+    "tsx", "ts-node", "ts-node-esm", "vite-node", "swc-node",
+    "node", "deno", "bun",
+    "esbuild", "rollup", "vite", "webpack",
+})
 
 # Directories of maintained scripts run with runtime CLI arguments (benches, examples, demos).
-_EXPERIMENT_DIR_NAMES: frozenset[str] = frozenset(
-    {
-        "bench",
-        "benches",
-        "benchmark",
-        "benchmarks",
-        "treeshake",
-        "treeshaking",
-        "example",
-        "examples",
-        "demo",
-        "demos",
-        "sample",
-        "samples",
-        "playground",
-        "playgrounds",
-        "scratch",
-        "scripts",
-    }
-)
+_EXPERIMENT_DIR_NAMES: frozenset[str] = frozenset({
+    "bench", "benches", "benchmark", "benchmarks",
+    "treeshake", "treeshaking",
+    "example", "examples",
+    "demo", "demos",
+    "sample", "samples",
+    "playground", "playgrounds",
+    "scratch",
+    "scripts",
+})
 
 
 def _iter_script_tokens(script: str) -> list[str]:
@@ -233,21 +201,11 @@ def _iter_script_tokens(script: str) -> list[str]:
 
 
 # Bare directory tokens (``eslint src runtime-tests build``).
-_SCRIPT_DIR_TOKENS: frozenset[str] = frozenset(
-    {
-        "src",
-        "lib",
-        "app",
-        "test",
-        "tests",
-        "scripts",
-        "benchmarks",
-        "perf-measures",
-        "runtime-tests",
-        "build",
-        "examples",
-    }
-)
+_SCRIPT_DIR_TOKENS: frozenset[str] = frozenset({
+    "src", "lib", "app", "test", "tests", "scripts",
+    "benchmarks", "perf-measures", "runtime-tests", "build",
+    "examples",
+})
 
 
 def _is_script_source(path: str) -> bool:

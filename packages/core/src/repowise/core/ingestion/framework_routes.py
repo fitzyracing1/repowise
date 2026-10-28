@@ -72,7 +72,6 @@ def _groups(pattern: re.Pattern[str], content: str) -> Iterator[GroupMatch]:
 # ASP.NET
 # ---------------------------------------------------------------------------
 
-
 def _cs_str(name: str) -> str:
     """A C# string-literal argument, capturing its body as *name*.
 
@@ -715,7 +714,9 @@ def _resource_routes(
     spans = [args[a:b] for a, b in _php_args(args)]
     declared: list[tuple[str | None, str | None]]  # (resource name, controller)
     if call.name in ("resources", "apiresources"):
-        declared = [(k, _class_ref(v)) for k, v in (_entries(spans[0]) if spans else {}).items()]
+        declared = [
+            (k, _class_ref(v)) for k, v in (_entries(spans[0]) if spans else {}).items()
+        ]
         options: dict[str, str] = {}
     else:
         declared = [
@@ -770,9 +771,7 @@ def _verb_routes(
     args = content[call.paren + 1 : call.close]
     spans = _php_args(args, max_split=2 if call.name == "match" else 1)
     if call.name == "match":
-        verbs = (
-            [w.upper() for w in _LARAVEL_WORD_RE.findall(args[slice(*spans[0])])] if spans else []
-        )
+        verbs = [w.upper() for w in _LARAVEL_WORD_RE.findall(args[slice(*spans[0])])] if spans else []
         spans = spans[1:]
     else:
         verbs = [call.name.upper()]
@@ -963,7 +962,9 @@ _DJANGO_ENTRY_RE = re.compile(
     r"(?P<handler>[\w.]+)\s*(?P<after>[,)(])"
 )
 
-_DJANGO_INCLUDE_ARG_RE = re.compile(r"""\s*(?:(?P<q>['"])(?P<mod>[^'"]+)(?P=q)|(?P<expr>[\w.]+))""")
+_DJANGO_INCLUDE_ARG_RE = re.compile(
+    r"""\s*(?:(?P<q>['"])(?P<mod>[^'"]+)(?P=q)|(?P<expr>[\w.]+))"""
+)
 
 
 def _django_path(raw: str, verb: str) -> str:
@@ -1147,23 +1148,11 @@ def apex_rest_routes(content: str, code: str | None = None) -> Iterator[RouteMat
 # ---------------------------------------------------------------------------
 
 #: App Router files loaded by filesystem convention rather than by import.
-NEXT_APP_ROUTER_BASENAMES: frozenset[str] = frozenset(
-    {
-        "page",
-        "layout",
-        "route",
-        "middleware",
-        "template",
-        "default",
-        "error",
-        "loading",
-        "not-found",
-        "global-error",
-        "forbidden",
-        "unauthorized",
-        "instrumentation",
-    }
-)
+NEXT_APP_ROUTER_BASENAMES: frozenset[str] = frozenset({
+    "page", "layout", "route", "middleware", "template", "default",
+    "error", "loading", "not-found", "global-error", "forbidden",
+    "unauthorized", "instrumentation",
+})
 NEXT_APP_ROUTER_EXTS: tuple[str, ...] = (".ts", ".tsx", ".js", ".jsx", ".mjs")
 
 _NEXT_APP_DIR_RE = re.compile(r"(?:^|/)app/")
@@ -1696,9 +1685,7 @@ def _spring_args(content: str, at: int) -> str:
     return content[opened.end() - 1 : len(content) if close == -1 else close + 1]
 
 
-def _spring_paths(
-    args: str, path_key: re.Pattern[str] = _SPRING_PATH_KEY_RE
-) -> tuple[str, ...] | None:
+def _spring_paths(args: str, path_key: re.Pattern[str] = _SPRING_PATH_KEY_RE) -> tuple[str, ...] | None:
     """The paths a mapping's *args* declare.
 
     ``("",)`` when they name none, which Spring serves at the type prefix.
@@ -1761,7 +1748,11 @@ def _spring_type_bodies(
         start = _jaxrs_decl_end(content, m.start())
         if not _JVM_TYPE_RE.search(content, m.end(), start):
             continue
-        close = _jvm_match_paren(content, start) if content.startswith("{", start) else -1
+        close = (
+            _jvm_match_paren(content, start)
+            if content.startswith("{", start)
+            else -1
+        )
         yield m.end(), start, len(content) if close == -1 else close
 
 

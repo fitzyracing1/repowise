@@ -53,9 +53,7 @@ def _registered_admin_classes(tree: ast.Module) -> set[str]:
         node
         for node in tree.body
         if isinstance(node, ast.ClassDef)
-        and (
-            node.name in passed or any(_last_segment(d) == "register" for d in node.decorator_list)
-        )
+        and (node.name in passed or any(_last_segment(d) == "register" for d in node.decorator_list))
     ]
     return {node.name for node in registered} | {
         inner.name for node in registered for inner in node.body if isinstance(inner, ast.ClassDef)

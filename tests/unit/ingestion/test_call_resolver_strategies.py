@@ -173,7 +173,9 @@ class TestUnpinnedStrategies:
             )
         ]
 
-    def test_jvm_bare_call_does_not_reach_a_sibling_classes_member(self, tmp_path: Path) -> None:
+    def test_jvm_bare_call_does_not_reach_a_sibling_classes_member(
+        self, tmp_path: Path
+    ) -> None:
         """``copy(..)`` in a lambda is its receiver's, not a sibling data class's."""
         parsed = _parse_all(
             tmp_path,
@@ -213,7 +215,8 @@ class TestUnpinnedStrategies:
             {
                 "caller.py": (
                     "python",
-                    "def run(obj):\n    obj.never_declared_anywhere()\n    also_never_declared()\n",
+                    "def run(obj):\n    obj.never_declared_anywhere()\n    "
+                    "also_never_declared()\n",
                 )
             },
         )
@@ -324,7 +327,9 @@ class TestLanguageDispatch:
         _edges(parsed, tmp_path)
         assert spy.calls == ["_resolve_go_package_call"]
 
-    def test_an_undeclared_name_reaches_no_strategy_at_all(self, tmp_path: Path, spy: _Spy) -> None:
+    def test_an_undeclared_name_reaches_no_strategy_at_all(
+        self, tmp_path: Path, spy: _Spy
+    ) -> None:
         """The reject-early gate: nothing declares it, so nothing can match it."""
         parsed = _parse_all(
             tmp_path,
@@ -768,6 +773,7 @@ class TestGoCallTypedLocal:
         targets = [e[1] for e in _go_method_edges(tmp_path, body)]
         assert "detect/detect.go::Detector::Scan" not in targets
 
+
     def test_a_declared_name_keeps_its_declaration_s_type(self, tmp_path: Path) -> None:
         """A call-typed ``:=`` of a name a literal already types adds nothing,
         so the existing reading is neither changed nor refused."""
@@ -778,7 +784,10 @@ class TestGoCallTypedLocal:
         targets = [e[1] for e in _go_method_edges(tmp_path, body)]
         assert targets == ["detect/detect.go::Other::Walk"]
 
-    def test_a_callee_reached_by_a_repo_wide_guess_types_nothing(self, tmp_path: Path) -> None:
+
+    def test_a_callee_reached_by_a_repo_wide_guess_types_nothing(
+        self, tmp_path: Path
+    ) -> None:
         """``fs.Open`` on an interface lands on another package's ``Fs`` only
         by name; its return type must not seed a second guess."""
         parsed = _parse_all(
@@ -800,6 +809,7 @@ class TestGoCallTypedLocal:
         )
         edges = _edges(parsed, tmp_path)
         assert "gcs/fs.go::GcsFile::Close" not in [e[1] for e in edges]
+
 
     def test_a_method_in_a_sibling_file_of_the_type_s_package(self, tmp_path: Path) -> None:
         """Go puts methods in any file of the package, not only the type's."""
@@ -839,7 +849,10 @@ class TestGoCallTypedLocal:
             "receiver_typed_import",
         ) in edges
 
-    def test_a_same_named_type_in_another_package_does_not_answer(self, tmp_path: Path) -> None:
+
+    def test_a_same_named_type_in_another_package_does_not_answer(
+        self, tmp_path: Path
+    ) -> None:
         """``Open`` returns ``detect``'s own ``Store``; ``other.Store`` shares
         only the name, and the name is all a repo-wide lookup would see."""
         parsed = _parse_all(
@@ -916,7 +929,9 @@ class TestPythonTypedReceiver:
             "receiver_typed_global",
         ) in _edges(parsed, tmp_path)
 
-    def test_a_python_class_attribute_never_types_a_bare_receiver(self, tmp_path: Path) -> None:
+    def test_a_python_class_attribute_never_types_a_bare_receiver(
+        self, tmp_path: Path
+    ) -> None:
         """A Python field is reached as ``self.graph``, never as ``graph``.
 
         So a bare receiver naming a class attribute is a different name, and
@@ -994,7 +1009,9 @@ class TestRepoWideReceiverTier:
             if rc.callee_id.endswith(f"::{method}")
         )
 
-    def test_two_same_named_types_declaring_the_method_give_no_edge(self, tmp_path: Path) -> None:
+    def test_two_same_named_types_declaring_the_method_give_no_edge(
+        self, tmp_path: Path
+    ) -> None:
         files = {
             "resizer/MainWindow.xaml.cs": self._RESIZER,
             "peek/Peek.UI/MainWindow.xaml.cs": self._PEEK,
@@ -1084,10 +1101,7 @@ class TestRepoWideReceiverTier:
     def test_python_classes_sharing_a_name_give_no_edge(self, tmp_path: Path) -> None:
         graph = "class DependencyGraph:\n    def add_arc(self, obj):\n        return obj\n"
         files = {
-            "run.py": (
-                "python",
-                "def run():\n    graph = DependencyGraph()\n    graph.add_arc(1)\n",
-            ),
+            "run.py": ("python", "def run():\n    graph = DependencyGraph()\n    graph.add_arc(1)\n"),
             "a/graph.py": ("python", graph),
             "b/graph.py": ("python", graph),
         }
@@ -1134,7 +1148,9 @@ class TestImportedTypeThroughAReExport:
             "receiver_typed_import",
         ) in _edges(parsed, tmp_path)
 
-    def test_a_bound_file_that_declares_the_pair_answers_directly(self, tmp_path: Path) -> None:
+    def test_a_bound_file_that_declares_the_pair_answers_directly(
+        self, tmp_path: Path
+    ) -> None:
         """The chain is a fallback, not a first choice.
 
         This is the shape the import tier always handled, and it had no test —
@@ -1169,7 +1185,10 @@ class TestImportedTypeThroughAReExport:
         files = self._repo()
         files["app.py"] = (
             "python",
-            "from pkg import Engine\n\ndef run():\n    engine = Engine()\n    engine.missing(1)\n",
+            "from pkg import Engine\n\n"
+            "def run():\n"
+            "    engine = Engine()\n"
+            "    engine.missing(1)\n",
         )
         parsed = _parse_all(tmp_path, files)
         _link_imports(
@@ -1179,9 +1198,13 @@ class TestImportedTypeThroughAReExport:
                 "pkg/__init__.py": {"pkg.engine": "pkg/engine.py"},
             },
         )
-        assert not [e for e in _edges(parsed, tmp_path) if str(e[3]).startswith("receiver_typed_")]
+        assert not [
+            e for e in _edges(parsed, tmp_path) if str(e[3]).startswith("receiver_typed_")
+        ]
 
-    def test_an_alias_does_not_read_the_bound_file_s_own_binding(self, tmp_path: Path) -> None:
+    def test_an_alias_does_not_read_the_bound_file_s_own_binding(
+        self, tmp_path: Path
+    ) -> None:
         """The chain is keyed by each file's own local names, so an alias must
         be translated back before it is used as a key.
 
@@ -1231,7 +1254,9 @@ class TestImportedTypeThroughAReExport:
             imp.resolved_file = "external:thirdparty"
         resolver = CallResolver(parsed, {p: set() for p in parsed}, repo_path=str(tmp_path))
         recorded = [
-            origin for origins in resolver._barrel_origins.values() for origin in origins.values()
+            origin
+            for origins in resolver._barrel_origins.values()
+            for origin in origins.values()
         ]
         assert not [o for o in recorded if o.startswith("external:")]
 
@@ -1245,11 +1270,15 @@ class TestForeignReceiverTypes:
 
     @staticmethod
     def _workspace(tmp_path: Path) -> None:
-        (tmp_path / "Cargo.toml").write_text('[workspace]\nmembers = ["crates/a", "crates/b"]\n')
+        (tmp_path / "Cargo.toml").write_text(
+            '[workspace]\nmembers = ["crates/a", "crates/b"]\n'
+        )
         for name in ("a", "b"):
             crate = tmp_path / "crates" / name
             crate.mkdir(parents=True, exist_ok=True)
-            (crate / "Cargo.toml").write_text(f'[package]\nname = "{name}"\nversion = "0.1.0"\n')
+            (crate / "Cargo.toml").write_text(
+                f'[package]\nname = "{name}"\nversion = "0.1.0"\n'
+            )
 
     _DECLARES = (
         "rust",
@@ -1291,7 +1320,9 @@ class TestForeignReceiverTypes:
         assert [c.receiver_name for c in caller.calls] == ["HashMap"]
         assert _edges(parsed, tmp_path) == []
 
-    def test_the_same_call_resolves_when_the_file_rebinds_the_name(self, tmp_path: Path) -> None:
+    def test_the_same_call_resolves_when_the_file_rebinds_the_name(
+        self, tmp_path: Path
+    ) -> None:
         self._workspace(tmp_path)
         parsed = _parse_all(
             tmp_path,
@@ -1299,7 +1330,8 @@ class TestForeignReceiverTypes:
                 "crates/a/src/lib.rs": self._DECLARES,
                 "crates/b/src/lib.rs": (
                     "rust",
-                    "use a::HashMap;\n\npub fn run() {\n    let m = HashMap::new();\n}\n",
+                    "use a::HashMap;\n\npub fn run() {\n"
+                    "    let m = HashMap::new();\n}\n",
                 ),
             },
         )
@@ -1316,7 +1348,9 @@ class TestForeignReceiverTypes:
         from repowise.core.ingestion.languages.registry import REGISTRY
 
         populated = {
-            spec.tag for spec in REGISTRY.all_specs() if get_external_receiver_types(spec.tag)
+            spec.tag
+            for spec in REGISTRY.all_specs()
+            if get_external_receiver_types(spec.tag)
         }
         assert populated == {"rust"}
 
@@ -1326,7 +1360,8 @@ class TestInheritedTypedReceiver:
 
     _PKG = "src/org/acme/"
     _BASE = (
-        "package org.acme;\npublic class Base {\n    public Object get(int i) { return null; }\n}\n"
+        "package org.acme;\npublic class Base {\n"
+        "    public Object get(int i) { return null; }\n}\n"
     )
     _CHILD = "package org.acme;\npublic class Child extends Base {}\n"
     _GET = "src/org/acme/Base.java::Base::get"
@@ -1462,10 +1497,7 @@ class TestJavaReceiverRecall:
         }
         parsed = _parse_all(tmp_path, {k: ("java", v) for k, v in files.items()})
         _link_imports(parsed, {"b/Sub.java": {"a.Base": "a/Base.java", "a.Node": "a/Node.java"}})
-        parents = {
-            "b/Mid.java::Mid": {"a/Base.java::Base"},
-            "a/Doc.java::Doc": {"a/Node.java::Node"},
-        }
+        parents = {"b/Mid.java::Mid": {"a/Base.java::Base"}, "a/Doc.java::Doc": {"a/Node.java::Node"}}
         parents["b/Sub.java::Sub"] = {"a/Base.java::Base" if mid is None else "b/Mid.java::Mid"}
         resolver = CallResolver(
             parsed, {k: set() for k in parsed}, repo_path=str(tmp_path), heritage_parents=parents
@@ -1500,14 +1532,8 @@ class TestJavaReceiverRecall:
             ("reader.consume();", "    java.util.List<String> reader;"),
             ("reader.consume();", "    int[] reader;"),
         ],
-        ids=[
-            "qualified-local",
-            "var-local",
-            "qualified-parameter",
-            "qualified-field",
-            "qualified-generic-field",
-            "primitive-array-field",
-        ],
+        ids=["qualified-local", "var-local", "qualified-parameter", "qualified-field",
+             "qualified-generic-field", "primitive-array-field"],
     )
     def test_a_name_declared_with_an_unread_type_shadows_an_inherited_field(
         self, tmp_path: Path, body: str, members: str
@@ -1547,10 +1573,9 @@ class TestJavaReceiverRecall:
             "        ((Node) o).append();\n    }\n}\n"
         )
         parsed = _parse_all(tmp_path, {"Use.java": ("java", source)})
-        assert sorted((c.line, c.receiver_name or "") for c in parsed["Use.java"].calls) == [
-            (3, ""),
-            (4, "Node"),
-        ]
+        assert sorted(
+            (c.line, c.receiver_name or "") for c in parsed["Use.java"].calls
+        ) == [(3, ""), (4, "Node")]
 
     def test_a_qualified_super_reaches_the_named_superinterface(self, tmp_path: Path) -> None:
         """``I.super.m()`` is ``I``'s default ``m``, not the superclass's."""
@@ -1611,9 +1636,7 @@ class TestJavaMemberTypes:
             parsed, {k: set() for k in parsed}, repo_path=str(tmp_path), heritage_parents=parents
         )
         calls = parsed["p/Use.java"].calls
-        return sorted(
-            (rc.callee_id, rc.origin) for rc in resolver.resolve_file("p/Use.java", calls)
-        )
+        return sorted((rc.callee_id, rc.origin) for rc in resolver.resolve_file("p/Use.java", calls))
 
     def test_a_qualified_type_names_the_member_type(self, tmp_path: Path) -> None:
         """``Token.Tag`` is not the package's top-level ``Tag``, nor ``Token.Comment`` the import."""
@@ -1771,9 +1794,7 @@ class TestJavaQualifiedTypeReceiver:
         imported = {"u/Use.java": {"p/A.java", "p/B.java"}, "p/A.java": set(), "p/B.java": set()}
         resolver = CallResolver(parsed, imported, repo_path=str(tmp_path))
         calls = parsed["u/Use.java"].calls
-        return sorted(
-            (rc.callee_id, rc.origin) for rc in resolver.resolve_file("u/Use.java", calls)
-        )
+        return sorted((rc.callee_id, rc.origin) for rc in resolver.resolve_file("u/Use.java", calls))
 
     @pytest.mark.parametrize(
         "imports", ["import p.A;\nimport p.B;\n", "import p.B;\nimport p.A;\n"], ids=["ab", "ba"]
@@ -1832,7 +1853,9 @@ class TestOwnerAwareModuleTier:
     whichever came last: the right file, the wrong owner.
     """
 
-    def test_a_scoped_call_reaches_its_own_type_not_the_files_last(self, tmp_path: Path) -> None:
+    def test_a_scoped_call_reaches_its_own_type_not_the_files_last(
+        self, tmp_path: Path
+    ) -> None:
         """Without the owner lookup this lands on ``Second::new``."""
         parsed = _parse_all(
             tmp_path,
@@ -1852,7 +1875,11 @@ class TestOwnerAwareModuleTier:
                 ),
                 "main.rs": (
                     "rust",
-                    "use crate::shapes::First;\n\npub fn run() -> First {\n    First::new()\n}\n",
+                    "use crate::shapes::First;\n"
+                    "\n"
+                    "pub fn run() -> First {\n"
+                    "    First::new()\n"
+                    "}\n",
                 ),
             },
         )
@@ -1864,7 +1891,9 @@ class TestOwnerAwareModuleTier:
             "module_alias",
         ) in _edges(parsed, tmp_path)
 
-    def test_a_module_qualifier_still_reaches_the_free_function(self, tmp_path: Path) -> None:
+    def test_a_module_qualifier_still_reaches_the_free_function(
+        self, tmp_path: Path
+    ) -> None:
         """``util::helper()`` names a module, and a module owns nothing."""
         parsed = _parse_all(
             tmp_path,
@@ -1881,7 +1910,11 @@ class TestOwnerAwareModuleTier:
                 ),
                 "main.rs": (
                     "rust",
-                    "use crate::util;\n\npub fn run() -> u8 {\n    util::helper()\n}\n",
+                    "use crate::util;\n"
+                    "\n"
+                    "pub fn run() -> u8 {\n"
+                    "    util::helper()\n"
+                    "}\n",
                 ),
             },
         )
@@ -2001,7 +2034,9 @@ class TestModuleAliasReachesTopLevelOnly:
         }
         assert callees == {f"{module}::{'Build' if lang == 'go' else 'build'}"}
 
-    def test_a_csharp_type_alias_still_reaches_the_type_s_members(self, tmp_path: Path) -> None:
+    def test_a_csharp_type_alias_still_reaches_the_type_s_members(
+        self, tmp_path: Path
+    ) -> None:
         """``using A = N.T;`` may alias a type, so C# keeps the member lookup."""
         parsed = _parse_all(
             tmp_path,
@@ -2033,7 +2068,9 @@ class TestModuleAliasReachesTopLevelOnly:
             "module_alias",
         ) in _edges(parsed, tmp_path, import_targets)
 
-    def test_rebound_alias_is_not_redirected_to_original_definition(self, tmp_path: Path) -> None:
+    def test_rebound_alias_is_not_redirected_to_original_definition(
+        self, tmp_path: Path
+    ) -> None:
         parsed = _parse_all(
             tmp_path,
             {
@@ -2067,7 +2104,10 @@ class TestModuleAliasReachesTopLevelOnly:
             "same_file",
         ) not in edges
 
-    def test_chained_alias_redirects_to_final_definition(self, tmp_path: Path) -> None:
+    
+    def test_chained_alias_redirects_to_final_definition(
+        self, tmp_path: Path
+    ) -> None:
         parsed = _parse_all(
             tmp_path,
             {
@@ -2164,9 +2204,7 @@ class TestExternalReceiverType:
         assert self._caller_edges(tmp_path, caller) == []
 
     def test_a_wildcard_imported_jdk_type_is_refused(self, tmp_path: Path) -> None:
-        caller = self._caller(
-            "import java.util.*;\n", "List<Object> l) {\n        return l.get(0);"
-        )
+        caller = self._caller("import java.util.*;\n", "List<Object> l) {\n        return l.get(0);")
         assert self._caller_edges(tmp_path, caller) == []
 
     def test_a_type_imported_from_outside_the_repo_is_refused(self, tmp_path: Path) -> None:
@@ -2254,7 +2292,9 @@ class TestExternalReceiverType:
         )
         assert not [e for e in self._caller_edges(tmp_path, caller) if e[1].endswith("::get")]
 
-    def test_a_wildcard_imported_unknown_type_gets_no_bare_name_edge(self, tmp_path: Path) -> None:
+    def test_a_wildcard_imported_unknown_type_gets_no_bare_name_edge(
+        self, tmp_path: Path
+    ) -> None:
         caller = self._caller("import com.vendor.*;\n", "Widget w) {\n        return w.get(0);")
         assert self._caller_edges(tmp_path, caller) == []
 
@@ -2262,7 +2302,9 @@ class TestExternalReceiverType:
         self, tmp_path: Path
     ) -> None:
         """No import-resolution phase runs here, so the import reads as external."""
-        caller = self._caller("import org.acme.TagSet;\n", "TagSet t) {\n        return t.get(0);")
+        caller = self._caller(
+            "import org.acme.TagSet;\n", "TagSet t) {\n        return t.get(0);"
+        )
         assert self._caller_edges(tmp_path, caller) == []
 
     def test_only_java_records_builtin_declarations(self) -> None:
@@ -2297,7 +2339,9 @@ class TestPythonRebindingOfADefinition:
         )
         factories = [s for s in parsed["mod.py"].symbols if s.name == "Factory"]
         assert [(s.kind, s.start_line) for s in factories] == [("class", 4)]
-        assert ("mod.py::use_it", "mod.py::Factory", 0.95, "same_file") in _edges(parsed, tmp_path)
+        assert ("mod.py::use_it", "mod.py::Factory", 0.95, "same_file") in _edges(
+            parsed, tmp_path
+        )
 
     def test_an_assignment_with_no_definition_stays_a_symbol(self, tmp_path: Path) -> None:
         parsed = _parse_all(tmp_path, {"mod.py": ("python", "handler = make()\n")})
@@ -2313,7 +2357,13 @@ class TestPythonNameAliasAssignment:
             {
                 "mod.py": (
                     "python",
-                    "def widget():\n    pass\n\ns = widget\n\ndef use_it():\n    s()\n",
+                    "def widget():\n"
+                    "    pass\n"
+                    "\n"
+                    "s = widget\n"
+                    "\n"
+                    "def use_it():\n"
+                    "    s()\n",
                 )
             },
         )
@@ -2356,11 +2406,23 @@ class TestPythonNameAliasAssignment:
             {
                 "mod.py": (
                     "python",
-                    "def widget():\n    pass\n\ns = widget()\n\ndef use_it():\n    s()\n",
+                    "def widget():\n"
+                    "    pass\n"
+                    "\n"
+                    "s = widget()\n"
+                    "\n"
+                    "def use_it():\n"
+                    "    s()\n",
                 ),
                 "attr.py": (
                     "python",
-                    "class C:\n    widget = None\n\ns = C.widget\n\ndef use_it():\n    s()\n",
+                    "class C:\n"
+                    "    widget = None\n"
+                    "\n"
+                    "s = C.widget\n"
+                    "\n"
+                    "def use_it():\n"
+                    "    s()\n",
                 ),
             },
         )
@@ -2373,7 +2435,9 @@ class TestPythonNameAliasAssignment:
         assert ("mod.py::use_it", "mod.py::s", 0.95, "same_file") in edges
         assert ("attr.py::use_it", "attr.py::s", 0.95, "same_file") in edges
 
-    def test_class_alias_prefers_class_scoped_target_over_module_name(self, tmp_path: Path) -> None:
+    def test_class_alias_prefers_class_scoped_target_over_module_name(
+        self, tmp_path: Path
+    ) -> None:
         from dataclasses import replace
 
         parsed = _parse_all(
@@ -2397,7 +2461,9 @@ class TestPythonNameAliasAssignment:
         # Python's symbol query intentionally excludes class-body assignments.
         # Inject the equivalent alias to test resolver indexing in isolation.
         pf = parsed["mod.py"]
-        class_widget = next(sym for sym in pf.symbols if sym.id == "mod.py::C::widget")
+        class_widget = next(
+            sym for sym in pf.symbols if sym.id == "mod.py::C::widget"
+        )
         pf.symbols.append(
             replace(
                 class_widget,
@@ -2423,7 +2489,9 @@ class TestPythonNameAliasAssignment:
             "same_file",
         ) not in edges
 
-    def test_chained_alias_does_not_overwrite_real_definition(self, tmp_path: Path) -> None:
+    def test_chained_alias_does_not_overwrite_real_definition(
+        self, tmp_path: Path
+    ) -> None:
         parsed = _parse_all(
             tmp_path,
             {
@@ -2463,7 +2531,9 @@ class TestPythonNameAliasAssignment:
         ) in edges
 
         attributes_symbols = [
-            symbol for symbol in parsed["mod.py"].symbols if symbol.name == "attributes"
+            symbol
+            for symbol in parsed["mod.py"].symbols
+            if symbol.name == "attributes"
         ]
 
         assert len(attributes_symbols) == 2
@@ -2502,7 +2572,9 @@ class TestPythonNameAliasAssignment:
             if caller.startswith("app.py")
         }
 
-    def test_an_alias_of_an_imported_name_resolves_to_its_definition(self, tmp_path: Path) -> None:
+    def test_an_alias_of_an_imported_name_resolves_to_its_definition(
+        self, tmp_path: Path
+    ) -> None:
         """``s = attributes = attrs`` re-exports an imported def under new names."""
         parsed = self._imported_alias_repo(tmp_path, "s = attributes = attrs")
         assert self._app_edges(parsed, tmp_path) == {
@@ -2510,7 +2582,9 @@ class TestPythonNameAliasAssignment:
             ("app.py::via_name", "pkg/_make.py::attrs"),
         }
 
-    def test_a_class_level_alias_of_an_imported_name_is_not_linked(self, tmp_path: Path) -> None:
+    def test_a_class_level_alias_of_an_imported_name_is_not_linked(
+        self, tmp_path: Path
+    ) -> None:
         """Only a module-level alias is linked; ``class C: s = attrs`` is left alone."""
         parsed = _parse_all(
             tmp_path,
@@ -2532,13 +2606,17 @@ class TestPythonNameAliasAssignment:
         )
         assert ("app.py::run", "pkg/_make.py::attrs") not in self._app_edges(parsed, tmp_path)
 
-    def test_an_alias_of_a_renamed_import_resolves_to_its_definition(self, tmp_path: Path) -> None:
+    def test_an_alias_of_a_renamed_import_resolves_to_its_definition(
+        self, tmp_path: Path
+    ) -> None:
         parsed = self._imported_alias_repo(
             tmp_path, "from pkg._make import attrs as _attrs\ns = _attrs"
         )
         assert ("app.py::via_name", "pkg/_make.py::attrs") in self._app_edges(parsed, tmp_path)
 
-    def test_a_value_built_from_an_imported_name_is_not_an_alias(self, tmp_path: Path) -> None:
+    def test_a_value_built_from_an_imported_name_is_not_an_alias(
+        self, tmp_path: Path
+    ) -> None:
         parsed = self._imported_alias_repo(tmp_path, "s = attrs()")
         assert self._app_edges(parsed, tmp_path) == {
             ("app.py::via_module", "pkg/__init__.py::s"),
@@ -2673,7 +2751,9 @@ class TestJsBareCallSkipsClassMembers:
         assert callees == {f"{caller}::helper"}
 
     @pytest.mark.parametrize(("lang", "ext"), _JS_TS)
-    def test_this_call_still_reaches_the_method(self, tmp_path: Path, lang: str, ext: str) -> None:
+    def test_this_call_still_reaches_the_method(
+        self, tmp_path: Path, lang: str, ext: str
+    ) -> None:
         caller = f"b.{ext}"
         parsed = _parse_all(
             tmp_path,

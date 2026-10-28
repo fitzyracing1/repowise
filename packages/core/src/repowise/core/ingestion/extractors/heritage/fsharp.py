@@ -41,5 +41,7 @@ def _extract_fsharp_heritage(
             parent = fsharp_type_name(base, src)
             if parent and parent != name:
                 out.append(
-                    HeritageRelation(child_name=name, parent_name=parent, kind=kind, line=line)
+                    HeritageRelation(
+                        child_name=name, parent_name=parent, kind=kind, line=line
+                    )
                 )

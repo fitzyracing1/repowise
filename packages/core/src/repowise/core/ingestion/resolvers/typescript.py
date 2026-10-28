@@ -41,7 +41,9 @@ def resolve_ts_js_import(module_path: str, importer_path: str, ctx: ResolverCont
         # ``..`` segments unless the path exists on disk; without this
         # step, every cross-directory relative import silently fails to
         # resolve and reads as an external dep.
-        base_posix = posixpath.normpath(posixpath.join(importer_dir.as_posix(), module_path))
+        base_posix = posixpath.normpath(
+            posixpath.join(importer_dir.as_posix(), module_path)
+        )
         if base_posix in ctx.path_set:
             return base_posix
         exts: tuple[str, ...] = (

@@ -81,9 +81,7 @@ def _scope_of(node: Node) -> Node:
     return cur
 
 
-def _assigned_holder(
-    assignment: Node, value: Node, scheduler: Node, src: str
-) -> tuple[str, str | None]:
+def _assigned_holder(assignment: Node, value: Node, scheduler: Node, src: str) -> tuple[str, str | None]:
     left = assignment.child_by_field_name("left")
     if left is not None and left.type == "subscript":
         return "container", node_text(left.child_by_field_name("value"), src)
@@ -121,17 +119,9 @@ def _uses(scope: Node, name: str, src: str) -> Iterator[Node]:
         if node.type not in ("identifier", "attribute") or node_text(node, src) != name:
             continue
         parent = node.parent
-        if (
-            parent is not None
-            and parent.type == "assignment"
-            and parent.child_by_field_name("left") == node
-        ):
+        if parent is not None and parent.type == "assignment" and parent.child_by_field_name("left") == node:
             continue
-        if (
-            parent is not None
-            and parent.type == "attribute"
-            and parent.child_by_field_name("attribute") == node
-        ):
+        if parent is not None and parent.type == "attribute" and parent.child_by_field_name("attribute") == node:
             continue
         yield node
 
@@ -196,11 +186,7 @@ def _published_or_tested(node: Node) -> bool:
         return False
     if parent.type == "assignment":
         left = parent.child_by_field_name("left")
-        return (
-            parent.child_by_field_name("right") == node
-            and left is not None
-            and left.type == "attribute"
-        )
+        return parent.child_by_field_name("right") == node and left is not None and left.type == "attribute"
     return (
         parent.type == "comparison_operator"
         and len(parent.children) == 3

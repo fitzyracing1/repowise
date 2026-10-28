@@ -76,17 +76,15 @@ _BUILD_METHOD_RE = re.compile(r"""\bWidget\s+build\s*\(\s*[^)]*\)\s*(?:=>|\{)"""
 # implementing one of these is a widget, and so is one whose parent is such
 # a class. Two hops cover ``PageBase extends StatelessWidget``; a longer
 # chain stays unresolved and emits no edge.
-_WIDGET_BASES = frozenset(
-    {
-        "StatelessWidget",
-        "StatefulWidget",
-        "State",
-        "InheritedWidget",
-        "RenderObjectWidget",
-        "PreferredSizeWidget",
-        "Widget",
-    }
-)
+_WIDGET_BASES = frozenset({
+    "StatelessWidget",
+    "StatefulWidget",
+    "State",
+    "InheritedWidget",
+    "RenderObjectWidget",
+    "PreferredSizeWidget",
+    "Widget",
+})
 
 _CLASS_KINDS = ("class", "interface", "struct", "record", "enum", "trait")
 

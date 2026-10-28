@@ -107,12 +107,8 @@ _DISCOVERIES: tuple[_Discovery, ...] = (
                 "IRequestExceptionAction",
             }
         ),
-        (
-            "AddMediatR",
-            "RegisterServicesFromAssembly",
-            "RegisterServicesFromAssemblies",
-            "RegisterServicesFromAssemblyContaining",
-        ),
+        ("AddMediatR", "RegisterServicesFromAssembly", "RegisterServicesFromAssemblies",
+         "RegisterServicesFromAssemblyContaining"),
     ),
     # Mediator (source generated).
     _Discovery(
@@ -134,12 +130,8 @@ _DISCOVERIES: tuple[_Discovery, ...] = (
     # FluentValidation assembly registration.
     _Discovery(
         frozenset({"AbstractValidator"}),
-        (
-            "AddValidatorsFromAssembly",
-            "AddValidatorsFromAssemblies",
-            "AddValidatorsFromAssemblyContaining",
-            "AddFluentValidation",
-        ),
+        ("AddValidatorsFromAssembly", "AddValidatorsFromAssemblies",
+         "AddValidatorsFromAssemblyContaining", "AddFluentValidation"),
     ),
     # MinimalApi.Endpoint.
     _Discovery(frozenset({"IEndpoint"}), ("AddEndpoints",)),

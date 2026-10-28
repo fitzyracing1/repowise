@@ -215,25 +215,19 @@ def _build_cargo_workspace_index(ctx) -> CargoWorkspaceIndex | None:
     root_pkg = root_data.get("package") or {}
     if root_pkg.get("name"):
         root_deps = _parse_deps(
-            {
-                **root_data.get("dependencies", {}),
-                **root_data.get("dev-dependencies", {}),
-                **root_data.get("build-dependencies", {}),
-            },
+            {**root_data.get("dependencies", {}),
+             **root_data.get("dev-dependencies", {}),
+             **root_data.get("build-dependencies", {})},
             Path(repo_path),
             repo,
             ws_deps=ws_deps_raw,
         )
         root_bins, root_roots = _parse_entry_targets(root_data, "", repo)
-        crates.append(
-            CargoCrate(
-                name=str(root_pkg["name"]),
-                src_dir="src",
-                dependencies=root_deps,
-                bin_paths=root_bins,
-                reachability_root_paths=root_roots,
-            )
-        )
+        crates.append(CargoCrate(
+            name=str(root_pkg["name"]), src_dir="src",
+            dependencies=root_deps, bin_paths=root_bins,
+            reachability_root_paths=root_roots,
+        ))
 
     # Parse workspace-level shared dependencies
     ws_deps = _parse_deps(ws_deps_raw, Path(repo_path), repo)
@@ -286,26 +280,22 @@ def _build_cargo_workspace_index(ctx) -> CargoWorkspaceIndex | None:
             )
             src_dir = f"{member_rel}/src" if member_rel else "src"
             member_deps = _parse_deps(
-                {
-                    **member_data.get("dependencies", {}),
-                    **member_data.get("dev-dependencies", {}),
-                    **member_data.get("build-dependencies", {}),
-                },
+                {**member_data.get("dependencies", {}),
+                 **member_data.get("dev-dependencies", {}),
+                 **member_data.get("build-dependencies", {})},
                 member_path,
                 repo,
                 ws_deps=ws_deps_raw,
             )
             bin_paths, root_paths = _parse_entry_targets(member_data, member_rel, repo)
-            crates.append(
-                CargoCrate(
-                    name=str(name),
-                    src_dir=src_dir,
-                    dependencies=member_deps,
-                    is_proc_macro=is_proc_macro,
-                    bin_paths=bin_paths,
-                    reachability_root_paths=root_paths,
-                )
-            )
+            crates.append(CargoCrate(
+                name=str(name),
+                src_dir=src_dir,
+                dependencies=member_deps,
+                is_proc_macro=is_proc_macro,
+                bin_paths=bin_paths,
+                reachability_root_paths=root_paths,
+            ))
 
     crates.extend(_discover_isolated_crates(ctx, repo, tuple(crates)))
 
@@ -362,12 +352,10 @@ def _discover_isolated_crates(
         if not bin_paths and not root_paths:
             continue
         pkg_name = (data.get("package") or {}).get("name") or member_rel or "isolated"
-        crates.append(
-            CargoCrate(
-                name=str(pkg_name),
-                src_dir=f"{member_rel}/src" if member_rel else "src",
-                bin_paths=bin_paths,
-                reachability_root_paths=root_paths,
-            )
-        )
+        crates.append(CargoCrate(
+            name=str(pkg_name),
+            src_dir=f"{member_rel}/src" if member_rel else "src",
+            bin_paths=bin_paths,
+            reachability_root_paths=root_paths,
+        ))
     return crates

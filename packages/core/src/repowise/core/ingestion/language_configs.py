@@ -620,7 +620,9 @@ LANGUAGE_CONFIGS: dict[str, LanguageConfig] = {
         ),
         # A @protocol is not a declaration of anything defined elsewhere:
         # nothing ever implements it under its own name.
-        declaration_node_types=frozenset({"class_interface", "method_declaration", "declaration"}),
+        declaration_node_types=frozenset(
+            {"class_interface", "method_declaration", "declaration"}
+        ),
     ),
     "pascal": LanguageConfig(
         import_extractor=PASCAL_IMPORTS,

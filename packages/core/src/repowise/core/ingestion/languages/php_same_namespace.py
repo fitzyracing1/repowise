@@ -56,9 +56,7 @@ _DECLARATION = r"^[ \t]*(?:(?:final|abstract|readonly)[ \t]+)*"
 #: A class declared at the start of a line, so "class" in a docblock is not one.
 PHP_CLASS_DECL_RE = re.compile(_DECLARATION + r"class[ \t]+(?P<cls>[A-Za-z_]\w*)", re.MULTILINE)
 # The first declaration of any kind: every `use` clause comes before it.
-_FIRST_DECL_RE = re.compile(
-    _DECLARATION + r"(?:class|interface|trait|enum|function)\b", re.MULTILINE
-)
+_FIRST_DECL_RE = re.compile(_DECLARATION + r"(?:class|interface|trait|enum|function)\b", re.MULTILINE)
 
 #: A quoted string (kept, so a ``//`` inside one is not a comment) or a comment:
 #: ``/* */`` / ``/** */``, ``//`` or ``#`` to end of line, but not a ``#[``

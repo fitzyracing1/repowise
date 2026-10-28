@@ -94,7 +94,6 @@ class InheritanceMixin:
         ``S`` names an enclosing class, whose superclass is meant, or a direct
         superinterface of the caller's class, whose own ``m`` is.
         """
-
         def named(type_id: str) -> bool:
             return getattr(self._symbols_by_id.get(type_id), "name", None) == qualifier
 
@@ -155,9 +154,7 @@ class InheritanceMixin:
             binding = bindings.get(relation.parent_name)
             names = {relation.parent_name, binding.exported_name if binding else None}
             hits = [
-                p
-                for p in parents
-                if (s := self._symbols_by_id.get(p)) is not None and s.name in names
+                p for p in parents if (s := self._symbols_by_id.get(p)) is not None and s.name in names
             ]
             if len(hits) > 1:
                 return None

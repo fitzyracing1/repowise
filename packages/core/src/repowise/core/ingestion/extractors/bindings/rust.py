@@ -22,24 +22,16 @@ def extract_rust_bindings(stmt_node: Node, src: str) -> tuple[list[str], list[Na
         if alias_node:
             local = node_text(alias_node, src)
             exported = node_text(name_node, src) if name_node else local
-            return [local], [
-                NamedBinding(
-                    local_name=local,
-                    exported_name=exported,
-                    source_file=None,
-                    is_module_alias=True,
-                )
-            ]
+            return [local], [NamedBinding(
+                local_name=local, exported_name=exported,
+                source_file=None, is_module_alias=True,
+            )]
         elif name_node:
             name = node_text(name_node, src)
-            return [name], [
-                NamedBinding(
-                    local_name=name,
-                    exported_name=name,
-                    source_file=None,
-                    is_module_alias=True,
-                )
-            ]
+            return [name], [NamedBinding(
+                local_name=name, exported_name=name,
+                source_file=None, is_module_alias=True,
+            )]
         return ["*"], [NamedBinding(local_name="*", exported_name=None, source_file=None)]
 
     arg_node = rust_use_argument(stmt_node)

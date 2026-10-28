@@ -56,24 +56,13 @@ if TYPE_CHECKING:
 # Annotations recognised on a class (or record / enum) declaration.
 _TYPE_ANNOTATIONS_OF_INTEREST = frozenset(
     {
-        "Data",
-        "Value",
-        "Getter",
-        "Setter",
-        "ToString",
-        "EqualsAndHashCode",
-        "NoArgsConstructor",
-        "RequiredArgsConstructor",
-        "AllArgsConstructor",
-        "Builder",
-        "SuperBuilder",
-        "Slf4j",
-        "Log4j2",
-        "Log",
-        "JBossLog",
-        "XSlf4j",
-        "CommonsLog",
-        "Flogger",
+        "Data", "Value",
+        "Getter", "Setter",
+        "ToString", "EqualsAndHashCode",
+        "NoArgsConstructor", "RequiredArgsConstructor", "AllArgsConstructor",
+        "Builder", "SuperBuilder",
+        "Slf4j", "Log4j2", "Log", "JBossLog",
+        "XSlf4j", "CommonsLog", "Flogger",
         "UtilityClass",
         "With",
     }
@@ -170,17 +159,11 @@ def _field_infos(field_node: Node, src: str) -> list[_Field]:
         name_node = child.child_by_field_name("name")
         if name_node is None:
             continue
-        out.append(
-            _Field(
-                node_text(name_node, src).strip(),
-                type_text,
-                "final" in kinds,
-                "static" in kinds,
-                annotations,
-                _line(name_node),
-                child.child_by_field_name("value") is not None,
-            )
-        )
+        out.append(_Field(
+            node_text(name_node, src).strip(), type_text, "final" in kinds,
+            "static" in kinds, annotations, _line(name_node),
+            child.child_by_field_name("value") is not None,
+        ))
     return out
 
 
@@ -203,7 +186,9 @@ def _class_fields(class_node: Node, src: str) -> list[_Field]:
 
 def _declares_constructor(class_node: Node) -> bool:
     body = class_node.child_by_field_name("body")
-    return body is not None and any(c.type == "constructor_declaration" for c in body.children)
+    return body is not None and any(
+        c.type == "constructor_declaration" for c in body.children
+    )
 
 
 def _pascal_case(name: str) -> str:
@@ -240,29 +225,19 @@ def _with_name(field_name: str) -> str:
     return f"with{_pascal_case(field_name)}"
 
 
-def _add(
-    out: list[Symbol],
-    file_info: FileInfo,
-    *,
-    name: str,
-    kind: str,
-    parent: str,
-    line: int,
-    signature: str,
-) -> None:
+def _add(out: list[Symbol], file_info: FileInfo, *, name: str, kind: str,
+         parent: str, line: int, signature: str) -> None:
     if not name:
         return
-    out.append(
-        build_synthetic_symbol(
-            name=name,
-            kind=kind,
-            signature=signature,
-            start_line=line,
-            end_line=line,
-            file_info=file_info,
-            parent_name=parent,
-        )
-    )
+    out.append(build_synthetic_symbol(
+        name=name,
+        kind=kind,
+        signature=signature,
+        start_line=line,
+        end_line=line,
+        file_info=file_info,
+        parent_name=parent,
+    ))
 
 
 def _ann_line(annotations: dict[str, Node], names: tuple[str, ...], default: int) -> int:
@@ -301,13 +276,8 @@ def _wanted(own: Node | None, class_level: bool, field: _Field, src: str) -> boo
 
 
 def _emit_accessors(
-    fields: list[_Field],
-    annotations: dict[str, Node],
-    src: str,
-    file_info: FileInfo,
-    class_name: str,
-    line: int,
-    out: list[Symbol],
+    fields: list[_Field], annotations: dict[str, Node], src: str,
+    file_info: FileInfo, class_name: str, line: int, out: list[Symbol],
 ) -> None:
     """Per-field getters, setters and withers."""
     is_value = "Value" in annotations
@@ -322,118 +292,65 @@ def _emit_accessors(
         own = field.annotations.get("Getter")
         if _wanted(own, class_get, field, src):
             name = _getter_name(field, fluent)
-            _add(
-                out,
-                file_info,
-                name=name,
-                kind="method",
-                parent=class_name,
-                line=_accessor_line(field, own, field.name_line, fluent),
-                signature=f"{name}() -> {field.type_text or 'Object'}",
-            )
+            _add(out, file_info, name=name, kind="method", parent=class_name,
+                 line=_accessor_line(field, own, field.name_line, fluent),
+                 signature=f"{name}() -> {field.type_text or 'Object'}")
         own = field.annotations.get("Setter")
         if not field.is_final and not is_value and _wanted(own, class_set, field, src):
             _emit_setter(field, own, set_line, (fluent, chain), file_info, class_name, out)
         own = field.annotations.get("With")
         if _wanted(own, class_with, field, src):
             name = _with_name(field.name)
-            _add(
-                out,
-                file_info,
-                name=name,
-                kind="method",
-                parent=class_name,
-                line=_accessor_line(field, own, with_line, False),
-                signature=f"{name}({field.type_text or 'Object'} {field.name}) -> {class_name}",
-            )
+            _add(out, file_info, name=name, kind="method", parent=class_name,
+                 line=_accessor_line(field, own, with_line, False),
+                 signature=f"{name}({field.type_text or 'Object'} {field.name}) -> {class_name}")
 
 
 def _emit_setter(
-    field: _Field,
-    own: Node | None,
-    class_line: int,
-    style: tuple[bool, bool],
-    file_info: FileInfo,
-    class_name: str,
-    out: list[Symbol],
+    field: _Field, own: Node | None, class_line: int, style: tuple[bool, bool],
+    file_info: FileInfo, class_name: str, out: list[Symbol],
 ) -> None:
     fluent, chain = style
     name = _setter_name(field, fluent)
     # A chained setter returns its object, so a call chain can go on.
     returns = class_name if chain else "void"
-    _add(
-        out,
-        file_info,
-        name=name,
-        kind="method",
-        parent=class_name,
-        line=_accessor_line(field, own, class_line, fluent),
-        signature=f"{name}({field.type_text or 'Object'} {field.name}) -> {returns}",
-    )
+    _add(out, file_info, name=name, kind="method", parent=class_name,
+         line=_accessor_line(field, own, class_line, fluent),
+         signature=f"{name}({field.type_text or 'Object'} {field.name}) -> {returns}")
 
 
 def _emit_builder(
-    fields: list[_Field],
-    line: int,
-    file_info: FileInfo,
-    class_name: str,
+    fields: list[_Field], line: int, file_info: FileInfo, class_name: str,
     out: list[Symbol],
 ) -> None:
     """``Foo.builder()``, the inner ``FooBuilder`` and one method per field."""
     builder_class = f"{class_name}Builder"
-    out.append(
-        build_synthetic_symbol(
-            name=builder_class,
-            kind="class",
-            signature=f"class {builder_class}",
-            start_line=line,
-            end_line=line,
-            file_info=file_info,
-            parent_name=class_name,
-        )
-    )
-    _add(
-        out,
-        file_info,
-        name="builder",
-        kind="method",
-        parent=class_name,
-        line=line,
-        signature=f"builder() -> {builder_class}",
-    )
+    out.append(build_synthetic_symbol(
+        name=builder_class, kind="class",
+        signature=f"class {builder_class}",
+        start_line=line, end_line=line,
+        file_info=file_info, parent_name=class_name,
+    ))
+    _add(out, file_info, name="builder", kind="method",
+         parent=class_name, line=line,
+         signature=f"builder() -> {builder_class}")
     for field in fields:
         if field.is_static or (field.is_final and field.initialized):
             continue
-        _add(
-            out,
-            file_info,
-            name=field.name,
-            kind="method",
-            parent=builder_class,
-            line=field.name_line,
-            signature=f"{field.name}({field.type_text or 'Object'} {field.name}) -> {builder_class}",
-        )
-    _add(
-        out,
-        file_info,
-        name="build",
-        kind="method",
-        parent=builder_class,
-        line=line,
-        signature=f"build() -> {class_name}",
-    )
-    _add(
-        out,
-        file_info,
-        name="toString",
-        kind="method",
-        parent=builder_class,
-        line=line,
-        signature="toString() -> String",
-    )
+        _add(out, file_info, name=field.name, kind="method",
+             parent=builder_class, line=field.name_line,
+             signature=f"{field.name}({field.type_text or 'Object'} {field.name}) -> {builder_class}")
+    _add(out, file_info, name="build", kind="method",
+         parent=builder_class, line=line,
+         signature=f"build() -> {class_name}")
+    _add(out, file_info, name="toString", kind="method",
+         parent=builder_class, line=line,
+         signature="toString() -> String")
 
 
-def _emit_for_class(class_node: Node, src: str, file_info: FileInfo, out: list[Symbol]) -> None:
+def _emit_for_class(
+    class_node: Node, src: str, file_info: FileInfo, out: list[Symbol]
+) -> None:
     name_node = class_node.child_by_field_name("name")
     if name_node is None:
         return
@@ -453,47 +370,27 @@ def _emit_for_class(class_node: Node, src: str, file_info: FileInfo, out: list[S
     _emit_object_methods(annotations, file_info, class_name, line, out)
     _emit_constructors(class_node, annotations, fields, file_info, class_name, line, out)
     if "Builder" in annotations or "SuperBuilder" in annotations:
-        _emit_builder(
-            fields,
-            _ann_line(annotations, ("Builder", "SuperBuilder"), line),
-            file_info,
-            class_name,
-            out,
-        )
+        _emit_builder(fields, _ann_line(annotations, ("Builder", "SuperBuilder"), line),
+                      file_info, class_name, out)
     # Logger field: only one logger annotation per class is valid.
     for ann, logger_type in _TYPE_LOGGER_ANNOTATIONS.items():
         if ann in annotations:
-            _add(
-                out,
-                file_info,
-                name="log",
-                kind="variable",
-                parent=class_name,
-                line=_line(annotations[ann]),
-                signature=f"private static final {logger_type} log",
-            )
+            _add(out, file_info, name="log", kind="variable",
+                 parent=class_name, line=_line(annotations[ann]),
+                 signature=f"private static final {logger_type} log")
             break
 
 
 def _emit_object_methods(
-    annotations: dict[str, Node],
-    file_info: FileInfo,
-    class_name: str,
-    line: int,
+    annotations: dict[str, Node], file_info: FileInfo, class_name: str, line: int,
     out: list[Symbol],
 ) -> None:
     """toString, equals, hashCode and canEqual, on the annotation that asks for them."""
     implied = "Data" in annotations or "Value" in annotations
     if "ToString" in annotations or implied:
-        _add(
-            out,
-            file_info,
-            name="toString",
-            kind="method",
-            parent=class_name,
-            line=_ann_line(annotations, ("ToString", "Data", "Value"), line),
-            signature="toString() -> String",
-        )
+        _add(out, file_info, name="toString", kind="method", parent=class_name,
+             line=_ann_line(annotations, ("ToString", "Data", "Value"), line),
+             signature="toString() -> String")
     if "EqualsAndHashCode" in annotations or implied:
         eq_line = _ann_line(annotations, ("EqualsAndHashCode", "Data", "Value"), line)
         for name, signature in (
@@ -501,25 +398,13 @@ def _emit_object_methods(
             ("hashCode", "hashCode() -> int"),
             ("canEqual", "canEqual(Object other) -> boolean"),
         ):
-            _add(
-                out,
-                file_info,
-                name=name,
-                kind="method",
-                parent=class_name,
-                line=eq_line,
-                signature=signature,
-            )
+            _add(out, file_info, name=name, kind="method", parent=class_name,
+                 line=eq_line, signature=signature)
 
 
 def _emit_constructors(
-    class_node: Node,
-    annotations: dict[str, Node],
-    fields: list[_Field],
-    file_info: FileInfo,
-    class_name: str,
-    line: int,
-    out: list[Symbol],
+    class_node: Node, annotations: dict[str, Node], fields: list[_Field],
+    file_info: FileInfo, class_name: str, line: int, out: list[Symbol],
 ) -> None:
     """Generated constructors, on the class line where an index keys them."""
     slots = [f for f in fields if not f.is_static and not (f.is_final and f.initialized)]
@@ -536,18 +421,13 @@ def _emit_constructors(
         # A @UtilityClass gets a private one, so the class is constructed somewhere.
         params.append([])
     for group in params:
-        _add(
-            out,
-            file_info,
-            name=class_name,
-            kind="function",
-            parent=class_name,
-            line=line,
-            signature=f"{class_name}({', '.join(f'{f.type_text} {f.name}' for f in group)})",
-        )
+        _add(out, file_info, name=class_name, kind="function", parent=class_name, line=line,
+             signature=f"{class_name}({', '.join(f'{f.type_text} {f.name}' for f in group)})")
 
 
-def lombok_synthetic_symbols(root: Node, src: str, file_info: FileInfo) -> list[Symbol]:
+def lombok_synthetic_symbols(
+    root: Node, src: str, file_info: FileInfo
+) -> list[Symbol]:
     """Emit synthetic symbols for Lombok-annotated Java classes and enums."""
     # Lombok annotations need a ``lombok`` import or a qualified name, so a
     # same-named annotation from another library generates nothing.
