@@ -294,6 +294,10 @@ def _qualified_cpp_parent(name_node: Node, src: str) -> str | None:
     scope = parent.child_by_field_name("scope")
     if scope is None:
         return None
+    # A ``::`` tree-sitter invented to repair ``MACRO Type name(..)`` (an
+    # unknown leading macro) is not a qualification: the function is free.
+    if any(child.is_missing and child.type == "::" for child in parent.children):
+        return None
     if scope.type == "template_type":
         return cpp_template_type_name(scope, src)
     text = node_text(scope, src).strip()

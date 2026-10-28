@@ -1143,3 +1143,19 @@ struct API Fwd;
             (symbol.name, symbol.kind, symbol.start_line, symbol.is_declaration)
             for symbol in result.symbols
         } == expected_symbols
+
+
+def test_unknown_macro_before_return_type_keeps_function_free() -> None:
+    """Issue #4848: ``MACRO Type`` then ``name(..)`` is a free function, not ``Type::name``."""
+    src = (
+        b"LIB_ALWAYS_INLINE uintptr_t\n"
+        b"box_encode(box_contents_t contents) {\n\treturn 0;\n}\n\n"
+        b"LIB_ALWAYS_INLINE box_contents_t\n"
+        b"box_decode(uintptr_t bits) {\n\tbox_contents_t contents;\n\treturn contents;\n}\n"
+        b"\nint Real::method() { return 1; }\n"
+    )
+    result = ASTParser().parse_file(_make_file_info("box.h", "cpp"), src)
+    kinds = {(s.id, s.kind) for s in result.symbols}
+    assert ("box.h::box_decode", "function") in kinds
+    assert ("box.h::box_encode", "function") in kinds
+    assert ("box.h::Real::method", "method") in kinds
