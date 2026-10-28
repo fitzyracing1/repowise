@@ -359,6 +359,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -375,6 +376,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "name"
@@ -393,6 +395,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "name"
@@ -411,6 +414,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -427,6 +431,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -443,6 +448,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -459,6 +465,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "acc"
@@ -477,6 +484,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -493,6 +501,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -509,6 +518,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           "String"
         ],
@@ -527,6 +537,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       }
@@ -697,6 +708,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -713,6 +725,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -729,6 +742,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       }
@@ -976,6 +990,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -992,6 +1007,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           "Integer",
           null
@@ -1014,6 +1030,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           "Integer",
           null
@@ -1036,6 +1053,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           "Integer",
           null
@@ -1058,6 +1076,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -1074,6 +1093,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           null,
           "String"
@@ -1093,6 +1113,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -1109,6 +1130,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           "Integer",
           null
@@ -1131,6 +1153,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           "Integer",
           null
@@ -1153,6 +1176,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -1169,6 +1193,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           "Integer",
           null
@@ -1191,6 +1216,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -1207,6 +1233,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       }
@@ -1692,6 +1719,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -1708,6 +1736,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "item"
@@ -2184,6 +2213,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -2200,6 +2230,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -2216,6 +2247,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "soql"
@@ -2234,6 +2266,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -2250,6 +2283,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -2266,6 +2300,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           null,
           "String"
@@ -2288,6 +2323,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -2304,6 +2340,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "name"
@@ -2322,6 +2359,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "name"
@@ -2340,6 +2378,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -2356,6 +2395,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -2372,6 +2412,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -2388,6 +2429,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -2404,6 +2446,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           null,
           "String"
@@ -2426,6 +2469,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       }
@@ -2661,6 +2705,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           null,
@@ -2680,6 +2725,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       }
@@ -3452,6 +3498,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "i"
@@ -3470,6 +3517,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "req"
@@ -3488,6 +3536,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3504,6 +3553,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "i"
@@ -3522,6 +3572,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "i"
@@ -3540,6 +3591,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3556,6 +3608,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "a"
@@ -3574,6 +3627,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3590,6 +3644,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3606,6 +3661,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3622,6 +3678,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           null,
           "Boolean"
@@ -3644,6 +3701,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "a"
@@ -3662,6 +3720,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3678,6 +3737,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3694,6 +3754,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3710,6 +3771,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "objectName"
@@ -3728,6 +3790,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3744,6 +3807,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -3760,6 +3824,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "t"

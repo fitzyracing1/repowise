@@ -585,6 +585,7 @@
         "bare_name_fallback": true,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "id"
@@ -603,6 +604,7 @@
         "bare_name_fallback": true,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "id"
@@ -621,6 +623,7 @@
         "bare_name_fallback": true,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -637,6 +640,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "p"
@@ -655,6 +659,7 @@
         "bare_name_fallback": true,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "id"
@@ -673,6 +678,7 @@
         "bare_name_fallback": true,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       },
@@ -689,6 +695,7 @@
         "bare_name_fallback": true,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           "String"
         ],
@@ -707,6 +714,7 @@
         "bare_name_fallback": true,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": [
           "String"
         ],
@@ -725,6 +733,7 @@
         "bare_name_fallback": true,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": [
           "id"
@@ -747,6 +756,7 @@
         "bare_name_fallback": false,
         "spawned": false,
         "program_call": false,
+        "locally_bound": false,
         "argument_types": null,
         "argument_names": null
       }
