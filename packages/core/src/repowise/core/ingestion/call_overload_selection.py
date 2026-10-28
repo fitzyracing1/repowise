@@ -61,8 +61,14 @@ _JAVA_WIDENING: dict[str, tuple[str, ...]] = {
 
 
 _JAVA_BOXES = {
-    "boolean": "Boolean", "byte": "Byte", "short": "Short", "char": "Character",
-    "int": "Integer", "long": "Long", "float": "Float", "double": "Double",
+    "boolean": "Boolean",
+    "byte": "Byte",
+    "short": "Short",
+    "char": "Character",
+    "int": "Integer",
+    "long": "Long",
+    "float": "Float",
+    "double": "Double",
 }
 
 
@@ -193,8 +199,22 @@ _APEX_CONVERSIONS = {
 
 # Builtin types no repository class can extend or implement.
 _APEX_VALUE_TYPES = frozenset(
-    {"blob", "boolean", "date", "datetime", "decimal", "double", "id", "integer", "list",
-     "long", "map", "set", "string", "time"}
+    {
+        "blob",
+        "boolean",
+        "date",
+        "datetime",
+        "decimal",
+        "double",
+        "id",
+        "integer",
+        "list",
+        "long",
+        "map",
+        "set",
+        "string",
+        "time",
+    }
 )
 
 
@@ -296,7 +316,9 @@ def _java_method_refusing(symbol: Symbol | None, argument_count: int | None) -> 
     """Whether *symbol* is a Java method whose parameters cannot take *argument_count*."""
     if symbol is None or argument_count is None:
         return False
-    return symbol.language == "java" and symbol.kind == "method" and not _takes(symbol, argument_count)
+    return (
+        symbol.language == "java" and symbol.kind == "method" and not _takes(symbol, argument_count)
+    )
 
 
 def _kotlin_function_refusing(symbol: Symbol | None, argument_count: int | None) -> bool:
@@ -324,9 +346,29 @@ def _takes(symbol: Symbol, argument_count: int) -> bool:
 # C# types no lambda, and no repository class or interface, converts to: the
 # keyword types and the framework structs a signature most often spells.
 _CSHARP_CLOSED_TYPES = frozenset(
-    {"bool", "byte", "sbyte", "char", "decimal", "double", "float", "int", "uint", "long",
-     "ulong", "short", "ushort", "nint", "nuint", "string", "TimeSpan", "DateTime",
-     "DateTimeOffset", "Guid", "CancellationToken"}
+    {
+        "bool",
+        "byte",
+        "sbyte",
+        "char",
+        "decimal",
+        "double",
+        "float",
+        "int",
+        "uint",
+        "long",
+        "ulong",
+        "short",
+        "ushort",
+        "nint",
+        "nuint",
+        "string",
+        "TimeSpan",
+        "DateTime",
+        "DateTimeOffset",
+        "Guid",
+        "CancellationToken",
+    }
 )
 
 # How many parameters a lambda converting to ``Func`N`` / ``Action`N`` declares, past N.
@@ -419,9 +461,7 @@ class OverloadSelectionMixin:
 
             for sym in overloads:
                 representatives[sym.id] = rep
-                admitted = signature_parameter_range(
-                    sym.signature or "", sym.language
-                )
+                admitted = signature_parameter_range(sym.signature or "", sym.language)
                 if admitted is None:
                     self._unranged_overload_sets.add(rep)
                 else:
@@ -529,7 +569,9 @@ class OverloadSelectionMixin:
         if not _java_method_refusing(callee, call.argument_count):
             return resolved
         assert callee is not None
-        target = None if callee.name == callee.parent_name else self._inherited_taker(resolved, call)
+        target = (
+            None if callee.name == callee.parent_name else self._inherited_taker(resolved, call)
+        )
         return None if target in (None, resolved.caller_id) else replace(resolved, callee_id=target)
 
     def _inherited_taker(self, resolved: ResolvedCall, call: CallSite) -> str | None:
@@ -678,7 +720,9 @@ class OverloadSelectionMixin:
         exact = [
             member
             for member, found in parameters.items()
-            if found[:1] and found[0].split()[:1] == ["this"] and erased_type(found[0]) == receiver_type
+            if found[:1]
+            and found[0].split()[:1] == ["this"]
+            and erased_type(found[0]) == receiver_type
         ]
         return exact or members
 

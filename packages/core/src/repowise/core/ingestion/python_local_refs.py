@@ -136,11 +136,7 @@ def _collect_refs(
             # ``Store``/``Del`` Names are (re)definitions, not uses; only a
             # ``Load`` of a defined name (other than the enclosing symbol's
             # own name) is evidence the symbol is consumed elsewhere.
-            if (
-                isinstance(sub.ctx, ast.Load)
-                and sub.id != owner
-                and sub.id in defined_names
-            ):
+            if isinstance(sub.ctx, ast.Load) and sub.id != owner and sub.id in defined_names:
                 out.add(sub.id)
             continue
 

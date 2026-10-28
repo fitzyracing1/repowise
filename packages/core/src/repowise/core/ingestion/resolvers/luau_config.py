@@ -210,12 +210,16 @@ def resolve_luaurc_alias(alias_path: str, importer_path: str, ctx: ResolverConte
         if target is None:
             continue
         base_dir = PurePosixPath(key) if key else PurePosixPath(".")
-        combined = base_dir / target.lstrip("./") if not target.startswith("/") else PurePosixPath(target.lstrip("/"))
+        combined = (
+            base_dir / target.lstrip("./")
+            if not target.startswith("/")
+            else PurePosixPath(target.lstrip("/"))
+        )
         if rest:
             combined = combined / rest
-        normalized = PurePosixPath(*(
-            seg for seg in combined.as_posix().split("/") if seg not in (".", "")
-        ))
+        normalized = PurePosixPath(
+            *(seg for seg in combined.as_posix().split("/") if seg not in (".", ""))
+        )
         # Resolve ".." segments textually (paths are repo-relative posix).
         parts: list[str] = []
         for seg in normalized.parts:

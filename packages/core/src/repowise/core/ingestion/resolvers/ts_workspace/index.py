@@ -61,9 +61,7 @@ def build_ts_workspace_index(ctx: ResolverContext) -> TsWorkspaceIndex:
         exports_map: dict[str, tuple[str, ...]] = pkg.get("exports") or {}
         for pattern, targets in exports_map.items():
             # The ranked target only: spare candidates must not widen the published set.
-            entries.update(
-                _expand_exports_wildcard(targets[0], pattern, dir_posix, path_set)
-            )
+            entries.update(_expand_exports_wildcard(targets[0], pattern, dir_posix, path_set))
         main = pkg.get("main")
         if isinstance(main, str):
             resolved = _probe_path(f"{dir_posix}/{main.lstrip('./')}", path_set)

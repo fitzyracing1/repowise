@@ -76,14 +76,10 @@ _GTEST_FIXTURE_RE = re.compile(
 
 # Boost.Test: ``BOOST_FIXTURE_TEST_CASE(TestName, FixtureName)`` —
 # fixture is the *second* arg.
-_BOOST_FIXTURE_RE = re.compile(
-    r"\bBOOST_FIXTURE_TEST_(?:CASE|SUITE)\s*\(\s*\w+\s*,\s*([A-Z_]\w*)"
-)
+_BOOST_FIXTURE_RE = re.compile(r"\bBOOST_FIXTURE_TEST_(?:CASE|SUITE)\s*\(\s*\w+\s*,\s*([A-Z_]\w*)")
 
 # Catch2 / doctest: ``TEST_CASE_METHOD(FixtureName, "name")``.
-_CATCH_FIXTURE_RE = re.compile(
-    r"\bTEST_CASE_METHOD\s*\(\s*([A-Z_]\w*)\s*,"
-)
+_CATCH_FIXTURE_RE = re.compile(r"\bTEST_CASE_METHOD\s*\(\s*([A-Z_]\w*)\s*,")
 
 
 def _file_uses_test_framework(text: str) -> bool:
@@ -150,10 +146,7 @@ class _CppTestFrameworkHandler:
         # No include detection — fall back to source-text token scan in
         # ``add_edges`` itself. Detect returns True if any cpp/c file
         # exists; the per-file cheap-reject still skips non-tests.
-        return any(
-            parsed.file_info.language in _CPP_LANGS
-            for parsed in dctx.parsed_files.values()
-        )
+        return any(parsed.file_info.language in _CPP_LANGS for parsed in dctx.parsed_files.values())
 
     def add_edges(
         self,

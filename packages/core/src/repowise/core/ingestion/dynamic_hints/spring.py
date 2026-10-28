@@ -9,15 +9,13 @@ from .base import DynamicEdge, DynamicHintExtractor
 
 _SKIP_DIRS = {"build", "target", "out", "node_modules", ".git", ".gradle", ".idea"}
 
-_TYPE_DECL_RE = re.compile(
-    r"\b(?:class|interface|record|enum)\s+([A-Z]\w*)"
-)
-_KOTLIN_TYPE_DECL_RE = re.compile(
-    r"\b(?:class|interface|object)\s+([A-Z]\w*)"
-)
+_TYPE_DECL_RE = re.compile(r"\b(?:class|interface|record|enum)\s+([A-Z]\w*)")
+_KOTLIN_TYPE_DECL_RE = re.compile(r"\b(?:class|interface|object)\s+([A-Z]\w*)")
 
 # applicationContext.getBean(Foo.class) / getBean("foo", Foo.class)
-_GETBEAN_CLASS_RE = re.compile(r"getBean\s*\(\s*(?:[\"'][^\"']*[\"']\s*,\s*)?([A-Z]\w*)\s*(?:\.class|::class(?:\.java)?)")
+_GETBEAN_CLASS_RE = re.compile(
+    r"getBean\s*\(\s*(?:[\"'][^\"']*[\"']\s*,\s*)?([A-Z]\w*)\s*(?:\.class|::class(?:\.java)?)"
+)
 # getBean("beanName") — name-based, can't resolve to a class file
 _GETBEAN_STRING_RE = re.compile(r"getBean\s*\(\s*[\"']([^\"']+)[\"']\s*\)")
 
@@ -75,7 +73,8 @@ class SpringDynamicHints(DynamicHintExtractor):
                 if target and target != rel:
                     edges.append(
                         DynamicEdge(
-                            source=rel, target=target,
+                            source=rel,
+                            target=target,
                             edge_type="dynamic_uses",
                             hint_source=f"{self.name}:get_bean",
                         )
@@ -97,7 +96,8 @@ class SpringDynamicHints(DynamicHintExtractor):
                 if target and target != rel:
                     edges.append(
                         DynamicEdge(
-                            source=rel, target=target,
+                            source=rel,
+                            target=target,
                             edge_type="dynamic_uses",
                             hint_source=f"{self.name}:bean_factory",
                         )

@@ -310,7 +310,9 @@ def _database_call(node: Node, emit: _Emit) -> None:
 
 
 def _collector(path: str, symbols: list[Symbol]) -> tuple[list[SchemaReference], _Emit]:
-    ranges = sorted(((s.start_line, s.end_line, s.id) for s in symbols), key=lambda t: (t[0], -t[1]))
+    ranges = sorted(
+        ((s.start_line, s.end_line, s.id) for s in symbols), key=lambda t: (t[0], -t[1])
+    )
     module = f"{path}::__module__"
     refs: list[SchemaReference] = []
 

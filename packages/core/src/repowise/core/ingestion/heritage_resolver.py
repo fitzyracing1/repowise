@@ -237,10 +237,9 @@ class HeritageResolver:
         # before this change. Telling those apart needs the relation to carry
         # the scope it was declared in, which it does not.
         composed = f"{file_path}::{rel.child_name}"
-        if (
-            composed in self._file_type_ids.get(file_path, ())
-            or rel.child_name in self._file_ambiguous_types.get(file_path, ())
-        ):
+        if composed in self._file_type_ids.get(
+            file_path, ()
+        ) or rel.child_name in self._file_ambiguous_types.get(file_path, ()):
             child_id = composed
         else:
             child_id = file_types.get(rel.child_name) or composed

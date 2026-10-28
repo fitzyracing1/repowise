@@ -80,15 +80,11 @@ class BarrelForwardingMixin:
                 self._forward_published_names(path, resolved, file_syms)
         return wildcard_sources
 
-    def _forward_published_names(
-        self, path: str, resolved: str, file_syms: dict[str, str]
-    ) -> None:
+    def _forward_published_names(self, path: str, resolved: str, file_syms: dict[str, str]) -> None:
         source_syms = self._file_symbols.get(resolved, {})
         source_parsed = self._parsed_files.get(resolved)
         published = (
-            (*source_syms, *source_parsed.export_aliases)
-            if source_parsed
-            else tuple(source_syms)
+            (*source_syms, *source_parsed.export_aliases) if source_parsed else tuple(source_syms)
         )
         for sym_name in published:
             if sym_name not in file_syms:

@@ -465,10 +465,7 @@ def _folded_churn(
 
     if prior.total_commit_count + since_count != commit_count:
         return None
-    if (
-        prior.total_commit_count // _CHURN_REANCHOR_STRIDE
-        != commit_count // _CHURN_REANCHOR_STRIDE
-    ):
+    if prior.total_commit_count // _CHURN_REANCHOR_STRIDE != commit_count // _CHURN_REANCHOR_STRIDE:
         return None
 
     added, deleted = _walk_churn(repo, f"{anchor}..{head_sha}")

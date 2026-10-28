@@ -140,7 +140,9 @@ class XamlDynamicHints(DynamicHintExtractor):
                         continue
                     for target_abs in targets:
                         try:
-                            target_rel = target_abs.resolve().relative_to(repo_root_resolved).as_posix()
+                            target_rel = (
+                                target_abs.resolve().relative_to(repo_root_resolved).as_posix()
+                            )
                         except ValueError:
                             continue
                         if target_rel == rel:
@@ -155,9 +157,7 @@ class XamlDynamicHints(DynamicHintExtractor):
                         )
 
             # ResourceDictionary cross-references — pure xaml→xaml.
-            for target_rel in _resolve_resource_dictionary_sources(
-                text, rel, xaml_by_basename
-            ):
+            for target_rel in _resolve_resource_dictionary_sources(text, rel, xaml_by_basename):
                 if target_rel == rel:
                     continue
                 edges.append(
@@ -175,6 +175,7 @@ class XamlDynamicHints(DynamicHintExtractor):
 # ---------------------------------------------------------------------------
 # Helpers (module-level so they're easy to unit-test in isolation)
 # ---------------------------------------------------------------------------
+
 
 def _iter_xaml_files(repo_root: Path, rglob=None):
     if rglob is None:

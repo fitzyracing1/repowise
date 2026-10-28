@@ -280,9 +280,7 @@ def build_blame_index(
                 path=file_path,
                 boundary_commits=len(boundary_shas),
             )
-    return BlameIndex(
-        lines=lines, authors=authors, boundary_shas=boundary_shas, is_shallow=shallow
-    )
+    return BlameIndex(lines=lines, authors=authors, boundary_shas=boundary_shas, is_shallow=shallow)
 
 
 def _run_blame(repo: Any, file_path: str, ignore_revs_args: list[str]) -> str | None:

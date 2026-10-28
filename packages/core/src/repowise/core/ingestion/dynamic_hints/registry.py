@@ -135,9 +135,7 @@ class HintRegistry:
 
         try:
             with ThreadPoolExecutor(max_workers=self._max_workers) as pool:
-                futures = {
-                    pool.submit(self._run_one, ex, repo_root): ex for ex in self._extractors
-                }
+                futures = {pool.submit(self._run_one, ex, repo_root): ex for ex in self._extractors}
                 for future in as_completed(futures):
                     ex = futures[future]
                     try:

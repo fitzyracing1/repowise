@@ -77,9 +77,7 @@ def _line_of(src: str, offset: int) -> int:
     return src.count("\n", 0, offset) + 1
 
 
-def cpp_macro_synthetic_symbols(
-    root: Node, src: str, file_info: FileInfo
-) -> list[Symbol]:
+def cpp_macro_synthetic_symbols(root: Node, src: str, file_info: FileInfo) -> list[Symbol]:
     """Emit synthetic symbols for static-init registration macros."""
     # Cheap reject — vast majority of C/C++ TUs don't use any of these.
     if not any(tok in src for tok in _FAST_REJECT_TOKENS):

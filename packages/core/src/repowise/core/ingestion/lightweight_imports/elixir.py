@@ -38,9 +38,7 @@ def extract_elixir_imports(text: str) -> list[Import]:
     seen: set[str] = set()
     for match in _DIRECTIVE_RE.finditer(text):
         directive, base, brace = match.group(1), match.group(2), match.group(3)
-        modules = (
-            [f"{base}.{member}" for member in _MEMBER_RE.findall(brace)] if brace else [base]
-        )
+        modules = [f"{base}.{member}" for member in _MEMBER_RE.findall(brace)] if brace else [base]
         raw = match.group(0).split("\n", 1)[0].strip()
         for module in modules:
             if module in seen:

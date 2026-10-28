@@ -41,9 +41,7 @@ def _extract_dart_heritage(
     if def_node.type == "class_definition":
         for child in def_node.children:
             if child.type == "superclass":
-                for _, parent in type_runs(
-                    child, src, _SUPERCLASS_SEPARATORS, _SUPERCLASS_SKIP
-                ):
+                for _, parent in type_runs(child, src, _SUPERCLASS_SEPARATORS, _SUPERCLASS_SKIP):
                     _append(out, name, parent, "extends", line)
                 for sub in child.children:
                     if sub.type == "mixins":
@@ -56,8 +54,6 @@ def _extract_dart_heritage(
         # ``mixin M on Base`` — the constraints are flat siblings of the
         # declaration, sharing it with the mixin's own name and body, so only
         # the runs the ``on`` keyword introduces are constraints.
-        for separator, parent in type_runs(
-            def_node, src, _ON_SEPARATORS, _MIXIN_DECL_SKIP
-        ):
+        for separator, parent in type_runs(def_node, src, _ON_SEPARATORS, _MIXIN_DECL_SKIP):
             if separator == "on":
                 _append(out, name, parent, "extends", line)

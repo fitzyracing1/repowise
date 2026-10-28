@@ -99,9 +99,7 @@ def _get_module_index(ctx: ResolverContext) -> dict[str, list[str]]:
     )
 
 
-def resolve_qml_import(
-    module_path: str, importer_path: str, ctx: ResolverContext
-) -> str | None:
+def resolve_qml_import(module_path: str, importer_path: str, ctx: ResolverContext) -> str | None:
     """Resolve one QML import to a repo-relative path, or None."""
     raw = module_path.strip()
     if not raw:

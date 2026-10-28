@@ -33,12 +33,26 @@ if TYPE_CHECKING:
 # only capture the last identifier — good enough to reach the handler's
 # file via the var map.
 _ROUTE_METHODS = (
-    "get", "post", "put", "delete", "patch", "options", "head", "all",
-    "use", "route", "register", "mount", "addHook", "on",
+    "get",
+    "post",
+    "put",
+    "delete",
+    "patch",
+    "options",
+    "head",
+    "all",
+    "use",
+    "route",
+    "register",
+    "mount",
+    "addHook",
+    "on",
 )
 _ROUTE_METHODS_ALT = "|".join(_ROUTE_METHODS)
 _ROUTE_CALL_RE = re.compile(
-    r"""\.\s*(?:""" + _ROUTE_METHODS_ALT + r""")\s*\(
+    r"""\.\s*(?:"""
+    + _ROUTE_METHODS_ALT
+    + r""")\s*\(
         [^)]*?
         \b([A-Za-z_$][\w$]*)\s*
         \)""",
@@ -78,8 +92,7 @@ class _RouterDslHandler:
                 continue
             text = read_text(parsed)
             if not text or not any(
-                tok in text.lower()
-                for tok in ("hono", "fastify", "koa", "elysia")
+                tok in text.lower() for tok in ("hono", "fastify", "koa", "elysia")
             ):
                 continue
             var_to_file = _build_ts_var_to_file(parsed, path, ctx, path_set)

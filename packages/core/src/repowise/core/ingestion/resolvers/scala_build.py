@@ -23,12 +23,12 @@ if TYPE_CHECKING:
 
 
 _SBT_PROJECT_RE = re.compile(
-    r'lazy\s+val\s+(\w+)\s*=\s*(?:\([^)]*\)\s*=>\s*)?'
+    r"lazy\s+val\s+(\w+)\s*=\s*(?:\([^)]*\)\s*=>\s*)?"
     r'(?:project|Project)\b[^\n]*?\.in\(\s*file\(\s*"([^"]+)"\s*\)\s*\)',
     re.DOTALL,
 )
 _MILL_OBJECT_RE = re.compile(
-    r'object\s+(\w+)\s+extends\s+([\w.]+(?:\s*with\s+[\w.]+)*)',
+    r"object\s+(\w+)\s+extends\s+([\w.]+(?:\s*with\s+[\w.]+)*)",
 )
 _PACKAGE_RE = re.compile(r"^\s*package\s+([\w.]+)", re.MULTILINE)
 
@@ -46,8 +46,7 @@ class ScalaProjectIndex:
         candidates = self.package_to_files.get(package, [])
         local_lower = local.lower()
         return [
-            p for p in candidates
-            if p.rsplit("/", 1)[-1].rsplit(".", 1)[0].lower() == local_lower
+            p for p in candidates if p.rsplit("/", 1)[-1].rsplit(".", 1)[0].lower() == local_lower
         ]
 
 
@@ -96,9 +95,7 @@ def _scan_packages(
     # Likely source root layouts per build tool.
     candidate_roots: list[Path] = []
     if build_tool == "sbt":
-        candidate_roots.extend(
-            proj_path / sub for sub in ("src/main/scala", "src/main/java")
-        )
+        candidate_roots.extend(proj_path / sub for sub in ("src/main/scala", "src/main/java"))
     elif build_tool == "mill":
         # Mill: files live directly under <module>/src or <module>/src/main/scala.
         candidate_roots.append(proj_path / "src")

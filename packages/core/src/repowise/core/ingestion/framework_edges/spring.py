@@ -84,38 +84,42 @@ _LOMBOK_VALUE_RE = re.compile(r"@Value\s*(?![(\w])")
 # these has Spring-generated impls at runtime and must be treated as an
 # entry point. List covers spring-data-commons + jpa / mongodb / r2dbc /
 # elasticsearch / neo4j / couchbase / cassandra / redis flavours.
-_SPRING_DATA_BASES: frozenset[str] = frozenset({
-    "Repository",
-    "CrudRepository",
-    "PagingAndSortingRepository",
-    "JpaRepository",
-    "ReactiveCrudRepository",
-    "ReactiveSortingRepository",
-    "RxJava3CrudRepository",
-    "MongoRepository",
-    "ReactiveMongoRepository",
-    "R2dbcRepository",
-    "ElasticsearchRepository",
-    "ReactiveElasticsearchRepository",
-    "Neo4jRepository",
-    "ReactiveNeo4jRepository",
-    "CouchbaseRepository",
-    "ReactiveCouchbaseRepository",
-    "CassandraRepository",
-    "ReactiveCassandraRepository",
-    "KeyValueRepository",
-    "QueryByExampleExecutor",
-    "JpaSpecificationExecutor",
-})
+_SPRING_DATA_BASES: frozenset[str] = frozenset(
+    {
+        "Repository",
+        "CrudRepository",
+        "PagingAndSortingRepository",
+        "JpaRepository",
+        "ReactiveCrudRepository",
+        "ReactiveSortingRepository",
+        "RxJava3CrudRepository",
+        "MongoRepository",
+        "ReactiveMongoRepository",
+        "R2dbcRepository",
+        "ElasticsearchRepository",
+        "ReactiveElasticsearchRepository",
+        "Neo4jRepository",
+        "ReactiveNeo4jRepository",
+        "CouchbaseRepository",
+        "ReactiveCouchbaseRepository",
+        "CassandraRepository",
+        "ReactiveCassandraRepository",
+        "KeyValueRepository",
+        "QueryByExampleExecutor",
+        "JpaSpecificationExecutor",
+    }
+)
 
 # Spring base classes the servlet container instantiates without any source
 # naming the subclass: Spring Boot's WAR bootstrap, and the classic Spring MVC
 # ``WebApplicationInitializer`` implementations it finds on the classpath.
-_SERVLET_INITIALIZER_BASES: frozenset[str] = frozenset({
-    "SpringBootServletInitializer",
-    "AbstractAnnotationConfigDispatcherServletInitializer",
-    "AbstractDispatcherServletInitializer",
-})
+_SERVLET_INITIALIZER_BASES: frozenset[str] = frozenset(
+    {
+        "SpringBootServletInitializer",
+        "AbstractAnnotationConfigDispatcherServletInitializer",
+        "AbstractDispatcherServletInitializer",
+    }
+)
 
 # Java field declaration with optional ``final`` modifier — used for
 # Lombok RAC ctor-param inference. Captures the type's head identifier.
@@ -200,9 +204,22 @@ def _scan_lombok_ctor_params(text: str) -> list[tuple[str, int]]:
     for m in _JAVA_FINAL_FIELD_RE.finditer(text):
         is_final = bool(m.group(1))
         type_head = m.group(2)
-        if type_head in ("String", "Integer", "Long", "Boolean", "Double",
-                         "Float", "Byte", "Short", "Character", "Object",
-                         "List", "Map", "Set", "Collection"):
+        if type_head in (
+            "String",
+            "Integer",
+            "Long",
+            "Boolean",
+            "Double",
+            "Float",
+            "Byte",
+            "Short",
+            "Character",
+            "Object",
+            "List",
+            "Map",
+            "Set",
+            "Collection",
+        ):
             continue
         if is_aac or (is_rac and is_final):
             params.append((type_head, m.start()))
@@ -459,10 +476,7 @@ class _JvmAutoconfigHandler:
 
     def detect(self, dctx: DetectionContext) -> bool:
         # Cheap detect: any .java or .kt file in the parse set.
-        return any(
-            p.file_info.language in ("java", "kotlin")
-            for p in dctx.parsed_files.values()
-        )
+        return any(p.file_info.language in ("java", "kotlin") for p in dctx.parsed_files.values())
 
     def add_edges(
         self,

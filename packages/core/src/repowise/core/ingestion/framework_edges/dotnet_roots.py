@@ -182,9 +182,7 @@ def _wcf_services(parsed: Any, contracts: frozenset[str]) -> set[str]:
     return services.union(*(implemented[name] for name in services))
 
 
-def _is_consumed(
-    sym: Any, modules: dict[str, Any], symbols: list[Any], services: set[str]
-) -> bool:
+def _is_consumed(sym: Any, modules: dict[str, Any], symbols: list[Any], services: set[str]) -> bool:
     namespace = _namespace_of(sym, modules)
     if f"{namespace}.{sym.name}" in _COMPILER_CONSUMED_TYPES[_LANGUAGE]:
         return True

@@ -86,12 +86,44 @@ GODOT_CODE_SUFFIXES: tuple[str, ...] = (".gd", ".cs", ".tscn", ".tres", ".escn",
 # references are .png/.svg/.ttf, and minting an external node each would put
 # the repo's whole art tree in the dependency graph. Same call
 # `lightweight_imports/html.py` makes for `<img src>`.
-_ASSET_SUFFIXES: frozenset[str] = frozenset({
-    ".png", ".jpg", ".jpeg", ".svg", ".webp", ".bmp", ".tga", ".exr", ".hdr",
-    ".ktx", ".dds", ".ogg", ".wav", ".mp3", ".ttf", ".otf", ".woff", ".woff2",
-    ".fnt", ".obj", ".glb", ".gltf", ".dae", ".blend", ".json", ".csv", ".txt",
-    ".po", ".pot", ".translation", ".theme", ".cfg", ".webm", ".ogv",
-})
+_ASSET_SUFFIXES: frozenset[str] = frozenset(
+    {
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".svg",
+        ".webp",
+        ".bmp",
+        ".tga",
+        ".exr",
+        ".hdr",
+        ".ktx",
+        ".dds",
+        ".ogg",
+        ".wav",
+        ".mp3",
+        ".ttf",
+        ".otf",
+        ".woff",
+        ".woff2",
+        ".fnt",
+        ".obj",
+        ".glb",
+        ".gltf",
+        ".dae",
+        ".blend",
+        ".json",
+        ".csv",
+        ".txt",
+        ".po",
+        ".pot",
+        ".translation",
+        ".theme",
+        ".cfg",
+        ".webm",
+        ".ogv",
+    }
+)
 
 
 def _is_asset(path: str) -> bool:
@@ -185,9 +217,7 @@ def _uid_map(ctx: ResolverContext) -> dict[str, str]:
     by_uid: dict[str, str] = {}
     claimed_twice: set[str] = set()
     if ctx.repo_path is not None:
-        for sidecar in iter_glob(
-            ctx.repo_path, "*.uid", prune_nested_git=ctx.prune_nested_git
-        ):
+        for sidecar in iter_glob(ctx.repo_path, "*.uid", prune_nested_git=ctx.prune_nested_git):
             try:
                 rel = sidecar.relative_to(ctx.repo_path).as_posix()
             except ValueError:

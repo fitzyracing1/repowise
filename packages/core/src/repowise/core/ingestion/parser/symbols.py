@@ -130,7 +130,10 @@ def _match_identity(
 
     def_node = def_nodes[0]
     name = _language_symbol_name(
-        language, def_node, config.symbol_name_fn(_node_text(name_nodes[0], src), def_node.type), src
+        language,
+        def_node,
+        config.symbol_name_fn(_node_text(name_nodes[0], src), def_node.type),
+        src,
     )
     if name is None:
         return None
@@ -295,6 +298,7 @@ def _extract_symbols(
 
     return symbols
 
+
 @dataclass
 class _SymbolPass:
     """Per-file inputs every symbol match of one file is read against."""
@@ -376,14 +380,11 @@ def _symbol_from_match(capture_dict: dict, file: _SymbolPass) -> tuple[Symbol, N
         name=name,
         qualified_name=_build_qualified_name(file_info.path, scope, name),
         kind=_method_or_kind(kind, parent_name, def_node, language),  # type: ignore[arg-type]
-        signature=_normalize_newlines(
-            build_signature(node_type, name, params_text, def_node, src)
-        ) or "",
+        signature=_normalize_newlines(build_signature(node_type, name, params_text, def_node, src))
+        or "",
         start_line=start_line,
         end_line=end_line,
-        docstring=_normalize_newlines(
-            extract_symbol_docstring(def_node, src, language)
-        ),
+        docstring=_normalize_newlines(extract_symbol_docstring(def_node, src, language)),
         decorators=(
             [m for m in modifier_texts if m.startswith("@")]
             + _attribute_decorators(def_node, language, src)
@@ -442,8 +443,10 @@ def _method_or_kind(kind: str, parent_name: str | None, def_node: Node, language
     F#: a nested module is a parent too (for id uniqueness), but it is not a
     type, so a ``let`` inside one stays a function.
     """
-    if parent_name and kind == "function" and (
-        language != "fsharp" or _fsharp_parent_is_type(def_node)
+    if (
+        parent_name
+        and kind == "function"
+        and (language != "fsharp" or _fsharp_parent_is_type(def_node))
     ):
         return "method"
     return kind
@@ -652,6 +655,7 @@ def _python_name_alias_chain(def_node: Node, src: str) -> tuple[list[str], str |
     if node is None or node.type != "identifier":
         return [], None
     return targets, _node_text(node, src)
+
 
 def _python_assignment_alias_symbols(
     symbol: Symbol, def_node: Node, file_path: str, src: str

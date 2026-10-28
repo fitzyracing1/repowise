@@ -67,38 +67,135 @@ _IMPORT_BRACES_RE = re.compile(r"^\s*import\s+[\w.]+\.\{([^}]*)\}", re.MULTILINE
 # like java.lang in Java. A same-package type shadowing one of these names
 # is legal but vanishingly rare next to genuine stdlib references, so the
 # name is skipped wholesale.
-_KOTLIN_DEFAULT_TYPES = frozenset({
-    "Any", "Nothing", "Unit", "String", "CharSequence",
-    "Int", "Long", "Short", "Byte", "Char", "Boolean", "Float", "Double", "Number",
-    "Array", "IntArray", "LongArray", "ShortArray", "ByteArray", "CharArray",
-    "BooleanArray", "FloatArray", "DoubleArray",
-    "List", "MutableList", "Set", "MutableSet", "Map", "MutableMap",
-    "Collection", "MutableCollection", "Iterable", "MutableIterable",
-    "Iterator", "MutableIterator", "ListIterator", "MutableListIterator",
-    "Sequence", "Pair", "Triple", "Result", "Lazy", "Regex",
-    "Comparable", "Comparator", "Throwable", "Exception", "Error",
-    "RuntimeException", "IllegalArgumentException", "IllegalStateException",
-    "IndexOutOfBoundsException", "NullPointerException",
-    "UnsupportedOperationException", "NumberFormatException",
-    "ClassCastException", "NoSuchElementException", "ConcurrentModificationException",
-    "Annotation", "Enum", "Function",
-    "IntRange", "LongRange", "CharRange", "ClosedRange",
-    "Deprecated", "Suppress", "OptIn", "DslMarker", "PublishedApi",
-    "JvmStatic", "JvmField", "JvmName", "JvmOverloads", "JvmInline",
-    "Volatile", "Synchronized", "Transient", "Strictfp", "Throws",
-    "StringBuilder", "KClass",
-})
+_KOTLIN_DEFAULT_TYPES = frozenset(
+    {
+        "Any",
+        "Nothing",
+        "Unit",
+        "String",
+        "CharSequence",
+        "Int",
+        "Long",
+        "Short",
+        "Byte",
+        "Char",
+        "Boolean",
+        "Float",
+        "Double",
+        "Number",
+        "Array",
+        "IntArray",
+        "LongArray",
+        "ShortArray",
+        "ByteArray",
+        "CharArray",
+        "BooleanArray",
+        "FloatArray",
+        "DoubleArray",
+        "List",
+        "MutableList",
+        "Set",
+        "MutableSet",
+        "Map",
+        "MutableMap",
+        "Collection",
+        "MutableCollection",
+        "Iterable",
+        "MutableIterable",
+        "Iterator",
+        "MutableIterator",
+        "ListIterator",
+        "MutableListIterator",
+        "Sequence",
+        "Pair",
+        "Triple",
+        "Result",
+        "Lazy",
+        "Regex",
+        "Comparable",
+        "Comparator",
+        "Throwable",
+        "Exception",
+        "Error",
+        "RuntimeException",
+        "IllegalArgumentException",
+        "IllegalStateException",
+        "IndexOutOfBoundsException",
+        "NullPointerException",
+        "UnsupportedOperationException",
+        "NumberFormatException",
+        "ClassCastException",
+        "NoSuchElementException",
+        "ConcurrentModificationException",
+        "Annotation",
+        "Enum",
+        "Function",
+        "IntRange",
+        "LongRange",
+        "CharRange",
+        "ClosedRange",
+        "Deprecated",
+        "Suppress",
+        "OptIn",
+        "DslMarker",
+        "PublishedApi",
+        "JvmStatic",
+        "JvmField",
+        "JvmName",
+        "JvmOverloads",
+        "JvmInline",
+        "Volatile",
+        "Synchronized",
+        "Transient",
+        "Strictfp",
+        "Throws",
+        "StringBuilder",
+        "KClass",
+    }
+)
 
 # Scala Predef / default-import types — visible without an import in every
 # Scala file. Names shared with java.lang/Kotlin (String, Exception, …) are
 # already covered by those sets; this adds the Scala-specific surface.
-_SCALA_DEFAULT_TYPES = frozenset({
-    "Option", "Some", "None", "Either", "Left", "Right", "Try", "Success",
-    "Failure", "Future", "Promise", "Seq", "IndexedSeq", "LinearSeq", "Vector",
-    "Stream", "LazyList", "Nil", "AnyRef", "AnyVal", "BigInt", "BigDecimal",
-    "Ordering", "Ordered", "PartialFunction", "Symbol", "Tuple1", "Tuple2",
-    "Tuple3", "Range", "App", "Serializable", "Product", "Equals", "Unit",
-})
+_SCALA_DEFAULT_TYPES = frozenset(
+    {
+        "Option",
+        "Some",
+        "None",
+        "Either",
+        "Left",
+        "Right",
+        "Try",
+        "Success",
+        "Failure",
+        "Future",
+        "Promise",
+        "Seq",
+        "IndexedSeq",
+        "LinearSeq",
+        "Vector",
+        "Stream",
+        "LazyList",
+        "Nil",
+        "AnyRef",
+        "AnyVal",
+        "BigInt",
+        "BigDecimal",
+        "Ordering",
+        "Ordered",
+        "PartialFunction",
+        "Symbol",
+        "Tuple1",
+        "Tuple2",
+        "Tuple3",
+        "Range",
+        "App",
+        "Serializable",
+        "Product",
+        "Equals",
+        "Unit",
+    }
+)
 
 
 def _shadowed_names(text: str) -> frozenset[str]:
@@ -107,10 +204,7 @@ def _shadowed_names(text: str) -> frozenset[str]:
     Wildcard and static-member imports shadow nothing here: neither yields a
     capitalized simple name.
     """
-    names = {
-        m.group(1).rstrip(".").rsplit(".", 1)[-1]
-        for m in _IMPORT_LINE_RE.finditer(text)
-    }
+    names = {m.group(1).rstrip(".").rsplit(".", 1)[-1] for m in _IMPORT_LINE_RE.finditer(text)}
     for m in _IMPORT_BRACES_RE.finditer(text):
         names.update(re.findall(r"\w+", m.group(1)))
     return frozenset(names)

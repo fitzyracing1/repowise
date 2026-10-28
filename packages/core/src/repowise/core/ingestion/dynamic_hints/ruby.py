@@ -75,7 +75,8 @@ class RubyDynamicHints(DynamicHintExtractor):
                 if target != rel:
                     edges.append(
                         DynamicEdge(
-                            source=rel, target=target,
+                            source=rel,
+                            target=target,
                             edge_type="dynamic_uses",
                             hint_source=f"{self.name}:{hint}",
                         )

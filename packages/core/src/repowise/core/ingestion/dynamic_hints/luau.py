@@ -12,9 +12,7 @@ _SKIP_DIRS = {".git", "node_modules", "out", "build", "Packages"}
 # game:GetService("ReplicatedStorage")
 _GET_SERVICE_RE = re.compile(r"game\s*:\s*GetService\s*\(\s*[\"']([A-Za-z_]\w*)[\"']")
 # setmetatable(t, {__index = Other})
-_SETMETATABLE_RE = re.compile(
-    r"setmetatable\s*\([^,]+,\s*\{[^}]*__index\s*=\s*([A-Za-z_]\w*)"
-)
+_SETMETATABLE_RE = re.compile(r"setmetatable\s*\([^,]+,\s*\{[^}]*__index\s*=\s*([A-Za-z_]\w*)")
 # require(script.Foo) — already handled by static resolver, here we capture
 # absolute Roblox paths that fall through.
 _REQUIRE_GAME_RE = re.compile(r"require\s*\(\s*game[.:]([A-Za-z_][\w.:]*)\)")
@@ -61,28 +59,35 @@ class LuauDynamicHints(DynamicHintExtractor):
                 continue
 
             for match in _GET_SERVICE_RE.finditer(text):
-                edges.append(DynamicEdge(
-                    source=rel,
-                    target=f"external:roblox_service:{match.group(1)}",
-                    edge_type="dynamic_uses",
-                    hint_source=f"{self.name}:get_service",
-                ))
+                edges.append(
+                    DynamicEdge(
+                        source=rel,
+                        target=f"external:roblox_service:{match.group(1)}",
+                        edge_type="dynamic_uses",
+                        hint_source=f"{self.name}:get_service",
+                    )
+                )
 
             for match in _SETMETATABLE_RE.finditer(text):
                 target = stem_to_file.get(match.group(1))
                 if target and target != rel:
-                    edges.append(DynamicEdge(
-                        source=rel, target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:metatable_index",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:metatable_index",
+                        )
+                    )
 
             for match in _REQUIRE_GAME_RE.finditer(text):
-                edges.append(DynamicEdge(
-                    source=rel,
-                    target=f"external:roblox_path:{match.group(1)}",
-                    edge_type="dynamic_imports",
-                    hint_source=f"{self.name}:require_game",
-                ))
+                edges.append(
+                    DynamicEdge(
+                        source=rel,
+                        target=f"external:roblox_path:{match.group(1)}",
+                        edge_type="dynamic_imports",
+                        hint_source=f"{self.name}:require_game",
+                    )
+                )
 
         return edges

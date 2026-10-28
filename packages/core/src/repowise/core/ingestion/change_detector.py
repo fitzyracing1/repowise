@@ -148,9 +148,7 @@ class ChangeDetector:
             log.warning("git diff failed", base=base_ref, until=until_ref, error=str(exc))
             return []
 
-        return [
-            self._file_diff_from_item(item) for item in diff_items if self._item_in_scope(item)
-        ]
+        return [self._file_diff_from_item(item) for item in diff_items if self._item_in_scope(item)]
 
     def get_working_tree_changes(self) -> list[FileDiff]:
         """Return FileDiffs for changes that are in the working tree, not in git.
@@ -347,7 +345,6 @@ class ChangeDetector:
             new_parsed=new_parsed,
             symbol_diff=sym_diff,
         )
-
 
     def detect_symbol_renames(
         self,
@@ -708,9 +705,7 @@ def _counts_as_change(
     if not is_candidate_source_path(path, repo_path, output_dirs):
         return False
     a_blob = getattr(item, "a_blob", None)
-    committed = (
-        (lambda: a_blob.data_stream.read().decode("utf-8", "replace")) if a_blob else None
-    )
+    committed = (lambda: a_blob.data_stream.read().decode("utf-8", "replace")) if a_blob else None
     try:
         return not is_repowise_output(repo_path / path, path, committed)
     except Exception:
@@ -739,8 +734,6 @@ def merge_file_diffs(*sources: list[FileDiff]) -> list[FileDiff]:
     for source in sources:
         for diff in source:
             existing = merged.get(diff.path)
-            if existing is None or (
-                existing.status == "deleted" and diff.status != "deleted"
-            ):
+            if existing is None or (existing.status == "deleted" and diff.status != "deleted"):
                 merged[diff.path] = diff
     return list(merged.values())

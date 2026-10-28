@@ -39,9 +39,7 @@ log = structlog.get_logger(__name__)
 # same-named local type, so unrelated siblings land in one hierarchy, and a
 # class-scoped boilerplate macro is extracted as a method every subtype
 # "overrides".
-DISPATCH_LANGUAGES: frozenset[str] = frozenset(
-    {"java", "csharp", "kotlin", "swift", "python"}
-)
+DISPATCH_LANGUAGES: frozenset[str] = frozenset({"java", "csharp", "kotlin", "swift", "python"})
 
 _HERITAGE_EDGE_TYPES = frozenset({"extends", "implements"})
 

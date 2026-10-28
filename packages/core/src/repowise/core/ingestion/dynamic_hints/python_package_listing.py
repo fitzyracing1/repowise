@@ -104,17 +104,27 @@ class _Refs:
 
     def _field(self, node: ast.expr, attr: str, index: int) -> bool:
         if isinstance(node, ast.Attribute):
-            return node.attr == attr and isinstance(node.value, ast.Name) and node.value.id in self.infos
+            return (
+                node.attr == attr
+                and isinstance(node.value, ast.Name)
+                and node.value.id in self.infos
+            )
         if isinstance(node, ast.Subscript) and isinstance(node.value, ast.Name):
             key = node.slice
-            return node.value.id in self.infos and isinstance(key, ast.Constant) and key.value == index
+            return (
+                node.value.id in self.infos and isinstance(key, ast.Constant) and key.value == index
+            )
         return False
 
     def is_name(self, node: ast.expr) -> bool:
-        return (isinstance(node, ast.Name) and node.id in self.names) or self._field(node, "name", 1)
+        return (isinstance(node, ast.Name) and node.id in self.names) or self._field(
+            node, "name", 1
+        )
 
     def is_pkg(self, node: ast.expr) -> bool:
-        return (isinstance(node, ast.Name) and node.id in self.pkgs) or self._field(node, "ispkg", 2)
+        return (isinstance(node, ast.Name) and node.id in self.pkgs) or self._field(
+            node, "ispkg", 2
+        )
 
     def mentions(self, node: ast.expr) -> bool:
         ids = self.names | self.infos | self.pkgs
@@ -205,8 +215,10 @@ def _classify(test: ast.expr, refs: _Refs) -> _Classified:
             and isinstance(op, (ast.Eq, ast.NotEq))
         ):
             first = lits[0]
-            return (lambda v, p: v[:1] == first) if isinstance(op, ast.Eq) else (
-                lambda v, p: v[:1] != first
+            return (
+                (lambda v, p: v[:1] == first)
+                if isinstance(op, ast.Eq)
+                else (lambda v, p: v[:1] != first)
             )
         if refs.is_name(left):
             if isinstance(op, (ast.Eq, ast.In)):
@@ -216,7 +228,9 @@ def _classify(test: ast.expr, refs: _Refs) -> _Classified:
     return _UNKNOWN
 
 
-def _loop(node: ast.For | ast.AsyncFor) -> tuple[tuple[bool, bool], _Refs, list[_Classified]] | None:
+def _loop(
+    node: ast.For | ast.AsyncFor,
+) -> tuple[tuple[bool, bool], _Refs, list[_Classified]] | None:
     """The listing a loop iterates, how its body names a module, and filters."""
     it = node.iter
     if isinstance(it, ast.Call) and _call_name(it.func) in _WRAPPERS and len(it.args) == 1:
@@ -249,7 +263,9 @@ def _is_child_load(call: ast.Call, refs: _Refs, full: bool) -> bool:
             return False
         if len(values) == 3:
             head = values[0]
-            return isinstance(head, ast.FormattedValue) and _is_own(head.value) and _is_dot(values[1])
+            return (
+                isinstance(head, ast.FormattedValue) and _is_own(head.value) and _is_dot(values[1])
+            )
         relative = len(values) == 2 and _is_dot(values[0])
     elif isinstance(arg, ast.BinOp) and isinstance(arg.op, ast.Add) and refs.is_name(arg.right):
         if _is_own_dot(arg.left):
@@ -281,9 +297,7 @@ def _loads(
         elif isinstance(st, ast.Try):
             for block in (st.body, *(h.body for h in st.handlers), st.orelse, st.finalbody):
                 _loads(block, refs, full, guard, out)
-        elif any(
-            isinstance(n, ast.Call) and _is_child_load(n, refs, full) for n in ast.walk(st)
-        ):
+        elif any(isinstance(n, ast.Call) and _is_child_load(n, refs, full) for n in ast.walk(st)):
             out.append(guard)
 
 

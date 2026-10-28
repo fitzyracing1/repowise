@@ -8,9 +8,7 @@ from ...models import NamedBinding
 from ..helpers import node_text
 
 
-def expand_scala_import_clauses(
-    stmt_node: Node, src: str
-) -> list[tuple[str, list[str]]]:
+def expand_scala_import_clauses(stmt_node: Node, src: str) -> list[tuple[str, list[str]]]:
     """Expand one Scala ``import_declaration`` into (module_path, names) pairs.
 
     The grammar query captures only the first ``identifier`` child, so the
@@ -96,9 +94,7 @@ def extract_scala_bindings(stmt_node: Node, src: str) -> tuple[list[str], list[N
                         local = parts[1].strip()
                         names.append(local)
                         bindings.append(
-                            NamedBinding(
-                                local_name=local, exported_name=exported, source_file=None
-                            )
+                            NamedBinding(local_name=local, exported_name=exported, source_file=None)
                         )
                 elif sel_child.type == "identifier":
                     local = node_text(sel_child, src)

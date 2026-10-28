@@ -36,7 +36,9 @@ _HAPI_FILE_RE = re.compile(
 )
 _HANDLER_HOLDERS = ("options", "config")
 
-_CALL_RE = re.compile(r"(?<![\w$@.])(?P<receiver>[\w$]+)\s*\.\s*(?P<call>register|route)\s*(?P<paren>\()")
+_CALL_RE = re.compile(
+    r"(?<![\w$@.])(?P<receiver>[\w$]+)\s*\.\s*(?P<call>register|route)\s*(?P<paren>\()"
+)
 
 
 def hapi_file(content: str) -> bool:
@@ -107,7 +109,9 @@ def _plugin_objects(
 ) -> Iterator[HapiMount]:
     """``{plugin, routes: {prefix}}`` objects in *span*, alone or in a list."""
     for obj in js_objects(content, span[0], span[1]):
-        target = plugin_ref(content, obj.keys["plugin"][0], imports) if "plugin" in obj.keys else None
+        target = (
+            plugin_ref(content, obj.keys["plugin"][0], imports) if "plugin" in obj.keys else None
+        )
         if target is None:
             continue
         own = _routes_prefix(content, obj)

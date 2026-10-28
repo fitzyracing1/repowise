@@ -391,8 +391,7 @@ class _MacroOperations:
     def add_definitions(self, definitions: dict[int, tuple[Node, str]]) -> None:
         for macro_node, macro_name in definitions.values():
             is_empty_object = (
-                macro_node.type == "preproc_def"
-                and macro_node.child_by_field_name("value") is None
+                macro_node.type == "preproc_def" and macro_node.child_by_field_name("value") is None
             )
             self.add(
                 macro_node,

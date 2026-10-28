@@ -141,9 +141,7 @@ def procedure_division(code: str) -> tuple[int, str | None]:
         return division.end(), None
     data = _DATA_DIVISION.search(code)
     for m in _COPY.finditer(code, data.end() if data else len(code)):
-        if _STATEMENT_TEXT.match(code, m.end()) and not _NOT_PROCEDURE_HEADER.search(
-            code, m.end()
-        ):
+        if _STATEMENT_TEXT.match(code, m.end()) and not _NOT_PROCEDURE_HEADER.search(code, m.end()):
             return m.end(), _member_name(m.group("q1") or m.group("q2") or m.group("word"))
     return len(code), None
 

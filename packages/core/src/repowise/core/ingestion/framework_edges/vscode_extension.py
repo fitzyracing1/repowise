@@ -36,7 +36,9 @@ if TYPE_CHECKING:
 VSCODE_HOST_HINT = "vscode_extension_host"
 
 _JS_EXTS = (".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts")
-_IMPORTS_VSCODE = re.compile(rb"""(?:from\s+|import\s+|require\(\s*|import\s*\(\s*)["']vscode["']""")
+_IMPORTS_VSCODE = re.compile(
+    rb"""(?:from\s+|import\s+|require\(\s*|import\s*\(\s*)["']vscode["']"""
+)
 
 
 def _extensions(ctx: ResolverContext, path_set: set[str]) -> dict[str, set[str]]:

@@ -50,9 +50,7 @@ def _record_components(record_node: Node, src: str) -> list[tuple[str, str]]:
     return out
 
 
-def java_record_synthetic_symbols(
-    root: Node, src: str, file_info: FileInfo
-) -> list[Symbol]:
+def java_record_synthetic_symbols(root: Node, src: str, file_info: FileInfo) -> list[Symbol]:
     """Emit canonical constructor + accessors + equals/hashCode/toString."""
     if "record" not in src:
         return []
@@ -82,43 +80,68 @@ def java_record_synthetic_symbols(
             "private": "private ",
             "protected": "protected ",
         }.get(ctor_visibility, "")  # "internal" = package-private: no keyword
-        out.append(build_synthetic_symbol(
-            name=record_name, kind="function",
-            signature=f"{ctor_keyword}{record_name}("
-                      + ", ".join(f"{t} {n}" for n, t in components)
-                      + ")",
-            start_line=line, end_line=line,
-            file_info=file_info, parent_name=record_name,
-            visibility=ctor_visibility,
-        ))
+        out.append(
+            build_synthetic_symbol(
+                name=record_name,
+                kind="function",
+                signature=f"{ctor_keyword}{record_name}("
+                + ", ".join(f"{t} {n}" for n, t in components)
+                + ")",
+                start_line=line,
+                end_line=line,
+                file_info=file_info,
+                parent_name=record_name,
+                visibility=ctor_visibility,
+            )
+        )
 
         # Component accessors: same name as the component, zero args. The
         # stored ``name() -> Type`` shape lets a call chain read the return.
         for comp_name, comp_type in components:
-            out.append(build_synthetic_symbol(
-                name=comp_name, kind="method",
-                signature=f"{comp_name}() -> {comp_type or 'Object'}",
-                start_line=line, end_line=line,
-                file_info=file_info, parent_name=record_name,
-            ))
+            out.append(
+                build_synthetic_symbol(
+                    name=comp_name,
+                    kind="method",
+                    signature=f"{comp_name}() -> {comp_type or 'Object'}",
+                    start_line=line,
+                    end_line=line,
+                    file_info=file_info,
+                    parent_name=record_name,
+                )
+            )
 
         # Object-contract methods every record gets.
-        out.append(build_synthetic_symbol(
-            name="equals", kind="method",
-            signature="equals(Object o) -> boolean",
-            start_line=line, end_line=line,
-            file_info=file_info, parent_name=record_name,
-        ))
-        out.append(build_synthetic_symbol(
-            name="hashCode", kind="method",
-            signature="hashCode() -> int",
-            start_line=line, end_line=line,
-            file_info=file_info, parent_name=record_name,
-        ))
-        out.append(build_synthetic_symbol(
-            name="toString", kind="method",
-            signature="toString() -> String",
-            start_line=line, end_line=line,
-            file_info=file_info, parent_name=record_name,
-        ))
+        out.append(
+            build_synthetic_symbol(
+                name="equals",
+                kind="method",
+                signature="equals(Object o) -> boolean",
+                start_line=line,
+                end_line=line,
+                file_info=file_info,
+                parent_name=record_name,
+            )
+        )
+        out.append(
+            build_synthetic_symbol(
+                name="hashCode",
+                kind="method",
+                signature="hashCode() -> int",
+                start_line=line,
+                end_line=line,
+                file_info=file_info,
+                parent_name=record_name,
+            )
+        )
+        out.append(
+            build_synthetic_symbol(
+                name="toString",
+                kind="method",
+                signature="toString() -> String",
+                start_line=line,
+                end_line=line,
+                file_info=file_info,
+                parent_name=record_name,
+            )
+        )
     return out

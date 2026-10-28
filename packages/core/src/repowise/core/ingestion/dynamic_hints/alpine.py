@@ -106,10 +106,12 @@ class AlpineDynamicHints(DynamicHintExtractor):
                     if target == rel or (rel, target) in seen:
                         continue
                     seen.add((rel, target))
-                    edges.append(DynamicEdge(
-                        source=rel,
-                        target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:register",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:register",
+                        )
+                    )
         return edges

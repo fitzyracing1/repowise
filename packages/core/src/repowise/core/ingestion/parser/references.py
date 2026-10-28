@@ -103,9 +103,7 @@ def _extract_references(
             continue
 
         receiver_nodes = capture_dict.get("reference.receiver", [])
-        receiver = (
-            _node_text(receiver_nodes[0], src).strip() if receiver_nodes else None
-        ) or None
+        receiver = (_node_text(receiver_nodes[0], src).strip() if receiver_nodes else None) or None
         if not _macro_argument_allowed(capture_dict, plain_nodes, src):
             continue
 

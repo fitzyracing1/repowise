@@ -115,7 +115,10 @@ def _mask_js_comments(text: str) -> str:
 
 
 def _attrs(blob: str) -> dict[str, str]:
-    return {m.group(1): m.group(2) if m.group(2) is not None else m.group(3) for m in _ATTR_RE.finditer(blob)}
+    return {
+        m.group(1): m.group(2) if m.group(2) is not None else m.group(3)
+        for m in _ATTR_RE.finditer(blob)
+    }
 
 
 def _line_of(text: str, offset: int) -> int:
@@ -144,7 +147,9 @@ def _call_span_end(text: str, open_paren: int) -> int:
 
 
 class _AuraIndex:
-    def __init__(self, graph: nx.DiGraph, parsed_files: dict[str, Any], ctx: ResolverContext) -> None:
+    def __init__(
+        self, graph: nx.DiGraph, parsed_files: dict[str, Any], ctx: ResolverContext
+    ) -> None:
         self.graph = graph
         self.parsed_files = parsed_files
         self.source_map: dict[str, bytes] = getattr(ctx, "source_map", None) or {}
@@ -167,12 +172,19 @@ class _AuraIndex:
             parts = PurePosixPath(path).parts
             # LWC main module: lwc/<name>/<name>.js. Only the location is read
             # here; the LWC surface itself is not this module's.
-            if lang == "javascript" and len(parts) >= 3 and parts[-3] == "lwc" and parts[-1] == f"{parts[-2]}.js":
+            if (
+                lang == "javascript"
+                and len(parts) >= 3
+                and parts[-3] == "lwc"
+                and parts[-1] == f"{parts[-2]}.js"
+            ):
                 self.lwc_by_name.setdefault(parts[-2], []).append(path)
             return
         bdir, name = bundle
         if lang == "aura":
-            self.bundles.setdefault(bdir, _Bundle(name)).markup[PurePosixPath(path).suffix.lower()] = path
+            self.bundles.setdefault(bdir, _Bundle(name)).markup[
+                PurePosixPath(path).suffix.lower()
+            ] = path
         elif lang == "javascript" and (role := aura_js_role(path)) is not None:
             self.bundles.setdefault(bdir, _Bundle(name)).js[role] = path
 
@@ -189,7 +201,10 @@ class _AuraIndex:
             if main is not None:
                 for m in _TAG_RE.finditer(_mask_xml(self.text(main))):
                     if m.group(1) == "aura" and m.group(2) in (
-                        "component", "application", "interface", "event"
+                        "component",
+                        "application",
+                        "interface",
+                        "event",
                     ):
                         attrs = _attrs(m.group(3))
                         break

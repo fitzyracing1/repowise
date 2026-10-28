@@ -145,9 +145,7 @@ def git_worker_count(
     affinity_count = getattr(os, "process_cpu_count", None)
     cpus = cpu_count or (affinity_count() if affinity_count else None) or os.cpu_count() or 1
     available = (
-        available_memory_bytes
-        if available_memory_bytes is not None
-        else _available_memory_bytes()
+        available_memory_bytes if available_memory_bytes is not None else _available_memory_bytes()
     )
     memory_workers = _MAX_GIT_WORKERS
     if available is not None:

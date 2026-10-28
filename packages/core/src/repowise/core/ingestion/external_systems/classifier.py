@@ -20,26 +20,80 @@ from __future__ import annotations
 
 import re
 
-_FRAMEWORK_NAMES: frozenset[str] = frozenset({
-    "fastapi", "django", "flask", "starlette", "tornado", "bottle",
-    "next", "nextjs", "react", "vue", "svelte", "nuxt", "remix",
-    "astro", "solid-js", "preact", "ember",
-    "express", "koa", "hapi", "nestjs", "@nestjs/core",
-    "rails", "sinatra", "spring", "spring-boot",
-    "rocket", "actix-web", "axum", "warp",
-    "gin", "echo", "fiber", "chi",
-    "aspnetcore",
-})
+_FRAMEWORK_NAMES: frozenset[str] = frozenset(
+    {
+        "fastapi",
+        "django",
+        "flask",
+        "starlette",
+        "tornado",
+        "bottle",
+        "next",
+        "nextjs",
+        "react",
+        "vue",
+        "svelte",
+        "nuxt",
+        "remix",
+        "astro",
+        "solid-js",
+        "preact",
+        "ember",
+        "express",
+        "koa",
+        "hapi",
+        "nestjs",
+        "@nestjs/core",
+        "rails",
+        "sinatra",
+        "spring",
+        "spring-boot",
+        "rocket",
+        "actix-web",
+        "axum",
+        "warp",
+        "gin",
+        "echo",
+        "fiber",
+        "chi",
+        "aspnetcore",
+    }
+)
 
-_SERVICE_NAMES: frozenset[str] = frozenset({
-    "stripe", "twilio", "sendgrid", "mailgun", "postmark",
-    "openai", "anthropic", "cohere", "together",
-    "supabase", "@supabase/supabase-js", "firebase", "firebase-admin",
-    "redis", "ioredis", "pymongo", "psycopg2", "psycopg", "asyncpg",
-    "sqlalchemy", "prisma", "@prisma/client", "drizzle-orm", "typeorm",
-    "sentry-sdk", "@sentry/node", "@sentry/nextjs", "posthog-js", "posthog-node",
-    "modal",
-})
+_SERVICE_NAMES: frozenset[str] = frozenset(
+    {
+        "stripe",
+        "twilio",
+        "sendgrid",
+        "mailgun",
+        "postmark",
+        "openai",
+        "anthropic",
+        "cohere",
+        "together",
+        "supabase",
+        "@supabase/supabase-js",
+        "firebase",
+        "firebase-admin",
+        "redis",
+        "ioredis",
+        "pymongo",
+        "psycopg2",
+        "psycopg",
+        "asyncpg",
+        "sqlalchemy",
+        "prisma",
+        "@prisma/client",
+        "drizzle-orm",
+        "typeorm",
+        "sentry-sdk",
+        "@sentry/node",
+        "@sentry/nextjs",
+        "posthog-js",
+        "posthog-node",
+        "modal",
+    }
+)
 
 _SERVICE_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"^@aws-sdk/"),
@@ -49,14 +103,40 @@ _SERVICE_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"^google-cloud-"),
 )
 
-_TOOL_NAMES: frozenset[str] = frozenset({
-    "eslint", "prettier", "typescript", "ts-node", "tsx",
-    "vitest", "jest", "mocha", "chai", "cypress", "playwright",
-    "webpack", "vite", "rollup", "esbuild", "parcel", "turbopack",
-    "ruff", "black", "mypy", "pyright", "pytest", "pytest-asyncio",
-    "tox", "nox", "coverage", "pylint", "flake8", "isort",
-    "alembic",
-})
+_TOOL_NAMES: frozenset[str] = frozenset(
+    {
+        "eslint",
+        "prettier",
+        "typescript",
+        "ts-node",
+        "tsx",
+        "vitest",
+        "jest",
+        "mocha",
+        "chai",
+        "cypress",
+        "playwright",
+        "webpack",
+        "vite",
+        "rollup",
+        "esbuild",
+        "parcel",
+        "turbopack",
+        "ruff",
+        "black",
+        "mypy",
+        "pyright",
+        "pytest",
+        "pytest-asyncio",
+        "tox",
+        "nox",
+        "coverage",
+        "pylint",
+        "flake8",
+        "isort",
+        "alembic",
+    }
+)
 
 
 def classify(name: str) -> str:

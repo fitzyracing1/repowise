@@ -231,15 +231,11 @@ def _overload_return_types(
     parsed_files: dict[str, ParsedFile],
 ) -> dict[tuple[str, str | None, str | None, str, int | None], set[str]]:
     """``{(path, parent, extension receiver, name, parameter count): normalised return types}``."""
-    found: dict[tuple[str, str | None, str | None, str, int | None], set[str]] = defaultdict(
-        set
-    )
+    found: dict[tuple[str, str | None, str | None, str, int | None], set[str]] = defaultdict(set)
     for path, parsed in parsed_files.items():
         for symbol in parsed.symbols:
             raw_return = declared_return_type(symbol.signature or "")
-            normalized = (
-                normalize_return_type(raw_return, symbol.language) if raw_return else None
-            )
+            normalized = normalize_return_type(raw_return, symbol.language) if raw_return else None
             if normalized is None:
                 continue
             key = (
@@ -280,10 +276,7 @@ def _same_translation_unit(decl_file: str, def_file: str) -> bool:
     include relation would be the better test, but a C++ include binds to the
     path as written and usually is not a file key.
     """
-    return (
-        decl_file == def_file
-        or PurePosixPath(decl_file).stem == PurePosixPath(def_file).stem
-    )
+    return decl_file == def_file or PurePosixPath(decl_file).stem == PurePosixPath(def_file).stem
 
 
 class CallResolver(
@@ -383,9 +376,7 @@ class CallResolver(
             symbol.id: symbol for parsed in parsed_files.values() for symbol in parsed.symbols
         }
         self._symbol_paths_by_id = {
-            symbol.id: path
-            for path, parsed in parsed_files.items()
-            for symbol in parsed.symbols
+            symbol.id: path for path, parsed in parsed_files.items() for symbol in parsed.symbols
         }
         self._overload_return_types = _overload_return_types(parsed_files)
         self._known_type_names = frozenset(
@@ -520,9 +511,7 @@ class CallResolver(
         top_level: dict[str, str] = {}
         file_methods: dict[tuple[str, str], str] = {}
         representatives = self._index_overload_sets(parsed)
-        binding_counts = Counter(
-            sym.name for sym in parsed.symbols if sym.parent_name is None
-        )
+        binding_counts = Counter(sym.name for sym in parsed.symbols if sym.parent_name is None)
         # (alias symbol id, the bare name it aliases) — resolved against
         # ``file_syms`` only once the whole file is indexed, so an alias
         # written above the name it aliases is not missed by source order.
@@ -544,16 +533,16 @@ class CallResolver(
                 definitions[decl_key].append((path, index_id))
             _index_bare_name(sym, index_id, file_syms, top_level)
 
-            if sym.alias_of is not None and (
-                binding_counts[sym.name] == 1 or "::alias@" in sym.id
-            ):
+            if sym.alias_of is not None and (binding_counts[sym.name] == 1 or "::alias@" in sym.id):
                 aliases.append((sym.id, sym.alias_of, sym.parent_name))
 
             # Method index: (class_name, method_name) → symbol_id. A property
             # holding no function is a value: ``x.f()`` never calls it, and a
             # same-named extension or inherited method is what it reaches.
             uncallable = _is_data_member(sym) and not self._holds_function(path, sym)
-            if sym.parent_name and not (uncallable and sym.language in _PROPERTY_VARIABLE_LANGUAGES):
+            if sym.parent_name and not (
+                uncallable and sym.language in _PROPERTY_VARIABLE_LANGUAGES
+            ):
                 key = (sym.parent_name, sym.name)
                 file_methods[key] = index_id
                 self._global_methods[key].append((path, index_id))
@@ -572,9 +561,7 @@ class CallResolver(
             # Prefer a target in the alias's own scope before falling back
             # to a file-wide symbol with the same name.
             target_id = (
-                file_methods.get((parent_name, alias_of_name))
-                if parent_name is not None
-                else None
+                file_methods.get((parent_name, alias_of_name)) if parent_name is not None else None
             )
             if target_id is None:
                 target_id = file_syms.get(alias_of_name)
@@ -831,8 +818,7 @@ class CallResolver(
         return {
             imp.resolved_file
             for imp in parsed.imports
-            if imp.resolved_file in targets
-            and list(imp.imported_names) == _WILDCARD_IMPORTED_NAMES
+            if imp.resolved_file in targets and list(imp.imported_names) == _WILDCARD_IMPORTED_NAMES
         }
 
     def _merged_methods_for(self, file_path: str) -> dict[tuple[str, str], str]:
@@ -903,8 +889,7 @@ class CallResolver(
         # A language with an `external_return_types` table reaches the tier for
         # that table alone; only the constant above admits the full lane.
         if receiver_call is not None and (
-            language in self._return_type_chain_languages
-            or get_external_return_types(language)
+            language in self._return_type_chain_languages or get_external_return_types(language)
         ):
             handled, resolved = self._resolve_return_typed_chain(
                 file_path, call, caller_id, language
@@ -1528,6 +1513,10 @@ class CallResolver(
         callee_id = table.get(file_path, {}).get(call.target_name)
         if callee_id is None:
             return False, None
+        if call.locally_bound and callee_id != caller_id:
+            # The caller bound the name itself (``C = make(); C()``): the call
+            # means that local value, not the module-level symbol.
+            return True, None
         if own is not None and own != callee_id and _rivals_a_class_method(callee_id):
             if own == caller_id:
                 # Recursion the flat index handed to a stranger. No edge.
@@ -1670,9 +1659,7 @@ class CallResolver(
             if self._reachable_by_name(file_path, sym_id)
         ]
         if len(candidates) == 1 and candidates[0] != caller_id:
-            return self._global_unique_match(
-                file_path, call, caller_id, target_name, candidates[0]
-            )
+            return self._global_unique_match(file_path, call, caller_id, target_name, candidates[0])
 
         # An overload set is several declarations under one id, not an ambiguity.
         collapsed = self._collapse_declarations(candidates)
@@ -2099,9 +2086,7 @@ class CallResolver(
         bind to it. The narrower tiers are grounded in the caller's own file or
         its imports and are left alone.
         """
-        if receiver_name not in get_external_receiver_types(
-            self._language_of(file_path) or ""
-        ):
+        if receiver_name not in get_external_receiver_types(self._language_of(file_path) or ""):
             return False
         return receiver_name not in self._names_rebound_from_a_repo_package(file_path)
 

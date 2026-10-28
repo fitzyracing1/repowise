@@ -264,7 +264,12 @@ def _go_head_step(node: Node, src: str) -> str | Node | None:
 # C / C++ type-reference head extraction
 # ---------------------------------------------------------------------------
 
-_C_AGGREGATE_SPECIFIERS = ("struct_specifier", "union_specifier", "enum_specifier", "class_specifier")
+_C_AGGREGATE_SPECIFIERS = (
+    "struct_specifier",
+    "union_specifier",
+    "enum_specifier",
+    "class_specifier",
+)
 
 
 def _c_head_type_identifier(type_node: Node, src: str) -> str | None:
@@ -314,14 +319,26 @@ def _c_head_step(node: Node, src: str) -> str | Node | None:
 
 # Shapes whose head is not a single name. The leaves inside them are captured
 # by their own ``@param.type`` patterns, so they still resolve.
-_TS_NO_SINGLE_HEAD = frozenset({
-    "predefined_type",
-    "union_type", "intersection_type", "function_type",
-    "constructor_type", "object_type", "literal_type",
-    "tuple_type", "conditional_type", "mapped_type",
-    "index_type_query", "type_query", "lookup_type",
-    "template_literal_type", "infer_type", "readonly_type",
-})
+_TS_NO_SINGLE_HEAD = frozenset(
+    {
+        "predefined_type",
+        "union_type",
+        "intersection_type",
+        "function_type",
+        "constructor_type",
+        "object_type",
+        "literal_type",
+        "tuple_type",
+        "conditional_type",
+        "mapped_type",
+        "index_type_query",
+        "type_query",
+        "lookup_type",
+        "template_literal_type",
+        "infer_type",
+        "readonly_type",
+    }
+)
 
 
 def _ts_head_type_identifier(type_node: Node, src: str) -> str | None:
@@ -413,15 +430,21 @@ def _java_head_step(node: Node, src: str) -> str | Node | None:
         # ``Foo<T>`` — descend to the bare name; generic args are
         # captured separately by their own type_arguments inner captures.
         return next(
-            (c for c in node.named_children
-             if c.type in ("type_identifier", "scoped_type_identifier")),
+            (
+                c
+                for c in node.named_children
+                if c.type in ("type_identifier", "scoped_type_identifier")
+            ),
             None,
         )
     if kind == "annotated_type":
         # ``@NonNull Foo`` — last named child is the type.
         return next(
-            (c for c in reversed(node.named_children)
-             if c.type not in ("annotation", "marker_annotation")),
+            (
+                c
+                for c in reversed(node.named_children)
+                if c.type not in ("annotation", "marker_annotation")
+            ),
             None,
         )
     # ``Foo[]`` and anything else (wildcard, type_parameter, ...): descend.
@@ -453,6 +476,7 @@ def _apex_head_type_identifier(type_node: Node, src: str) -> str | None:
 # ---------------------------------------------------------------------------
 # Kotlin type-reference head extraction
 # ---------------------------------------------------------------------------
+
 
 def _kotlin_head_type_identifier(type_node: Node, src: str) -> str | None:
     """Return the head identifier of a Kotlin type expression, or None.
@@ -494,8 +518,13 @@ def _kotlin_head_step(node: Node, src: str) -> str | Node | None:
 
 # Builtin, or no single head name to resolve.
 _RUST_NO_SINGLE_HEAD = (
-    "primitive_type", "tuple_type", "unit_type", "array_type",
-    "function_type", "never_type", "empty_type",
+    "primitive_type",
+    "tuple_type",
+    "unit_type",
+    "array_type",
+    "function_type",
+    "never_type",
+    "empty_type",
 )
 
 

@@ -98,6 +98,7 @@ def _kotlin_top_level_callables(text: str) -> tuple[str, ...]:
             names.append(ident.group(1))
     return tuple(names)
 
+
 # Chained Scala package clauses (``package org.example`` then ``package
 # tools`` → org.example.tools) are scanned line-wise from the top of the
 # file; ``package object foo`` is a definition, not a clause.
@@ -133,29 +134,71 @@ def classify_jvm_import(module_path: str, *, kotlin: bool = False) -> str | None
         return "external"
     return None
 
+
 # Standard-library packages that should never produce import edges
-_JAVA_LANG_PACKAGES = frozenset({
-    "java.lang",
-    "java.lang.annotation",
-    "java.lang.invoke",
-    "java.lang.reflect",
-})
+_JAVA_LANG_PACKAGES = frozenset(
+    {
+        "java.lang",
+        "java.lang.annotation",
+        "java.lang.invoke",
+        "java.lang.reflect",
+    }
+)
 
 # Types automatically imported via java.lang.*
-_JAVA_LANG_TYPES = frozenset({
-    "String", "Object", "Class", "System", "Math",
-    "Integer", "Long", "Double", "Float", "Boolean", "Character", "Byte", "Short",
-    "Number", "Void",
-    "Thread", "Runnable", "Process", "ProcessBuilder", "Runtime",
-    "Throwable", "Exception", "RuntimeException", "Error",
-    "IllegalArgumentException", "IllegalStateException", "NullPointerException",
-    "UnsupportedOperationException", "IndexOutOfBoundsException",
-    "ClassCastException", "ArithmeticException", "SecurityException",
-    "ClassNotFoundException", "InterruptedException", "CloneNotSupportedException",
-    "StringBuilder", "StringBuffer", "StringIndexOutOfBoundsException",
-    "Enum", "Record", "Comparable", "Iterable", "AutoCloseable", "Cloneable",
-    "Override", "Deprecated", "SuppressWarnings", "FunctionalInterface", "SafeVarargs",
-})
+_JAVA_LANG_TYPES = frozenset(
+    {
+        "String",
+        "Object",
+        "Class",
+        "System",
+        "Math",
+        "Integer",
+        "Long",
+        "Double",
+        "Float",
+        "Boolean",
+        "Character",
+        "Byte",
+        "Short",
+        "Number",
+        "Void",
+        "Thread",
+        "Runnable",
+        "Process",
+        "ProcessBuilder",
+        "Runtime",
+        "Throwable",
+        "Exception",
+        "RuntimeException",
+        "Error",
+        "IllegalArgumentException",
+        "IllegalStateException",
+        "NullPointerException",
+        "UnsupportedOperationException",
+        "IndexOutOfBoundsException",
+        "ClassCastException",
+        "ArithmeticException",
+        "SecurityException",
+        "ClassNotFoundException",
+        "InterruptedException",
+        "CloneNotSupportedException",
+        "StringBuilder",
+        "StringBuffer",
+        "StringIndexOutOfBoundsException",
+        "Enum",
+        "Record",
+        "Comparable",
+        "Iterable",
+        "AutoCloseable",
+        "Cloneable",
+        "Override",
+        "Deprecated",
+        "SuppressWarnings",
+        "FunctionalInterface",
+        "SafeVarargs",
+    }
+)
 
 
 @dataclass(frozen=True)
@@ -272,7 +315,7 @@ class JvmWorkspaceIndex:
     def is_java_lang(self, import_path: str) -> bool:
         """Return True if the import is a java.lang.* builtin."""
         if import_path.startswith("java.lang."):
-            remainder = import_path[len("java.lang."):]
+            remainder = import_path[len("java.lang.") :]
             if "." not in remainder:
                 return True
             # java.lang.annotation.*, java.lang.reflect.*, etc.
@@ -367,9 +410,7 @@ def _scan_jpms_provides(
     the warmup fast.
     """
     out: dict[str, list[str]] = {}
-    for mi in glob_via(
-        snapshot, repo_path, "module-info.java", prune_nested_git=prune_nested_git
-    ):
+    for mi in glob_via(snapshot, repo_path, "module-info.java", prune_nested_git=prune_nested_git):
         if not mi.is_file():
             continue
         try:
@@ -395,9 +436,7 @@ def _scan_jpms_exports(
     Ignores test ``module-info.java`` files and comments/strings.
     """
     out: dict[str, set[str]] = {}
-    for mi in glob_via(
-        snapshot, repo_path, "module-info.java", prune_nested_git=prune_nested_git
-    ):
+    for mi in glob_via(snapshot, repo_path, "module-info.java", prune_nested_git=prune_nested_git):
         if not mi.is_file():
             continue
         try:
@@ -629,8 +668,7 @@ def build_jvm_workspace_index(ctx: ResolverContext) -> JvmWorkspaceIndex:
     for pkg_fqn, files in pkg_files.items():
         files.sort()
         exported = {
-            name: tuple(file_list)
-            for name, file_list in pkg_types.get(pkg_fqn, {}).items()
+            name: tuple(file_list) for name, file_list in pkg_types.get(pkg_fqn, {}).items()
         }
         index.packages[pkg_fqn] = JvmPackage(
             fqn=pkg_fqn,

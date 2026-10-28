@@ -68,27 +68,35 @@ class GoDynamicHints(DynamicHintExtractor):
                 bare = bare_type_name(match.group(1))
                 target = type_to_file.get(bare) or func_to_file.get(bare)
                 if target and target != rel:
-                    edges.append(DynamicEdge(
-                        source=rel, target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:reflect_typeof",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:reflect_typeof",
+                        )
+                    )
 
             for match in _PLUGIN_OPEN_RE.finditer(text):
-                edges.append(DynamicEdge(
-                    source=rel,
-                    target=f"external:go_plugin:{match.group(1)}",
-                    edge_type="dynamic_imports",
-                    hint_source=f"{self.name}:plugin_open",
-                ))
+                edges.append(
+                    DynamicEdge(
+                        source=rel,
+                        target=f"external:go_plugin:{match.group(1)}",
+                        edge_type="dynamic_imports",
+                        hint_source=f"{self.name}:plugin_open",
+                    )
+                )
 
             for match in _PLUGIN_LOOKUP_RE.finditer(text):
                 target = func_to_file.get(match.group(1)) or type_to_file.get(match.group(1))
                 if target and target != rel:
-                    edges.append(DynamicEdge(
-                        source=rel, target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:plugin_lookup",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:plugin_lookup",
+                        )
+                    )
 
         return edges

@@ -257,9 +257,7 @@ def _parent_path(path: str, nodes: dict[str, _SceneNode]) -> str | None:
     return "." if node.parent == "." else node.parent
 
 
-def resolve_handler_node(
-    to: str, nodes: dict[str, _SceneNode]
-) -> tuple[str | None, str]:
+def resolve_handler_node(to: str, nodes: dict[str, _SceneNode]) -> tuple[str | None, str]:
     """Return ``(ext_resource id of the script that runs *to*, reason)``.
 
     The reason is a short tag naming the refusal when the id is None, so a
@@ -302,11 +300,7 @@ def _add_connection_edges(
     for path, parsed in parsed_files.items():
         if parsed.file_info.language not in ("gdscript", "csharp"):
             continue
-        table = {
-            sym.name: sym.id
-            for sym in parsed.symbols
-            if sym.kind in ("function", "method")
-        }
+        table = {sym.name: sym.id for sym in parsed.symbols if sym.kind in ("function", "method")}
         if table:
             functions[path] = table
     if not functions:

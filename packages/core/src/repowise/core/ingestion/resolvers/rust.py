@@ -274,9 +274,7 @@ def _module_files_of_dir(module_dir: str) -> tuple[str, ...]:
 
 
 @lru_cache(maxsize=4096)
-def _find_rust_crate_root_cached(
-    importer_path: str, parsed_file_keys: frozenset[str]
-) -> str:
+def _find_rust_crate_root_cached(importer_path: str, parsed_file_keys: frozenset[str]) -> str:
     """Cached crate-root lookup (pure function with hashable args)."""
     parts = Path(importer_path).parts
     for i in range(len(parts) - 1, -1, -1):
@@ -398,9 +396,7 @@ def _mod_declaring_macros(root: Node) -> list[tuple[str, list[Node]]]:
         if node.type != "macro_definition":
             continue
         rules = (
-            rule.child_by_field_name("right")
-            for rule in node.children
-            if rule.type == "macro_rule"
+            rule.child_by_field_name("right") for rule in node.children if rule.type == "macro_rule"
         )
         bodies = [body for body in rules if body is not None]
         if any(macro_body_mod_names(body) for body in bodies):

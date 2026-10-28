@@ -29,14 +29,65 @@ _DEFMODULE_RE = re.compile(r"^[ \t]*defmodule[ \t]+([A-Z][A-Za-z0-9_.]*)", re.M)
 # only after the local index misses (D-034 policy shape).
 _ELIXIR_STDLIB = frozenset(
     {
-        "Access", "Agent", "Application", "Atom", "Base", "Behaviour", "Bitwise",
-        "Calendar", "Code", "Config", "Date", "DateTime", "Duration", "DynamicSupervisor",
-        "EEx", "Enum", "Enumerable", "Exception", "ExUnit", "File", "Float", "Function",
-        "GenEvent", "GenServer", "IEx", "IO", "Inspect", "Integer", "JSON", "Kernel",
-        "Keyword", "List", "Logger", "Macro", "Map", "MapSet", "Mix", "Module",
-        "NaiveDateTime", "Node", "OptionParser", "PartitionSupervisor", "Path", "Port",
-        "Process", "Protocol", "Range", "Record", "Regex", "Registry", "Stream",
-        "String", "StringIO", "Supervisor", "System", "Task", "Time", "Tuple", "URI",
+        "Access",
+        "Agent",
+        "Application",
+        "Atom",
+        "Base",
+        "Behaviour",
+        "Bitwise",
+        "Calendar",
+        "Code",
+        "Config",
+        "Date",
+        "DateTime",
+        "Duration",
+        "DynamicSupervisor",
+        "EEx",
+        "Enum",
+        "Enumerable",
+        "Exception",
+        "ExUnit",
+        "File",
+        "Float",
+        "Function",
+        "GenEvent",
+        "GenServer",
+        "IEx",
+        "IO",
+        "Inspect",
+        "Integer",
+        "JSON",
+        "Kernel",
+        "Keyword",
+        "List",
+        "Logger",
+        "Macro",
+        "Map",
+        "MapSet",
+        "Mix",
+        "Module",
+        "NaiveDateTime",
+        "Node",
+        "OptionParser",
+        "PartitionSupervisor",
+        "Path",
+        "Port",
+        "Process",
+        "Protocol",
+        "Range",
+        "Record",
+        "Regex",
+        "Registry",
+        "Stream",
+        "String",
+        "StringIO",
+        "Supervisor",
+        "System",
+        "Task",
+        "Time",
+        "Tuple",
+        "URI",
         "Version",
     }
 )
@@ -67,9 +118,7 @@ def _get_index(ctx: ResolverContext) -> dict[str, list[str]]:
     )
 
 
-def resolve_elixir_import(
-    module_path: str, importer_path: str, ctx: ResolverContext
-) -> str | None:
+def resolve_elixir_import(module_path: str, importer_path: str, ctx: ResolverContext) -> str | None:
     index = _get_index(ctx)
     hit = lookup_with_trailing_strip(index, module_path)
     if hit and hit != importer_path:

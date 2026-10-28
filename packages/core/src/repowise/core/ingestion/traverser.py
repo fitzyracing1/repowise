@@ -195,7 +195,10 @@ class TraversalStats:
         out skips the same generated files every run.
         """
         return [
-            *((s.path, s.reason) for s in (*self.skipped_source_files, *self.unknown_language_files)),
+            *(
+                (s.path, s.reason)
+                for s in (*self.skipped_source_files, *self.unknown_language_files)
+            ),
             *((path, "generated") for path in sorted(self.generated_files)),
         ]
 
@@ -378,10 +381,21 @@ _UNITY_STATE_DIR_NAMES: frozenset[str] = frozenset(
 
 #: Languages a build or report writes (bundles, generated C, HTML reports),
 #: so their files are no evidence that an output-named directory is source.
-_EMITTED_LANGUAGES: frozenset[str] = _SKIP_GENERATED_CHECK | {"c", "cpp", "javascript", "objectivec"}
+_EMITTED_LANGUAGES: frozenset[str] = _SKIP_GENERATED_CHECK | {
+    "c",
+    "cpp",
+    "javascript",
+    "objectivec",
+}
 
 #: Filename endings a compiler emits in otherwise hand-written languages.
-_EMITTED_SUFFIXES: tuple[str, ...] = (".d.ts", ".d.mts", ".d.cts", ".qmltypes", *_GENERATED_SUFFIXES)
+_EMITTED_SUFFIXES: tuple[str, ...] = (
+    ".d.ts",
+    ".d.mts",
+    ".d.cts",
+    ".qmltypes",
+    *_GENERATED_SUFFIXES,
+)
 
 
 class FileTraverser:
@@ -614,9 +628,7 @@ class FileTraverser:
 
             # Prune ignored directories in-place (affects os.walk recursion)
             dirnames[:] = sorted(
-                d
-                for d in dirnames
-                if not self._should_skip_dir(d, rel_dir / d, dir_ignore)
+                d for d in dirnames if not self._should_skip_dir(d, rel_dir / d, dir_ignore)
             )
 
             for filename in sorted(filenames):
@@ -1621,9 +1633,7 @@ def _package_files(
     from repowise.core.fs_walk import walk_repo
 
     try:
-        for dirpath, dirnames, filenames in walk_repo(
-            directory, prune_nested_git=prune_nested_git
-        ):
+        for dirpath, dirnames, filenames in walk_repo(directory, prune_nested_git=prune_nested_git):
             # Prune in place so the walk never descends, matching
             # scan_package_roots. Candidates are repo-relative because
             # dir_chain_skipped tests each level against the repo root.
@@ -1685,9 +1695,7 @@ def is_output_dir(abs_dir: Path) -> bool:
         return False
     try:
         with os.scandir(abs_dir) as entries:
-            return not any(
-                _is_handwritten_source_name(e.name) and e.is_file() for e in entries
-            )
+            return not any(_is_handwritten_source_name(e.name) and e.is_file() for e in entries)
     except OSError:
         return False
 
@@ -1789,9 +1797,7 @@ def _check_output_dir_cached(
 ) -> bool:
     """Whether *abs_dir* is an output root, using *cache* when provided."""
     cached = None if cache is None else cache.get(abs_dir)
-    if cached is None or (
-        cached and is_leaf_file and _is_handwritten_source_name(leaf_name)
-    ):
+    if cached is None or (cached and is_leaf_file and _is_handwritten_source_name(leaf_name)):
         cached = is_output_dir(abs_dir)
         if cache is not None:
             cache[abs_dir] = cached
@@ -1834,7 +1840,7 @@ def _is_segment_blocked(
     cur_rel = "/".join(dirs[:depth])
     parent_dir = None
     if repo_root is not None:
-        parent_dir = repo_root if depth == 1 else repo_root.joinpath(*dirs[:depth - 1])
+        parent_dir = repo_root if depth == 1 else repo_root.joinpath(*dirs[: depth - 1])
     active_dir_ignore = dir_ignore if (is_dir and depth == len(dirs)) else None
     if _is_dir_reincluded(
         cur_rel, part, root_patterns, parent_dir, active_dir_ignore, extra_ignore_filename
@@ -1890,8 +1896,16 @@ def in_blocked_dir(
     leaf_name = parts[-1] if not is_dir else ""
     return any(
         _is_segment_blocked(
-            dirs, depth, part, leaf_name, is_dir, repo_root,
-            root_pats, dir_ignore, extra_ignore_filename, cache
+            dirs,
+            depth,
+            part,
+            leaf_name,
+            is_dir,
+            repo_root,
+            root_pats,
+            dir_ignore,
+            extra_ignore_filename,
+            cache,
         )
         for depth, part in enumerate(dirs, 1)
     )

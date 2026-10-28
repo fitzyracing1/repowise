@@ -56,7 +56,9 @@ class MSBuildProject:
     root_namespace: str | None = None
     assembly_name: str | None = None
     implicit_usings: bool = False
-    project_references: list[Path] = field(default_factory=list)  # absolute paths to referenced .csproj
+    project_references: list[Path] = field(
+        default_factory=list
+    )  # absolute paths to referenced .csproj
     package_references: set[str] = field(default_factory=set)  # NuGet package ids
     project_usings: set[str] = field(default_factory=set)  # <Using Include="X"/> namespaces
     #: Explicit ``<Compile Include>`` items, ``/``-separated and unevaluated. A

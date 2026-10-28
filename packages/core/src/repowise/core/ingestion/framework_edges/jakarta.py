@@ -63,8 +63,7 @@ _JPA_ASSOC_FIELD_RE = re.compile(
 # JAX-RS routing verbs — used for routing detection (currently we mark
 # the class file as ``framework_role="jax_rs_resource"``; full ROUTE node
 # emission can be layered on top in a follow-up).
-_JAX_RS_VERBS = ("@GET", "@POST", "@PUT", "@DELETE",
-                 "@PATCH", "@HEAD", "@OPTIONS")
+_JAX_RS_VERBS = ("@GET", "@POST", "@PUT", "@DELETE", "@PATCH", "@HEAD", "@OPTIONS")
 
 
 def _has_jakarta_imports(parsed_files: dict[str, Any]) -> bool:

@@ -58,7 +58,6 @@ class GoReturnTypes:
         ]
         return found[0] if len(found) == 1 else None
 
-
     def _go_embedded_method(
         self, file_path: str, type_name: str, method_name: str
     ) -> tuple[str, str] | None:
@@ -124,9 +123,7 @@ class GoReturnTypes:
             embedded_id = next(iter(ids))
             hit = self._package_method(embedded_id, method_name)
             if hit is None:
-                hit = self._embedded_interface_method(
-                    embedded_id, method_name, seen, depth + 1
-                )
+                hit = self._embedded_interface_method(embedded_id, method_name, seen, depth + 1)
             if hit is not None:
                 return hit
         return None

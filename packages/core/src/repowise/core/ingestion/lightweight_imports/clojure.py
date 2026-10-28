@@ -105,9 +105,7 @@ def _spec_namespaces(block: str) -> list[str]:
 def extract_clojure_imports(text: str) -> list[Import]:
     # Blank out strings and line comments first — a require form inside a
     # docstring or a commented-out require must not mint edges.
-    text = _STRING_OR_COMMENT_RE.sub(
-        lambda m: '""' if m.group(0).startswith('"') else "", text
-    )
+    text = _STRING_OR_COMMENT_RE.sub(lambda m: '""' if m.group(0).startswith('"') else "", text)
     imports: list[Import] = []
     seen: set[str] = set()
     for match in _BLOCK_HEAD_RE.finditer(text):

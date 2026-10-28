@@ -314,9 +314,7 @@ def compute_percentiles(metadata_list: list[dict]) -> None:
     # Files with zero entropy — every file on the ESSENTIAL tier, plus
     # FULL-tier files that only ever changed alone — stay at 0.0 so the
     # change_entropy biomarker is silent for them.
-    _rank_within_eligible(
-        code_metas, source_key="change_entropy", target_key="change_entropy_pct"
-    )
+    _rank_within_eligible(code_metas, source_key="change_entropy", target_key="change_entropy_pct")
 
     # Ranked on the decayed partner mass, not the count: a count saturates at
     # the storage cap and never retires, so it can only ever ratchet up.

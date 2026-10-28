@@ -43,9 +43,7 @@ def _pubspec_map(ctx: ResolverContext) -> dict[str, str]:
             continue
         if repo is None:
             continue
-        text = source_text(
-            path, repo / path, getattr(ctx, "source_map", None), errors="replace"
-        )
+        text = source_text(path, repo / path, getattr(ctx, "source_map", None), errors="replace")
         if text is None:
             continue
         m = _PUBSPEC_NAME_RE.search(text)

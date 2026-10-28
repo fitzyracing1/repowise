@@ -57,23 +57,94 @@ _SWIFT_TYPE_DECL_RE = re.compile(
 
 # Ubiquitous Swift stdlib / Foundation names — references are
 # overwhelmingly to the framework type even when a target shadows one.
-_SWIFT_COMMON_TYPES = frozenset({
-    "String", "Int", "Int8", "Int16", "Int32", "Int64", "UInt", "UInt8",
-    "UInt16", "UInt32", "UInt64", "Double", "Float", "Bool", "Character",
-    "Array", "Dictionary", "Set", "Optional", "Result", "Error", "Never",
-    "Any", "AnyObject", "AnyClass", "Self", "Void", "Sequence", "Collection",
-    "Iterator", "IteratorProtocol", "Equatable", "Hashable", "Comparable",
-    "Codable", "Encodable", "Decodable", "Identifiable", "CustomStringConvertible",
-    "CaseIterable", "RawRepresentable", "ExpressibleByStringLiteral",
-    "Data", "Date", "URL", "URLRequest", "URLResponse", "URLSession",
-    "UUID", "Notification", "NotificationCenter", "IndexPath", "IndexSet",
-    "TimeInterval", "Calendar", "Locale", "TimeZone", "Bundle", "FileManager",
-    "JSONDecoder", "JSONEncoder", "JSONSerialization", "NumberFormatter",
-    "DateFormatter", "RunLoop", "Thread", "OperationQueue", "DispatchQueue",
-    "Task", "Actor", "MainActor", "Sendable", "AsyncSequence", "AsyncStream",
-    "Published", "ObservableObject", "State", "Binding", "Environment",
-    "View", "Text", "Image", "Color", "Font",
-})
+_SWIFT_COMMON_TYPES = frozenset(
+    {
+        "String",
+        "Int",
+        "Int8",
+        "Int16",
+        "Int32",
+        "Int64",
+        "UInt",
+        "UInt8",
+        "UInt16",
+        "UInt32",
+        "UInt64",
+        "Double",
+        "Float",
+        "Bool",
+        "Character",
+        "Array",
+        "Dictionary",
+        "Set",
+        "Optional",
+        "Result",
+        "Error",
+        "Never",
+        "Any",
+        "AnyObject",
+        "AnyClass",
+        "Self",
+        "Void",
+        "Sequence",
+        "Collection",
+        "Iterator",
+        "IteratorProtocol",
+        "Equatable",
+        "Hashable",
+        "Comparable",
+        "Codable",
+        "Encodable",
+        "Decodable",
+        "Identifiable",
+        "CustomStringConvertible",
+        "CaseIterable",
+        "RawRepresentable",
+        "ExpressibleByStringLiteral",
+        "Data",
+        "Date",
+        "URL",
+        "URLRequest",
+        "URLResponse",
+        "URLSession",
+        "UUID",
+        "Notification",
+        "NotificationCenter",
+        "IndexPath",
+        "IndexSet",
+        "TimeInterval",
+        "Calendar",
+        "Locale",
+        "TimeZone",
+        "Bundle",
+        "FileManager",
+        "JSONDecoder",
+        "JSONEncoder",
+        "JSONSerialization",
+        "NumberFormatter",
+        "DateFormatter",
+        "RunLoop",
+        "Thread",
+        "OperationQueue",
+        "DispatchQueue",
+        "Task",
+        "Actor",
+        "MainActor",
+        "Sendable",
+        "AsyncSequence",
+        "AsyncStream",
+        "Published",
+        "ObservableObject",
+        "State",
+        "Binding",
+        "Environment",
+        "View",
+        "Text",
+        "Image",
+        "Color",
+        "Font",
+    }
+)
 
 _SAME_MODULE_HINT = "same_module"
 
@@ -101,9 +172,7 @@ def resolve_swift_same_module_refs(
 
     Returns the number of edges added.
     """
-    target_dirs = [
-        (name, d.rstrip("/") + "/") for name, d in sorted(swift_targets.items())
-    ]
+    target_dirs = [(name, d.rstrip("/") + "/") for name, d in sorted(swift_targets.items())]
 
     # Group files by module and collect each module's declared types.
     files_by_module: dict[str, list[str]] = {}

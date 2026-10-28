@@ -58,7 +58,7 @@ _SRCDIRS_RE = re.compile(
     r'srcDirs?\s*[=(]\s*((?:listOf|setOf)?\s*\(?\s*(?:"[^"]+"\s*,?\s*)+\)?)',
     re.DOTALL,
 )
-_SOURCESET_BLOCK_RE = re.compile(r'sourceSets\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}', re.DOTALL)
+_SOURCESET_BLOCK_RE = re.compile(r"sourceSets\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}", re.DOTALL)
 _SOURCESET_NAME_RE = re.compile(
     r'(?:val\s+|getByName\s*\(\s*"|named\s*\(\s*"|create\s*\(\s*"|register\s*\(\s*")?'
     r'(\w+)(?:"\s*\))?\s*\{',
@@ -89,10 +89,21 @@ _KEYED_BARE_CLASS_RE = re.compile(
 _DEFAULT_MAIN_SRC_ROOTS = ("src/main/java", "src/main/kotlin")
 _DEFAULT_TEST_SRC_ROOTS = ("src/test/java", "src/test/kotlin")
 
-_TEST_SOURCESET_MARKERS = frozenset({
-    "test", "it", "jmh", "functional", "smoke", "acceptance",
-    "integration", "e2e", "perf", "benchmark", "fray",
-})
+_TEST_SOURCESET_MARKERS = frozenset(
+    {
+        "test",
+        "it",
+        "jmh",
+        "functional",
+        "smoke",
+        "acceptance",
+        "integration",
+        "e2e",
+        "perf",
+        "benchmark",
+        "fray",
+    }
+)
 
 _JVM_EXTENSIONS = frozenset({".java", ".kt"})
 
@@ -100,6 +111,7 @@ _JVM_EXTENSIONS = frozenset({".java", ".kt"})
 # ---------------------------------------------------------------------------
 # Data model
 # ---------------------------------------------------------------------------
+
 
 @dataclass(frozen=True)
 class SourceSet:
@@ -139,8 +151,7 @@ class JvmGradleIndex:
         candidates = self.package_to_files.get(package, [])
         local_lower = local.lower()
         return [
-            p for p in candidates
-            if p.rsplit("/", 1)[-1].rsplit(".", 1)[0].lower() == local_lower
+            p for p in candidates if p.rsplit("/", 1)[-1].rsplit(".", 1)[0].lower() == local_lower
         ]
 
     def files_in_package(self, package_fqn: str) -> list[str]:
@@ -151,6 +162,7 @@ class JvmGradleIndex:
 # ---------------------------------------------------------------------------
 # Settings parsing
 # ---------------------------------------------------------------------------
+
 
 def parse_settings(settings_file: Path) -> tuple[list[str], dict[str, str]]:
     """Return (module_names, project_dir_overrides) from settings.gradle(.kts)."""
@@ -163,9 +175,7 @@ def parse_settings(settings_file: Path) -> tuple[list[str], dict[str, str]]:
 
     # Drop comments first: a comment between two items would otherwise end
     # the list, and a commented-out include would still register.
-    include_text = _GRADLE_BLOCK_COMMENT_RE.sub(
-        lambda m: "\n" * m.group(0).count("\n"), text
-    )
+    include_text = _GRADLE_BLOCK_COMMENT_RE.sub(lambda m: "\n" * m.group(0).count("\n"), text)
     include_text = _GRADLE_LINE_COMMENT_RE.sub("", include_text)
 
     modules: list[str] = []
@@ -468,8 +478,7 @@ def build_source_set_graph(paths: Iterable[str], repo_path: Path | None) -> Sour
     for root, names in names_by_module.items():
         script = _read_build_script(repo_path / root) if repo_path is not None else ""
         if not (
-            any(_is_template_set(name) for name in names)
-            or _MULTIPLATFORM_PLUGIN_RE.search(script)
+            any(_is_template_set(name) for name in names) or _MULTIPLATFORM_PLUGIN_RE.search(script)
         ):
             continue
         explicit = _parse_source_set_edges(script, names)
@@ -548,22 +557,24 @@ def _detect_source_sets_from_dirs(module_dir: Path) -> list[SourceSet]:
                 sub_dirs.append(f"src/{name}/{lang_dir}")
         # Also check for files directly in src/<name> (some projects put .kt/.java there)
         if not sub_dirs:
-            has_jvm = any(
-                f.suffix in _JVM_EXTENSIONS
-                for f in entry.iterdir()
-                if f.is_file()
-            ) if entry.is_dir() else False
+            has_jvm = (
+                any(f.suffix in _JVM_EXTENSIONS for f in entry.iterdir() if f.is_file())
+                if entry.is_dir()
+                else False
+            )
             if has_jvm:
                 sub_dirs.append(f"src/{name}")
         if sub_dirs:
             is_main = name == "main"
             is_test = _is_test_source_set(name) if not is_main else False
-            source_sets.append(SourceSet(
-                name=name,
-                is_main=is_main,
-                is_test=is_test,
-                src_dirs=tuple(sub_dirs),
-            ))
+            source_sets.append(
+                SourceSet(
+                    name=name,
+                    is_main=is_main,
+                    is_test=is_test,
+                    src_dirs=tuple(sub_dirs),
+                )
+            )
     return source_sets
 
 
@@ -602,9 +613,7 @@ def _detect_plugins(module_dir: Path) -> frozenset[str]:
             text = build.read_text(encoding="utf-8", errors="ignore")
         except Exception:
             continue
-        clean_text = _GRADLE_BLOCK_COMMENT_RE.sub(
-            lambda m: "\n" * m.group(0).count("\n"), text
-        )
+        clean_text = _GRADLE_BLOCK_COMMENT_RE.sub(lambda m: "\n" * m.group(0).count("\n"), text)
         clean_text = _GRADLE_LINE_COMMENT_RE.sub("", clean_text)
         for pat in (_PLUGIN_ID_RE, _PLUGIN_ID_GROOVY_RE, _APPLY_PLUGIN_RE, _APPLY_PLUGIN_KTS_RE):
             for m in pat.finditer(clean_text):
@@ -642,9 +651,8 @@ def is_publishing_gradle_project(project: JvmGradleProject) -> bool:
 # Package extraction (cached per file)
 # ---------------------------------------------------------------------------
 
-def _extract_text_info(
-    abs_path: str, text: str | None
-) -> tuple[str, tuple[str, ...], bool, bool]:
+
+def _extract_text_info(abs_path: str, text: str | None) -> tuple[str, tuple[str, ...], bool, bool]:
     """Return (package_decl, top_level_types, is_module_info, is_package_info).
 
     Cheap line scan, no AST. *text* of None means the file was unreadable.
@@ -686,6 +694,7 @@ def _extract_file_info(abs_path: str) -> tuple[str, tuple[str, ...], bool, bool]
 # Index building
 # ---------------------------------------------------------------------------
 
+
 def build_jvm_gradle_index(
     repo_path: Path | None,
     *,
@@ -714,7 +723,9 @@ def build_jvm_gradle_index(
     resolved_repo = repo_path.resolve()
 
     for module_name in modules:
-        mod_dir = _module_dir(repo_path, module_name, project_dir_overrides) if module_name else repo_path
+        mod_dir = (
+            _module_dir(repo_path, module_name, project_dir_overrides) if module_name else repo_path
+        )
         if not mod_dir.is_dir():
             continue
 
@@ -725,12 +736,14 @@ def build_jvm_gradle_index(
         if not source_sets:
             # Fallback: use explicit srcDirs or defaults
             roots = _source_roots_for_module(mod_dir)
-            source_sets = [SourceSet(
-                name="main",
-                is_main=True,
-                is_test=False,
-                src_dirs=tuple(roots),
-            )]
+            source_sets = [
+                SourceSet(
+                    name="main",
+                    is_main=True,
+                    is_test=False,
+                    src_dirs=tuple(roots),
+                )
+            ]
 
         ss_map: dict[str, SourceSet] = {ss.name: ss for ss in source_sets}
         project = JvmGradleProject(
@@ -841,6 +854,7 @@ def resolve_via_jvm_gradle_index(module_path: str, ctx: ResolverContext) -> str 
 # ---------------------------------------------------------------------------
 # Back-compat: KotlinProjectIndex facade for kotlin_gradle.py re-exports
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class KotlinProjectIndex:

@@ -48,10 +48,7 @@ def build_fix_events(walk: FixWalk) -> list[dict]:
         return []
 
     rows = [
-        row
-        for fix in walk.fixes
-        for path in fix.paths
-        if (row := _safe_row(fix, path)) is not None
+        row for fix in walk.fixes for path in fix.paths if (row := _safe_row(fix, path)) is not None
     ]
 
     # Deterministic order so a replayed capture writes the same rows in the same

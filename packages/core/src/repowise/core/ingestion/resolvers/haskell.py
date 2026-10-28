@@ -30,8 +30,17 @@ _MODULE_DECL_RE = re.compile(r"^module[ \t]+([A-Z][A-Za-z0-9_.']*)", re.M)
 
 _BASE_PREFIXES = frozenset(
     {
-        "Prelude", "Control", "Data", "System", "GHC", "Text", "Foreign",
-        "Numeric", "Debug", "Unsafe", "Type",
+        "Prelude",
+        "Control",
+        "Data",
+        "System",
+        "GHC",
+        "Text",
+        "Foreign",
+        "Numeric",
+        "Debug",
+        "Unsafe",
+        "Type",
     }
 )
 

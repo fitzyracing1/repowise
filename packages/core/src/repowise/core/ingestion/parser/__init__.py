@@ -256,9 +256,7 @@ class ASTParser:
             registrars=registrars,
             references=references,
             # SOQL/SOSL, DML and trigger targets, bound to SObject metadata later.
-            schema_refs=(
-                apex_schema_refs(root, symbols, file_info.path) if lang == "apex" else []
-            ),
+            schema_refs=(apex_schema_refs(root, symbols, file_info.path) if lang == "apex" else []),
         )
 
 

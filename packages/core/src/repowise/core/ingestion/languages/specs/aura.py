@@ -39,7 +39,9 @@ def aura_bundle(path: str) -> tuple[str, str] | None:
 
 def is_aura_markup_path(path: str) -> bool:
     """True for an Aura markup file: a markup suffix inside an ``aura/<bundle>/`` dir."""
-    return PurePosixPath(path).suffix.lower() in AURA_MARKUP_SUFFIXES and aura_bundle(path) is not None
+    return (
+        PurePosixPath(path).suffix.lower() in AURA_MARKUP_SUFFIXES and aura_bundle(path) is not None
+    )
 
 
 SPEC = LanguageSpec(

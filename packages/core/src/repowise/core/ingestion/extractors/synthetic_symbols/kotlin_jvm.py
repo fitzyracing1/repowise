@@ -78,9 +78,7 @@ def _primary_components(class_node: Node, src: str) -> list[tuple[str, str]]:
     return out
 
 
-def kotlin_synthetic_symbols(
-    root: Node, src: str, file_info: FileInfo
-) -> list[Symbol]:
+def kotlin_synthetic_symbols(root: Node, src: str, file_info: FileInfo) -> list[Symbol]:
     """Emit data-class / enum / object synthesised symbols."""
     out: list[Symbol] = []
     stack: list[Node] = [root]
@@ -103,43 +101,66 @@ def kotlin_synthetic_symbols(
             if _is_data_class(node):
                 components = _primary_components(node, src)
                 for i, (_cname, ctype) in enumerate(components, start=1):
-                    out.append(build_synthetic_symbol(
-                        name=f"component{i}", kind="method",
-                        signature=f"public {ctype or 'Any'} component{i}()",
-                        start_line=line, end_line=line,
-                        file_info=file_info, parent_name=class_name,
-                    ))
+                    out.append(
+                        build_synthetic_symbol(
+                            name=f"component{i}",
+                            kind="method",
+                            signature=f"public {ctype or 'Any'} component{i}()",
+                            start_line=line,
+                            end_line=line,
+                            file_info=file_info,
+                            parent_name=class_name,
+                        )
+                    )
                 # copy(...) — same params as primary ctor.
-                copy_params = ", ".join(
-                    f"{n}: {t or 'Any'}" for n, t in components
+                copy_params = ", ".join(f"{n}: {t or 'Any'}" for n, t in components)
+                out.append(
+                    build_synthetic_symbol(
+                        name="copy",
+                        kind="method",
+                        signature=f"public {class_name} copy({copy_params})",
+                        start_line=line,
+                        end_line=line,
+                        file_info=file_info,
+                        parent_name=class_name,
+                    )
                 )
-                out.append(build_synthetic_symbol(
-                    name="copy", kind="method",
-                    signature=f"public {class_name} copy({copy_params})",
-                    start_line=line, end_line=line,
-                    file_info=file_info, parent_name=class_name,
-                ))
                 for nm in ("equals", "hashCode", "toString"):
-                    out.append(build_synthetic_symbol(
-                        name=nm, kind="method",
-                        signature=f"public {nm}()",
-                        start_line=line, end_line=line,
-                        file_info=file_info, parent_name=class_name,
-                    ))
+                    out.append(
+                        build_synthetic_symbol(
+                            name=nm,
+                            kind="method",
+                            signature=f"public {nm}()",
+                            start_line=line,
+                            end_line=line,
+                            file_info=file_info,
+                            parent_name=class_name,
+                        )
+                    )
 
             if _is_enum_class(node):
-                out.append(build_synthetic_symbol(
-                    name="values", kind="method",
-                    signature=f"public static {class_name}[] values()",
-                    start_line=line, end_line=line,
-                    file_info=file_info, parent_name=class_name,
-                ))
-                out.append(build_synthetic_symbol(
-                    name="valueOf", kind="method",
-                    signature=f"public static {class_name} valueOf(String)",
-                    start_line=line, end_line=line,
-                    file_info=file_info, parent_name=class_name,
-                ))
+                out.append(
+                    build_synthetic_symbol(
+                        name="values",
+                        kind="method",
+                        signature=f"public static {class_name}[] values()",
+                        start_line=line,
+                        end_line=line,
+                        file_info=file_info,
+                        parent_name=class_name,
+                    )
+                )
+                out.append(
+                    build_synthetic_symbol(
+                        name="valueOf",
+                        kind="method",
+                        signature=f"public static {class_name} valueOf(String)",
+                        start_line=line,
+                        end_line=line,
+                        file_info=file_info,
+                        parent_name=class_name,
+                    )
+                )
 
         elif node.type == "object_declaration":
             name_node = node.child_by_field_name("name") or next(
@@ -156,11 +177,16 @@ def kotlin_synthetic_symbols(
             # static ``INSTANCE`` field. Java callers reach members via
             # ``Foo.INSTANCE.method()``; this surfaces the field so the
             # access is resolvable.
-            out.append(build_synthetic_symbol(
-                name="INSTANCE", kind="variable",
-                signature=f"public static final {object_name} INSTANCE",
-                start_line=line, end_line=line,
-                file_info=file_info, parent_name=object_name,
-            ))
+            out.append(
+                build_synthetic_symbol(
+                    name="INSTANCE",
+                    kind="variable",
+                    signature=f"public static final {object_name} INSTANCE",
+                    start_line=line,
+                    end_line=line,
+                    file_info=file_info,
+                    parent_name=object_name,
+                )
+            )
 
     return out

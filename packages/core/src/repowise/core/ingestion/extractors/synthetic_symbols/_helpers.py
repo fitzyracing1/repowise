@@ -40,14 +40,10 @@ def build_synthetic_symbol(
     treat them identically.
     """
     sym_id = (
-        f"{file_info.path}::{parent_name}::{name}"
-        if parent_name
-        else f"{file_info.path}::{name}"
+        f"{file_info.path}::{parent_name}::{name}" if parent_name else f"{file_info.path}::{name}"
     )
     qualified = (
-        f"{file_info.path}.{parent_name}.{name}"
-        if parent_name
-        else f"{file_info.path}.{name}"
+        f"{file_info.path}.{parent_name}.{name}" if parent_name else f"{file_info.path}.{name}"
     )
     return Symbol(
         id=sym_id,

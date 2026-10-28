@@ -79,7 +79,9 @@ def read_jcl(text: str) -> JclMember:
             member.steps.append(step)
         elif op == "DD" and _IN_STREAM.search(f"DD {operands}"):
             delimiter = _DELIMITER.search(operands)
-            end_of_data = (delimiter.group("quoted") or delimiter.group("plain")) if delimiter else "/"
+            end_of_data = (
+                (delimiter.group("quoted") or delimiter.group("plain")) if delimiter else "/"
+            )
     return member
 
 

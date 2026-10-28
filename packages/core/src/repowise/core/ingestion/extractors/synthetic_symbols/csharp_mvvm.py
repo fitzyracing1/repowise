@@ -81,9 +81,7 @@ def _first_method_name(method_node: Node, src: str) -> str | None:
     return None
 
 
-def _maybe_observable_property(
-    field_node: Node, src: str, file_info: FileInfo
-) -> Symbol | None:
+def _maybe_observable_property(field_node: Node, src: str, file_info: FileInfo) -> Symbol | None:
     if not _has_attribute(field_node, _OBSERVABLE_PROPERTY, src):
         return None
     field_name = _first_field_name(field_node, src)
@@ -104,9 +102,7 @@ def _maybe_observable_property(
     )
 
 
-def _maybe_relay_command(
-    method_node: Node, src: str, file_info: FileInfo
-) -> Symbol | None:
+def _maybe_relay_command(method_node: Node, src: str, file_info: FileInfo) -> Symbol | None:
     if not _has_attribute(method_node, _RELAY_COMMAND, src):
         return None
     method_name = _first_method_name(method_node, src)
@@ -125,9 +121,7 @@ def _maybe_relay_command(
     )
 
 
-def csharp_synthetic_symbols(
-    root: Node, src: str, file_info: FileInfo
-) -> list[Symbol]:
+def csharp_synthetic_symbols(root: Node, src: str, file_info: FileInfo) -> list[Symbol]:
     """Emit synthetic symbols for CommunityToolkit MVVM attributes."""
     out: list[Symbol] = []
     stack: list[Node] = [root]

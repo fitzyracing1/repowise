@@ -36,7 +36,9 @@ _CHAIN_HEAD_RE = re.compile(
 )
 _LINK_RE = re.compile(r"\s*\.\s*(?P<link>\w+)\s*\(")
 _LITERAL_RE = re.compile(r"""\s*(?P<q>["`])(?P<body>[^"`]*)(?P=q)\s*""")
-_HANDLER_RE = re.compile(r"\s*(?P<handler>(?!(?:func|struct)\b)[A-Za-z_][\w.]*)\s*(?P<after>[,)({])")
+_HANDLER_RE = re.compile(
+    r"\s*(?P<handler>(?!(?:func|struct)\b)[A-Za-z_][\w.]*)\s*(?P<after>[,)({])"
+)
 
 
 def _links(content: str, paren: int) -> Iterator[tuple[str, int]]:

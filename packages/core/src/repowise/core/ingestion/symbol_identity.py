@@ -120,8 +120,24 @@ def _parameter_count(symbol: Symbol) -> str | None:
 # Words in a parameter that are not its type, and builtin words a type may end
 # on (``unsigned int`` has no name to drop).
 _PARAMETER_MODIFIERS = frozenset(
-    {"final", "const", "volatile", "mutable", "register", "struct", "class", "enum",
-     "typename", "ref", "out", "in", "params", "this", "scoped", "readonly"}
+    {
+        "final",
+        "const",
+        "volatile",
+        "mutable",
+        "register",
+        "struct",
+        "class",
+        "enum",
+        "typename",
+        "ref",
+        "out",
+        "in",
+        "params",
+        "this",
+        "scoped",
+        "readonly",
+    }
 )
 _BUILTIN_TYPE_WORDS = frozenset(
     {"signed", "unsigned", "short", "long", "int", "char", "double", "float", "bool", "void"}
@@ -403,7 +419,7 @@ def clr_parameter_type(parameter: str) -> str:
     arity = parameter_type_arity(parameter)
     erased = erased_type(parameter)
     name = erased.rstrip(_ERASED_MARKS)
-    return f"{name}`{arity}{erased[len(name):]}" if arity else erased
+    return f"{name}`{arity}{erased[len(name) :]}" if arity else erased
 
 
 def parameter_type_arity(parameter: str) -> int:
@@ -462,7 +478,9 @@ def _split_generic_types(symbols: list[Symbol]) -> None:
             continue
         for generic in siblings:
             if generic.type_parameter_count:
-                _reparent_members(symbols, generic, f"{generic.name}`{generic.type_parameter_count}")
+                _reparent_members(
+                    symbols, generic, f"{generic.name}`{generic.type_parameter_count}"
+                )
                 generic.id = f"{generic.id}`{generic.type_parameter_count}"
 
 

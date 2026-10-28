@@ -173,9 +173,7 @@ def extract_ts_js_bindings(stmt_node: Node, src: str) -> tuple[list[str], list[N
                         local = node_text(alias_node, src) if alias_node else exported
                         names.append(exported)
                         bindings.append(
-                            NamedBinding(
-                                local_name=local, exported_name=exported, source_file=None
-                            )
+                            NamedBinding(local_name=local, exported_name=exported, source_file=None)
                         )
             elif child.type == "namespace_export":
                 # ``export * as ns from "x"`` — forwards the whole module, but
@@ -219,9 +217,7 @@ def extract_ts_js_bindings(stmt_node: Node, src: str) -> tuple[list[str], list[N
                         local = node_text(alias_node, src) if alias_node else exported
                         names.append(exported)
                         bindings.append(
-                            NamedBinding(
-                                local_name=local, exported_name=exported, source_file=None
-                            )
+                            NamedBinding(local_name=local, exported_name=exported, source_file=None)
                         )
             elif sub.type == "namespace_import":
                 ns_name = None
@@ -478,4 +474,3 @@ def is_type_only_ts_js_import(stmt_node: Node, src: str) -> bool:
 def _is_type_specifier(spec: Node, src: str) -> bool:
     """True for a ``type X`` import or export specifier."""
     return any(c.type == "type" or node_text(c, src) == "type" for c in spec.children)
-

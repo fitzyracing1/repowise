@@ -24,15 +24,11 @@ class ImportNameMaps:
     ``module_aliases``  — {file: {alias: source_file}} (call resolver only)
     """
 
-    import_names: dict[str, dict[str, str]] = field(
-        default_factory=lambda: defaultdict(dict)
-    )
+    import_names: dict[str, dict[str, str]] = field(default_factory=lambda: defaultdict(dict))
     import_bindings: dict[str, dict[str, NamedBinding]] = field(
         default_factory=lambda: defaultdict(dict)
     )
-    module_aliases: dict[str, dict[str, str]] = field(
-        default_factory=lambda: defaultdict(dict)
-    )
+    module_aliases: dict[str, dict[str, str]] = field(default_factory=lambda: defaultdict(dict))
 
 
 def build_import_name_maps(parsed_files: dict[str, ParsedFile]) -> ImportNameMaps:

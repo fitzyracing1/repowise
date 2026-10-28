@@ -132,7 +132,9 @@ def _resolve_single(
         for tid in owning:
             search_roots = cpp_index.target_include_search_dirs.get(tid, ())
             for root in search_roots:
-                joined = posixpath.normpath(posixpath.join(root, module_path)) if root else module_path
+                joined = (
+                    posixpath.normpath(posixpath.join(root, module_path)) if root else module_path
+                )
                 if joined in ctx.path_set:
                     return joined
 

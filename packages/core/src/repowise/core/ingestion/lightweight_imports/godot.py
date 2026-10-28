@@ -83,9 +83,7 @@ from ..resolvers.gdscript import GODOT_CODE_SUFFIXES
 # The editor writes double quotes; single quotes are accepted because a
 # hand-edited or tool-generated scene may use them, and the backreference
 # keeps the pair matched.
-_EXT_RESOURCE_RE = re.compile(
-    r"""^\[ext_resource\b[^\]]*?\bpath\s*=\s*(["'])(.+?)\1"""
-)
+_EXT_RESOURCE_RE = re.compile(r"""^\[ext_resource\b[^\]]*?\bpath\s*=\s*(["'])(.+?)\1""")
 
 # A bare section header: `[autoload]`, `[application]`. Deliberately anchored
 # and closed so it cannot match an `[ext_resource ...]` header, which carries

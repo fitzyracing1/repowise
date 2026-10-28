@@ -218,7 +218,9 @@ class EdgesMixin:
             graph=self._graph,
             repo_path=self._repo_path,
             tsconfig_resolver=self._tsconfig_resolver,
-            go_module_path=(go_modules[-1][1] if go_modules else read_go_module_path(self._repo_path)),
+            go_module_path=(
+                go_modules[-1][1] if go_modules else read_go_module_path(self._repo_path)
+            ),
             go_modules=go_modules,
             has_sfc_files=any(p.endswith((".vue", ".svelte", ".astro")) for p in path_set),
             has_platform_files=detect_platform_files(path_set),

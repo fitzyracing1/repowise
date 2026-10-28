@@ -32,9 +32,7 @@ if TYPE_CHECKING:
 _SCALA_STDLIB_PREFIXES = ("scala.", "java.", "javax.", "jdk.")
 
 
-def resolve_scala_import(
-    module_path: str, importer_path: str, ctx: ResolverContext
-) -> str | None:
+def resolve_scala_import(module_path: str, importer_path: str, ctx: ResolverContext) -> str | None:
     """Resolve a Scala import to a single representative repo-relative file."""
     targets = resolve_scala_import_all(module_path, importer_path, ctx)
     return targets[0] if targets else None

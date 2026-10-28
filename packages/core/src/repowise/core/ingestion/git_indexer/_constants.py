@@ -277,7 +277,9 @@ _EVOLUTION_KEYWORDS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ),
     (
         "chore",
-        re.compile(r"\b(chore|lint|format|style|ci|build|release|merge|config|tooling)\b", re.IGNORECASE),
+        re.compile(
+            r"\b(chore|lint|format|style|ci|build|release|merge|config|tooling)\b", re.IGNORECASE
+        ),
     ),
 )
 
@@ -345,6 +347,7 @@ def git_history_stale(state: dict[str, Any]) -> bool:
     do not change.
     """
     return state.get(GIT_HISTORY_VERSION_KEY) != GIT_HISTORY_VERSION
+
 
 # Absolute activity floors for hotspot classification (issue #361). The
 # churn percentile is repo-relative, so on a quiet repo "top quartile"

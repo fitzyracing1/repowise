@@ -75,8 +75,15 @@ _GETFIXTUREVALUE_RE = re.compile(
 # form this module records (a literal decorator, a module ``pytestmark``, a
 # literal ``getfixturevalue`` call in a test or fixture) hides a request.
 _REQUEST_NAMES = frozenset(
-    {"usefixtures", "getfixturevalue", "add_marker", "applymarker", "fixturenames",
-     "lazy_fixture", "fixture_ref"}
+    {
+        "usefixtures",
+        "getfixturevalue",
+        "add_marker",
+        "applymarker",
+        "fixturenames",
+        "lazy_fixture",
+        "fixture_ref",
+    }
 )
 _AUTOUSE_KWARG_RE = re.compile(r"^autouse\s*=\s*(.+)$")
 _INDIRECT_KWARG_RE = re.compile(r"^indirect\s*=")
@@ -88,8 +95,15 @@ _CLASS_PYTESTMARK_RE = re.compile(r"^[ \t]+pytestmark\b", re.MULTILINE)
 _CALL_PARAMETRIZE_RE = re.compile(r"^[ \t]*[^@\s#][^\n]*\bparametrize\(", re.MULTILINE)
 # Bases a test class may name without carrying fixture requests of its own.
 _PLAIN_BASES = frozenset(
-    {"object", "ABC", "abc.ABC", "TestCase", "unittest.TestCase", "IsolatedAsyncioTestCase",
-     "unittest.IsolatedAsyncioTestCase"}
+    {
+        "object",
+        "ABC",
+        "abc.ABC",
+        "TestCase",
+        "unittest.TestCase",
+        "IsolatedAsyncioTestCase",
+        "unittest.IsolatedAsyncioTestCase",
+    }
 )
 
 # Stamped on every fixture-request edge, so a reader can tell an index that
@@ -254,9 +268,7 @@ def _fixture_scopes(parsed: Any, class_name: str | None) -> list[str | None]:
         return [None]
     parents: dict[str, list[str]] = {}
     for rel in parsed.heritage:
-        parents.setdefault(rel.child_name, []).append(
-            strip_type_arguments(rel.parent_name).strip()
-        )
+        parents.setdefault(rel.child_name, []).append(strip_type_arguments(rel.parent_name).strip())
 
     scopes: list[str | None] = []
     seen: set[str] = set()
@@ -736,9 +748,7 @@ def _is_parametrize_values(name: ast.Name, parent: ast.AST | None) -> bool:
     return called == "parametrize" and len(parent.args) > 1 and parent.args[1] is name
 
 
-def _assigned_strings(
-    tree: ast.Module, stmt: ast.AST | None, target: ast.Name
-) -> list[str] | None:
+def _assigned_strings(tree: ast.Module, stmt: ast.AST | None, target: ast.Name) -> list[str] | None:
     """The strings a module-level ``target = [...]`` binds, ``None`` for any other binding."""
     value = getattr(stmt, "value", None)
     top = (
@@ -783,8 +793,7 @@ def _add_fixture_injection_edges(
         if Path(path).name != "conftest.py":
             continue
         declared = {
-            name: sid for (owner, name), sid in _declared_fixtures(parsed).items()
-            if owner is None
+            name: sid for (owner, name), sid in _declared_fixtures(parsed).items() if owner is None
         }
         if declared:
             conftests[Path(path).parent.as_posix()] = declared
@@ -946,7 +955,9 @@ def _link_symbols(
         own_requests = _decorator_requests(sym.decorators)
         hidden = hidden or own_requests.unknown
         if sym.id in fixture_ids:
-            linker.link(sym, _requested_fixtures(sym, own_requests.supplied) + own_requests.requested)
+            linker.link(
+                sym, _requested_fixtures(sym, own_requests.supplied) + own_requests.requested
+            )
         elif _is_collected_test(sym, runnable):
             tests.append(sym)
             linker.link(sym, _test_requests(linker.parsed, sym, own_requests, marks))

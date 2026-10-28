@@ -31,8 +31,14 @@ _MODULE_DECL_RE = re.compile(r"^-module\(([a-z][A-Za-z0-9_]*)\)", re.M)
 
 _OTP_MODULES = frozenset(
     {
-        "application", "gen_event", "gen_fsm", "gen_server", "gen_statem", "supervisor",
-        "supervisor_bridge", "ct_suite",
+        "application",
+        "gen_event",
+        "gen_fsm",
+        "gen_server",
+        "gen_statem",
+        "supervisor",
+        "supervisor_bridge",
+        "ct_suite",
     }
 )
 
@@ -81,9 +87,7 @@ def _resolve_include_lib(spec: str, ctx: ResolverContext) -> str | None:
     return f"external:{app}"
 
 
-def resolve_erlang_import(
-    module_path: str, importer_path: str, ctx: ResolverContext
-) -> str | None:
+def resolve_erlang_import(module_path: str, importer_path: str, ctx: ResolverContext) -> str | None:
     if module_path.startswith("lib:"):
         return _resolve_include_lib(module_path[len("lib:") :], ctx)
     if module_path.endswith(".hrl"):

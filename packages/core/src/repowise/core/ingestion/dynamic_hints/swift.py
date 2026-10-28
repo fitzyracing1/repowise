@@ -16,9 +16,7 @@ _HASH_SELECTOR_RE = re.compile(r"#selector\s*\(\s*([A-Za-z_]\w*(?:\.[A-Za-z_]\w*
 # value(forKey: "name") / setValue(_, forKey: "name")
 _KVC_RE = re.compile(r"\bvalue\s*\(\s*forKey\s*:\s*[\"']([A-Za-z_]\w*)[\"']")
 
-_TYPE_DECL_RE = re.compile(
-    r"\b(?:class|struct|enum|actor|protocol)\s+([A-Z]\w*)"
-)
+_TYPE_DECL_RE = re.compile(r"\b(?:class|struct|enum|actor|protocol)\s+([A-Z]\w*)")
 _FUNC_DECL_RE = re.compile(r"\bfunc\s+([A-Za-z_]\w*)")
 
 
@@ -61,46 +59,60 @@ class SwiftDynamicHints(DynamicHintExtractor):
             for match in _NSCLASS_FROM_STRING_RE.finditer(text):
                 target = type_to_file.get(match.group(1))
                 if target and target != rel:
-                    edges.append(DynamicEdge(
-                        source=rel, target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:nsclass_from_string",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:nsclass_from_string",
+                        )
+                    )
 
             for match in _NSSTRING_FROM_CLASS_RE.finditer(text):
                 target = type_to_file.get(match.group(1))
                 if target and target != rel:
-                    edges.append(DynamicEdge(
-                        source=rel, target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:nsstring_from_class",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:nsstring_from_class",
+                        )
+                    )
 
             for match in _SELECTOR_INIT_RE.finditer(text):
                 for target in func_to_files.get(match.group(1), []):
                     if target != rel:
-                        edges.append(DynamicEdge(
-                            source=rel, target=target,
-                            edge_type="dynamic_uses",
-                            hint_source=f"{self.name}:selector",
-                        ))
+                        edges.append(
+                            DynamicEdge(
+                                source=rel,
+                                target=target,
+                                edge_type="dynamic_uses",
+                                hint_source=f"{self.name}:selector",
+                            )
+                        )
 
             for match in _HASH_SELECTOR_RE.finditer(text):
                 name = match.group(1).rsplit(".", 1)[-1]
                 for target in func_to_files.get(name, []):
                     if target != rel:
-                        edges.append(DynamicEdge(
-                            source=rel, target=target,
-                            edge_type="dynamic_uses",
-                            hint_source=f"{self.name}:hash_selector",
-                        ))
+                        edges.append(
+                            DynamicEdge(
+                                source=rel,
+                                target=target,
+                                edge_type="dynamic_uses",
+                                hint_source=f"{self.name}:hash_selector",
+                            )
+                        )
 
             for match in _KVC_RE.finditer(text):
-                edges.append(DynamicEdge(
-                    source=rel,
-                    target=f"external:swift_kvc:{match.group(1)}",
-                    edge_type="dynamic_uses",
-                    hint_source=f"{self.name}:kvc",
-                ))
+                edges.append(
+                    DynamicEdge(
+                        source=rel,
+                        target=f"external:swift_kvc:{match.group(1)}",
+                        edge_type="dynamic_uses",
+                        hint_source=f"{self.name}:kvc",
+                    )
+                )
 
         return edges

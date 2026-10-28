@@ -23,9 +23,7 @@ if TYPE_CHECKING:
     from .context import ResolverContext
 
 
-def resolve_java_import(
-    module_path: str, importer_path: str, ctx: ResolverContext
-) -> str | None:
+def resolve_java_import(module_path: str, importer_path: str, ctx: ResolverContext) -> str | None:
     """Resolve a Java import to a single representative repo-relative file.
 
     For the graph builder's fan-out path, use :func:`resolve_java_import_all`

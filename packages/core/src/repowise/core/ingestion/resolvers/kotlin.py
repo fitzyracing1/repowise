@@ -18,9 +18,7 @@ if TYPE_CHECKING:
     from .context import ResolverContext
 
 
-def resolve_kotlin_import(
-    module_path: str, importer_path: str, ctx: ResolverContext
-) -> str | None:
+def resolve_kotlin_import(module_path: str, importer_path: str, ctx: ResolverContext) -> str | None:
     """Resolve a Kotlin import to a single representative repo-relative file."""
     targets = resolve_kotlin_import_all(module_path, importer_path, ctx)
     return targets[0] if targets else None
@@ -86,12 +84,16 @@ def resolve_kotlin_import_all(
     # package, so a third-party type binds to any same-named repo class.
     if len(parts) > 1:
         scoped = jvm_index.file_in_package_by_stem(".".join(parts[:-1]), local)
-        if scoped and (scoped.endswith(".kt") or scoped.endswith(".kts") or scoped.endswith(".java")):
+        if scoped and (
+            scoped.endswith(".kt") or scoped.endswith(".kts") or scoped.endswith(".java")
+        ):
             return (scoped,)
     else:
         # A single-segment import carries no package to check against.
         result = ctx.stem_lookup(local.lower())
-        if result and (result.endswith(".kt") or result.endswith(".kts") or result.endswith(".java")):
+        if result and (
+            result.endswith(".kt") or result.endswith(".kts") or result.endswith(".java")
+        ):
             return (result,)
 
     # Try matching the package path as a directory structure

@@ -49,9 +49,7 @@ _PY = ".py"
 _JS = (".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts")
 _JVM = (".java", ".kt")
 # Simple or fully qualified; the word boundary keeps ``@SpringBootTestSupport`` out.
-_SPRING_BOOT_TEST = re.compile(
-    r"@(?:org\.springframework\.boot\.test\.context\.)?SpringBootTest\b"
-)
+_SPRING_BOOT_TEST = re.compile(r"@(?:org\.springframework\.boot\.test\.context\.)?SpringBootTest\b")
 
 
 @dataclass(frozen=True)
@@ -87,7 +85,9 @@ _PY_LANG = _Lang(
     read=re.compile(r"read_text\(|read_bytes\(|\bopen\(|\bast\.parse\(|\btokenize\."),
     anchor=re.compile(r"\w\.__file__\b|\bPath\.cwd\(\)|\bos\.getcwd\(\)"),
     local=re.compile(r"(?<![\w.])__file__\b"),
-    climb_file=re.compile(r"parents\[|\.parent\s*\.parent\b|[\"']\.\.[\"'/\\]|dirname\(.*dirname\("),
+    climb_file=re.compile(
+        r"parents\[|\.parent\s*\.parent\b|[\"']\.\.[\"'/\\]|dirname\(.*dirname\("
+    ),
     climb_dir=re.compile(r"\.parent\b|parents\[|[\"']\.\.[\"'/\\]|dirname\("),
     spawn=re.compile(
         r"\bsubprocess\.(?:run|Popen|call|check_call|check_output)\b|create_subprocess_(?:exec|shell)"
@@ -472,7 +472,9 @@ def _words(names: Iterable[str]) -> re.Pattern[str]:
 def _called_rooted(lines: list[str], func: str, rooted: _Rooted, lang: _Lang) -> bool:
     call = re.compile(_WORD.format(re.escape(func)) + r"\s*\(")
     return any(
-        call.search(line) and not lang.func.match(line) and rooted.holds(_expression(line, lines, i + 1))
+        call.search(line)
+        and not lang.func.match(line)
+        and rooted.holds(_expression(line, lines, i + 1))
         for i, line in enumerate(lines)
     )
 
@@ -593,9 +595,7 @@ def stamp_always_run(
         return source_text(path, getattr(info, "abs_path", path), source_map)
 
     tests = [
-        p
-        for p, parsed in parsed_files.items()
-        if parsed.file_info.is_test and is_judged_test(p)
+        p for p, parsed in parsed_files.items() if parsed.file_info.is_test and is_judged_test(p)
     ]
     if not tests:
         return 0

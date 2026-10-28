@@ -62,9 +62,10 @@ def php_use_clauses(stmt_node: Node, src: str) -> list[tuple[str, str]]:
                 out.append(bound)
         elif child.type == "namespace_use_group":
             for clause in child.children:
-                if clause.type == "namespace_use_clause" and (
-                    bound := _clause(clause, prefix, src)
-                ) is not None:
+                if (
+                    clause.type == "namespace_use_clause"
+                    and (bound := _clause(clause, prefix, src)) is not None
+                ):
                     out.append(bound)
     return out
 

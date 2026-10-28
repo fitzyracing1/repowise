@@ -38,7 +38,9 @@ ecosystem: str = "bazel"
 @dataclass
 class BazelTarget:
     name: str
-    kind: str  # cc_binary | cc_library | cc_test | cc_proto_library | cc_grpc_library | cc_fuzz_test
+    kind: (
+        str  # cc_binary | cc_library | cc_test | cc_proto_library | cc_grpc_library | cc_fuzz_test
+    )
     build_file: str  # repo-relative POSIX path
     package: str  # repo-relative dir owning the BUILD
     srcs: list[str] = field(default_factory=list)
@@ -55,15 +57,17 @@ class BazelFile:
     targets: list[BazelTarget] = field(default_factory=list)
 
 
-_CC_RULE_NAMES: frozenset[str] = frozenset({
-    "cc_binary",
-    "cc_library",
-    "cc_test",
-    "cc_proto_library",
-    "cc_grpc_library",
-    "cc_fuzz_test",
-    "cc_shared_library",
-})
+_CC_RULE_NAMES: frozenset[str] = frozenset(
+    {
+        "cc_binary",
+        "cc_library",
+        "cc_test",
+        "cc_proto_library",
+        "cc_grpc_library",
+        "cc_fuzz_test",
+        "cc_shared_library",
+    }
+)
 
 # Matches ``rule_name(`` at start of line (or after whitespace) — enough
 # for top-level rule discovery. Nested rule calls inside macros are
@@ -277,8 +281,17 @@ def discover_bazel_packages(repo_root: Path, *, max_files: int = 5000) -> list[B
     """Walk the repo for every ``BUILD`` / ``BUILD.bazel`` file."""
     repo_root = repo_root.resolve()
     out: list[BazelFile] = []
-    skip_dirs = {".git", "node_modules", "bazel-bin", "bazel-out", "bazel-testlogs",
-                 "bazel-" + repo_root.name, ".venv", "venv", "build"}
+    skip_dirs = {
+        ".git",
+        "node_modules",
+        "bazel-bin",
+        "bazel-out",
+        "bazel-testlogs",
+        "bazel-" + repo_root.name,
+        ".venv",
+        "venv",
+        "build",
+    }
     from repowise.core.fs_walk import iter_glob
 
     for candidate in ("BUILD", "BUILD.bazel"):

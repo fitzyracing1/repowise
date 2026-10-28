@@ -70,27 +70,35 @@ class CDynamicHints(DynamicHintExtractor):
                         if key in seen or target == rel:
                             continue
                         seen.add(key)
-                        edges.append(DynamicEdge(
-                            source=rel, target=target,
-                            edge_type="dynamic_uses",
-                            hint_source=f"{self.name}:fn_ptr",
-                        ))
+                        edges.append(
+                            DynamicEdge(
+                                source=rel,
+                                target=target,
+                                edge_type="dynamic_uses",
+                                hint_source=f"{self.name}:fn_ptr",
+                            )
+                        )
 
             for match in _DLSYM_RE.finditer(text):
                 for target in func_to_files.get(match.group(1), []):
                     if target != rel:
-                        edges.append(DynamicEdge(
-                            source=rel, target=target,
-                            edge_type="dynamic_uses",
-                            hint_source=f"{self.name}:dlsym",
-                        ))
+                        edges.append(
+                            DynamicEdge(
+                                source=rel,
+                                target=target,
+                                edge_type="dynamic_uses",
+                                hint_source=f"{self.name}:dlsym",
+                            )
+                        )
 
             for match in _DLOPEN_RE.finditer(text):
-                edges.append(DynamicEdge(
-                    source=rel,
-                    target=f"external:dlopen:{match.group(1)}",
-                    edge_type="dynamic_imports",
-                    hint_source=f"{self.name}:dlopen",
-                ))
+                edges.append(
+                    DynamicEdge(
+                        source=rel,
+                        target=f"external:dlopen:{match.group(1)}",
+                        edge_type="dynamic_imports",
+                        hint_source=f"{self.name}:dlopen",
+                    )
+                )
 
         return edges

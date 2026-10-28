@@ -21,17 +21,32 @@ _OBJC_DECLARATION_NODE_TYPES = frozenset({"class_interface", "method_declaration
 
 # Macros that expand to nothing but are spelled as a bare identifier, so the
 # grammar makes them a keyword child of the method they trail.
-_OBJC_TRAILING_MACRO_NAMES = frozenset({
-    "NS_DESIGNATED_INITIALIZER", "NS_UNAVAILABLE", "NS_REQUIRES_SUPER",
-    "NS_RETURNS_INNER_POINTER", "NS_REFINED_FOR_SWIFT", "NS_SWIFT_UI_ACTOR",
-    "NS_REQUIRES_NIL_TERMINATION", "UNAVAILABLE_ATTRIBUTE", "DEPRECATED_ATTRIBUTE",
-})
+_OBJC_TRAILING_MACRO_NAMES = frozenset(
+    {
+        "NS_DESIGNATED_INITIALIZER",
+        "NS_UNAVAILABLE",
+        "NS_REQUIRES_SUPER",
+        "NS_RETURNS_INNER_POINTER",
+        "NS_REFINED_FOR_SWIFT",
+        "NS_SWIFT_UI_ACTOR",
+        "NS_REQUIRES_NIL_TERMINATION",
+        "UNAVAILABLE_ATTRIBUTE",
+        "DEPRECATED_ATTRIBUTE",
+    }
+)
 
 # ``typedef NS_ENUM(NSInteger, Kind) { KindA }`` shapes. See _objc_is_macro_enum.
-_OBJC_ENUM_MACRO_NAMES = frozenset({
-    "NS_ENUM", "NS_OPTIONS", "NS_CLOSED_ENUM", "NS_ERROR_ENUM",
-    "CF_ENUM", "CF_OPTIONS", "CF_CLOSED_ENUM",
-})
+_OBJC_ENUM_MACRO_NAMES = frozenset(
+    {
+        "NS_ENUM",
+        "NS_OPTIONS",
+        "NS_CLOSED_ENUM",
+        "NS_ERROR_ENUM",
+        "CF_ENUM",
+        "CF_OPTIONS",
+        "CF_CLOSED_ENUM",
+    }
+)
 
 
 def _objc_selector_name(def_node: Node, default_name: str, src: str) -> str:
@@ -186,8 +201,7 @@ def _objc_call_is_block_variable(site_node: Node, target_name: str, src: str) ->
                 return True
         elif node.type == "method_definition":
             return any(
-                child.type == "method_parameter"
-                and _objc_declares_name(child, target_name, src)
+                child.type == "method_parameter" and _objc_declares_name(child, target_name, src)
                 for child in node.children
             )
         elif node.type == "function_definition":

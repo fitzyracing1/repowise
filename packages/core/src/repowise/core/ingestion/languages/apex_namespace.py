@@ -200,7 +200,6 @@ class ApexNamespaces:
         return project
 
 
-
 def build_apex_namespaces(parsed_files: dict[str, Any]) -> ApexNamespaces:
     """Index every parsed Apex file by project. Reads each ``sfdx-project.json`` once."""
     project_of: dict[str, str] = {}

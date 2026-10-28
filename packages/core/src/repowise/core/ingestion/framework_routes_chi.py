@@ -30,9 +30,7 @@ _ROUTERS: tuple[tuple[str, str, str, str], ...] = (
 )
 
 _TITLE_VERBS = "Get|Post|Put|Delete|Patch|Head|Options|Connect|Trace|All"
-_TITLE_ROUTE_RE = go_route_pattern(
-    _TITLE_VERBS, r"""(?P<q>["`])(?P<path>/[^"`]*)(?P=q)(?!\s*\+)"""
-)
+_TITLE_ROUTE_RE = go_route_pattern(_TITLE_VERBS, r"""(?P<q>["`])(?P<path>/[^"`]*)(?P=q)(?!\s*\+)""")
 
 # What a name is bound to, in file order: `r := chi.NewRouter()` assigns it,
 # `func(r chi.Router)` or a struct field `mux *chi.Mux` declares its type.
@@ -182,6 +180,8 @@ def route_scopes(content: str) -> list[RouteScope]:
         end = go_match_paren(content, m.start("brace"))
         if end > 0:
             out.append(
-                RouteScope(m.group("outer"), m.group("inner"), m.group("prefix"), m.start("brace"), end)
+                RouteScope(
+                    m.group("outer"), m.group("inner"), m.group("prefix"), m.start("brace"), end
+                )
             )
     return out

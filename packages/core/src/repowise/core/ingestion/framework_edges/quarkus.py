@@ -101,10 +101,7 @@ def _add_quarkus_edges(
 
 class _QuarkusHandler:
     def detect(self, dctx: DetectionContext) -> bool:
-        in_stack = any(
-            tok in dctx.stack_lower
-            for tok in ("quarkus", "smallrye", "microprofile")
-        )
+        in_stack = any(tok in dctx.stack_lower for tok in ("quarkus", "smallrye", "microprofile"))
         return in_stack or _has_quarkus_imports(dctx.parsed_files)
 
     def add_edges(

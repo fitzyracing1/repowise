@@ -176,6 +176,7 @@ def _node_language_in(graph: nx.DiGraph, node: str, languages: frozenset[str]) -
 # Strategy: C# / .NET
 # ---------------------------------------------------------------------------
 
+
 def _resolve_csharp_type_refs(
     parsed: ParsedFile,
     ctx: ResolverContext,
@@ -234,6 +235,7 @@ def _resolve_csharp_type_refs(
 # Strategy: Rust
 # ---------------------------------------------------------------------------
 
+
 def _resolve_rust_type_refs(
     parsed: ParsedFile,
     ctx: ResolverContext,
@@ -273,9 +275,14 @@ def _resolve_rust_type_refs(
         )
         if target is None:
             continue
-        _add_or_merge_type_use_edge(graph, src=from_path, dst=target,
-                                    type_name=bare, origin=ref.origin,
-                                    widens_scope=not inferred)
+        _add_or_merge_type_use_edge(
+            graph,
+            src=from_path,
+            dst=target,
+            type_name=bare,
+            origin=ref.origin,
+            widens_scope=not inferred,
+        )
         emitted += 1
     return emitted
 
@@ -363,6 +370,7 @@ def _find_rust_type_file(
 # ---------------------------------------------------------------------------
 # Strategy: Go
 # ---------------------------------------------------------------------------
+
 
 def _resolve_go_type_refs(
     parsed: ParsedFile,
@@ -466,26 +474,70 @@ def _find_go_type_file(
 # grammar caught the inner T), the lookup is guaranteed to find nothing
 # useful. Filter them so we don't waste a per-ref graph walk. Same idea
 # as the TS/Rust builtin filters above.
-_CPP_STL_HEAD_NAMES: frozenset[str] = frozenset({
-    "vector", "array", "deque", "list", "forward_list",
-    "set", "multiset", "map", "multimap",
-    "unordered_set", "unordered_multiset",
-    "unordered_map", "unordered_multimap",
-    "stack", "queue", "priority_queue", "span",
-    "string", "string_view", "wstring", "u16string", "u32string",
-    "pair", "tuple",
-    "optional", "variant", "any", "bitset",
-    "shared_ptr", "unique_ptr", "weak_ptr",
-    "function", "reference_wrapper", "atomic", "atomic_ref",
-    "future", "promise", "shared_future",
-    "thread", "mutex", "lock_guard", "unique_lock", "shared_lock",
-    "condition_variable", "condition_variable_any",
-    "chrono", "duration", "time_point",
-    "initializer_list", "common_type", "decay", "remove_reference",
-    "enable_if", "is_same", "conditional",
-    # Smart casts / trait helpers
-    "make_shared", "make_unique", "make_pair", "make_tuple",
-})
+_CPP_STL_HEAD_NAMES: frozenset[str] = frozenset(
+    {
+        "vector",
+        "array",
+        "deque",
+        "list",
+        "forward_list",
+        "set",
+        "multiset",
+        "map",
+        "multimap",
+        "unordered_set",
+        "unordered_multiset",
+        "unordered_map",
+        "unordered_multimap",
+        "stack",
+        "queue",
+        "priority_queue",
+        "span",
+        "string",
+        "string_view",
+        "wstring",
+        "u16string",
+        "u32string",
+        "pair",
+        "tuple",
+        "optional",
+        "variant",
+        "any",
+        "bitset",
+        "shared_ptr",
+        "unique_ptr",
+        "weak_ptr",
+        "function",
+        "reference_wrapper",
+        "atomic",
+        "atomic_ref",
+        "future",
+        "promise",
+        "shared_future",
+        "thread",
+        "mutex",
+        "lock_guard",
+        "unique_lock",
+        "shared_lock",
+        "condition_variable",
+        "condition_variable_any",
+        "chrono",
+        "duration",
+        "time_point",
+        "initializer_list",
+        "common_type",
+        "decay",
+        "remove_reference",
+        "enable_if",
+        "is_same",
+        "conditional",
+        # Smart casts / trait helpers
+        "make_shared",
+        "make_unique",
+        "make_pair",
+        "make_tuple",
+    }
+)
 
 
 def _resolve_c_type_refs(
@@ -555,7 +607,12 @@ def _resolve_c_type_refs(
         if is_cpp and name in _CPP_STL_HEAD_NAMES:
             continue
         target = _find_c_type_file(
-            name, from_path, sorted_imports, sorted_siblings, ctx, graph,
+            name,
+            from_path,
+            sorted_imports,
+            sorted_siblings,
+            ctx,
+            graph,
             defined_names,
         )
         # A type defined in this very translation unit has no cross-file edge
@@ -573,8 +630,9 @@ def _resolve_c_type_refs(
         if (name, target) in seen_targets:
             continue
         seen_targets.add((name, target))
-        _add_or_merge_type_use_edge(graph, src=from_path, dst=target,
-                                    type_name=name, origin=ref.origin)
+        _add_or_merge_type_use_edge(
+            graph, src=from_path, dst=target, type_name=name, origin=ref.origin
+        )
         emitted += 1
 
     _stamp_local_type_uses(graph, from_path, same_file_refs)
@@ -622,6 +680,7 @@ def _find_c_type_file(
 # ---------------------------------------------------------------------------
 # Strategy: TypeScript / JavaScript
 # ---------------------------------------------------------------------------
+
 
 def _resolve_ts_type_refs(
     parsed: ParsedFile,
@@ -702,13 +761,9 @@ def _resolve_ts_type_refs(
         if target is None and name in external_names:
             continue
         if target is None:
-            target = _find_unique_ambient_declaration(
-                name, from_path, graph, defined_names, ctx
-            )
+            target = _find_unique_ambient_declaration(name, from_path, graph, defined_names, ctx)
         if target is None:
-            target = _find_ts_type_in_stem_map(
-                name, from_path, ctx, graph, defined_names
-            )
+            target = _find_ts_type_in_stem_map(name, from_path, ctx, graph, defined_names)
         if target is None or target == from_path:
             continue
         if (name, target) in seen:
@@ -836,6 +891,7 @@ def _find_ts_type_in_stem_map(
 # Strategy: Java / Kotlin (shared JVM workspace)
 # ---------------------------------------------------------------------------
 
+
 def _resolve_jvm_type_refs(
     parsed: ParsedFile,
     ctx: ResolverContext,
@@ -923,6 +979,7 @@ def _find_jvm_type_file(
 # Strategy: Apex
 # ---------------------------------------------------------------------------
 
+
 def _resolve_apex_type_refs(
     parsed: ParsedFile,
     ctx: ResolverContext,
@@ -975,9 +1032,7 @@ def _apex_namespaces(ctx: ResolverContext) -> Any:
 # Strategy registry
 # ---------------------------------------------------------------------------
 
-Strategy = Callable[
-    [ParsedFile, "ResolverContext", "nx.DiGraph", dict[str, set[str]]], int
-]
+Strategy = Callable[[ParsedFile, "ResolverContext", "nx.DiGraph", dict[str, set[str]]], int]
 
 # Add new languages here — see module docstring. Keep the entries
 # tightly scoped: each strategy must only touch its own language's
@@ -1025,6 +1080,7 @@ def resolve_type_refs(
 # ---------------------------------------------------------------------------
 # Edge writer
 # ---------------------------------------------------------------------------
+
 
 def _add_or_merge_type_use_edge(
     graph: nx.DiGraph,

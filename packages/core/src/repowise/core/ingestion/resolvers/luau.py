@@ -117,9 +117,7 @@ def resolve_luau_import(
     if gm:
         from .luau_config import resolve_game_path
 
-        segments = [gm.group(1)] + [
-            p.strip() for p in gm.group(2).split(".") if p.strip()
-        ]
+        segments = [gm.group(1)] + [p.strip() for p in gm.group(2).split(".") if p.strip()]
         resolved = resolve_game_path(segments, ctx)
         if resolved is not None:
             return resolved

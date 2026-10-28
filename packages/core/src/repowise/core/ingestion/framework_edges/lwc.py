@@ -45,24 +45,24 @@ _WIRE_RE = re.compile(r"@wire\s*\(\s*([A-Za-z_$][\w$]*)")
 # Targets are ignored unless the bundle is exposed.
 _EXPOSED_RE = re.compile(r"<isExposed>\s*true\s*</isExposed>", re.IGNORECASE)
 # `for:item="x"`, `for:index="i"`, `iterator:it={...}`: template-local names.
-_LOOP_VAR_RE = re.compile(r"""for:(?:item|index)\s*=\s*["']([A-Za-z_$][\w$]*)|iterator:([A-Za-z_$][\w$]*)""")
+_LOOP_VAR_RE = re.compile(
+    r"""for:(?:item|index)\s*=\s*["']([A-Za-z_$][\w$]*)|iterator:([A-Za-z_$][\w$]*)"""
+)
 # A `<template ...>` open tag or a `</template>` close tag (loops live on templates).
 # Quoted attribute values may hold `>`; `<template-x>` is a custom element, not a template.
 _TEMPLATE_TAG_RE = re.compile(
     r"""<template(?=[\s>/])(?:[^>"']|"[^"]*"|'[^']*')*>|</template\s*>""", re.IGNORECASE
 )
 # A Flow screen component's property editor, named by tag in its targetConfig.
-_EDITOR_RE = re.compile(r"""configurationEditor\s*=\s*["']([A-Za-z][A-Za-z0-9]*)-([A-Za-z0-9_-]+)["']""")
+_EDITOR_RE = re.compile(
+    r"""configurationEditor\s*=\s*["']([A-Za-z][A-Za-z0-9]*)-([A-Za-z0-9_-]+)["']"""
+)
 
 
 def _members(parsed: Any) -> dict[str, str]:
     """Method and accessor name -> symbol id for the module's top-level classes."""
     classes = {s.name for s in parsed.symbols if s.kind == "class" and not s.parent_name}
-    return {
-        s.name: s.id
-        for s in parsed.symbols
-        if s.kind == "method" and s.parent_name in classes
-    }
+    return {s.name: s.id for s in parsed.symbols if s.kind == "method" and s.parent_name in classes}
 
 
 def _tag_target(ns: str, body: str, referrer: str, ctx: ResolverContext) -> str | None:

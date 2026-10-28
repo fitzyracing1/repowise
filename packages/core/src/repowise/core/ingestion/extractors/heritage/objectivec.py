@@ -36,9 +36,7 @@ def _extract_objectivec_heritage(
         parent = bare_type_name(node_text(superclass, src))
         if parent and parent != name:
             out.append(
-                HeritageRelation(
-                    child_name=name, parent_name=parent, kind="extends", line=line
-                )
+                HeritageRelation(child_name=name, parent_name=parent, kind="extends", line=line)
             )
 
     for child in def_node.named_children:

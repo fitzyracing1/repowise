@@ -111,16 +111,10 @@ def _match_export_key(
             continue
         if suffix and not key.endswith(suffix):
             continue
-        captured = (
-            key[len(prefix) : len(key) - len(suffix)]
-            if suffix
-            else key[len(prefix) :]
-        )
+        captured = key[len(prefix) : len(key) - len(suffix)] if suffix else key[len(prefix) :]
         if len(prefix) > best_prefix_len:
             # Past the head, a ``*``-less candidate would answer every subpath alike.
             kept = targets[:1] + tuple(t for t in targets[1:] if "*" in t)
-            best_targets = tuple(
-                t.replace("*", captured, 1) if "*" in t else t for t in kept
-            )
+            best_targets = tuple(t.replace("*", captured, 1) if "*" in t else t for t in kept)
             best_prefix_len = len(prefix)
     return best_targets

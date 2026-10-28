@@ -463,9 +463,7 @@ class MetricsMixin:
                 from ._centrality_cache import subgraph_signature
 
                 signature = subgraph_signature(g)
-                hit = cache.lookup(
-                    kind, g, signature=signature, max_churn=self._churn_budget(g)
-                )
+                hit = cache.lookup(kind, g, signature=signature, max_churn=self._churn_budget(g))
                 if hit is not None:
                     log.info(
                         "betweenness_reused_from_cache",

@@ -161,8 +161,10 @@ class JavaTypeVisibility:
         An accessible one that is not private: private members are not inherited.
         """
         symbol = self._symbols_by_id.get(member_id)
-        return symbol is not None and symbol.visibility != "private" and (
-            self._accessible_type(member_id, from_file)
+        return (
+            symbol is not None
+            and symbol.visibility != "private"
+            and (self._accessible_type(member_id, from_file))
         )
 
     def _accessible_type(self, type_id: str, from_file: str) -> bool:

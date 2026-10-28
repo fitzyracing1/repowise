@@ -71,13 +71,9 @@ def _add_express_edges(
                     count += 1
 
             local_funcs = {
-                sym.name: sym.id
-                for sym in parsed.symbols
-                if sym.kind in ("function", "method")
+                sym.name: sym.id for sym in parsed.symbols if sym.kind in ("function", "method")
             }
-            receivers = {
-                var for var, fw in js_router_bindings(text).items() if fw == "express"
-            }
+            receivers = {var for var, fw in js_router_bindings(text).items() if fw == "express"}
             if local_funcs and receivers:
                 module_sym = f"{path}::__module__"
                 for route in express_routes(text):
@@ -86,9 +82,7 @@ def _add_express_edges(
                     close = match_paren(text, route.paren_offset)
                     if close == -1:
                         continue
-                    arg_blob = JS_STRING_LITERAL_RE.sub(
-                        "", text[route.paren_offset + 1 : close]
-                    )
+                    arg_blob = JS_STRING_LITERAL_RE.sub("", text[route.paren_offset + 1 : close])
                     for ident in _ARG_IDENT_RE.finditer(arg_blob):
                         sym_id = local_funcs.get(ident.group(0))
                         if sym_id and add_symbol_edge(graph, module_sym, sym_id):

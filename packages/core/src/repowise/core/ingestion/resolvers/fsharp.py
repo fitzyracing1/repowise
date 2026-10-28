@@ -49,9 +49,7 @@ def _get_index(ctx: ResolverContext) -> dict[str, list[str]]:
     )
 
 
-def resolve_fsharp_import(
-    module_path: str, importer_path: str, ctx: ResolverContext
-) -> str | None:
+def resolve_fsharp_import(module_path: str, importer_path: str, ctx: ResolverContext) -> str | None:
     index = _get_index(ctx)
     candidate = module_path
     while candidate:

@@ -96,9 +96,7 @@ def _receiver_type_name(method_node: Node, src: bytes) -> str | None:
             if inner is not None:
                 type_node = inner
         if type_node.type == "type_identifier":
-            return src[type_node.start_byte : type_node.end_byte].decode(
-                "utf-8", "ignore"
-            )
+            return src[type_node.start_byte : type_node.end_byte].decode("utf-8", "ignore")
     return None
 
 
@@ -111,14 +109,10 @@ def _interface_facts(iface_node: Node, src: bytes) -> tuple[set[str], list[str]]
             name_node = elem.child_by_field_name("name")
             if name_node is None:
                 # Older grammars expose the name as the first field_identifier.
-                name_node = next(
-                    (c for c in elem.children if c.type == "field_identifier"), None
-                )
+                name_node = next((c for c in elem.children if c.type == "field_identifier"), None)
             if name_node is not None:
                 methods.add(
-                    src[name_node.start_byte : name_node.end_byte].decode(
-                        "utf-8", "ignore"
-                    )
+                    src[name_node.start_byte : name_node.end_byte].decode("utf-8", "ignore")
                 )
         elif elem.type == "type_elem":
             text = src[elem.start_byte : elem.end_byte].decode("utf-8", "ignore").strip()
@@ -153,9 +147,7 @@ def _extract_file_facts(root: Node, src: bytes) -> _FileFacts:
             name_node = node.child_by_field_name("name")
             type_node = node.child_by_field_name("type")
             if name_node is not None and type_node is not None:
-                name = src[name_node.start_byte : name_node.end_byte].decode(
-                    "utf-8", "ignore"
-                )
+                name = src[name_node.start_byte : name_node.end_byte].decode("utf-8", "ignore")
                 if type_node.type == "interface_type":
                     facts.interfaces[name] = _interface_facts(type_node, src)
                     facts.type_kind[name] = "interface"
@@ -165,9 +157,7 @@ def _extract_file_facts(root: Node, src: bytes) -> _FileFacts:
             recv = _receiver_type_name(node, src)
             name_node = node.child_by_field_name("name")
             if recv is not None and name_node is not None:
-                mname = src[name_node.start_byte : name_node.end_byte].decode(
-                    "utf-8", "ignore"
-                )
+                mname = src[name_node.start_byte : name_node.end_byte].decode("utf-8", "ignore")
                 facts.concrete_methods.setdefault(recv, set()).add(mname)
         for child in node.children:
             walk(child)
@@ -229,17 +219,13 @@ def go_embedded_interfaces(type_source: str) -> list[tuple[str | None, str]]:
     return found
 
 
-def resolve_go_interface_satisfaction(
-    graph: nx.DiGraph, parsed_files: dict[str, Any]
-) -> int:
+def resolve_go_interface_satisfaction(graph: nx.DiGraph, parsed_files: dict[str, Any]) -> int:
     """Emit ``method_implements`` edges for structural Go interface satisfaction.
 
     Returns the number of edges added.
     """
     go_files = {
-        path: parsed
-        for path, parsed in parsed_files.items()
-        if parsed.file_info.language == "go"
+        path: parsed for path, parsed in parsed_files.items() if parsed.file_info.language == "go"
     }
     if not go_files:
         return 0
@@ -307,9 +293,7 @@ def resolve_go_interface_satisfaction(
     expanded_iface: dict[tuple[str, str], frozenset[str]] = {}
     for key in interface_methods:
         methods: set[str] = set()
-        for reached in heritage_ancestors(
-            key, _embedded, max_expand_depth=_MAX_EMBED_DEPTH
-        ):
+        for reached in heritage_ancestors(key, _embedded, max_expand_depth=_MAX_EMBED_DEPTH):
             methods |= interface_methods.get(reached, set())
         if methods:
             expanded_iface[key] = frozenset(methods)

@@ -16,15 +16,29 @@ from ..languages.specs.cpp import INCLUDE_FRAGMENT_EXTENSIONS
 from .base import DynamicEdge, DynamicHintExtractor
 
 _SKIP_DIRS = {
-    "build", "out", "cmake-build-debug", "cmake-build-release",
-    "node_modules", ".git", "third_party", "vendor", "_deps",
+    "build",
+    "out",
+    "cmake-build-debug",
+    "cmake-build-release",
+    "node_modules",
+    ".git",
+    "third_party",
+    "vendor",
+    "_deps",
 }
 
 # Include fragments are scanned too: a generated binding table pasted into a
 # .inl is exactly where function-pointer and designated-initialiser wiring
 # tends to live, which is the wiring this extractor exists to find.
 _CPP_EXTS: tuple[str, ...] = (
-    ".cc", ".cpp", ".cxx", ".c++", ".hh", ".hpp", ".hxx", ".h",
+    ".cc",
+    ".cpp",
+    ".cxx",
+    ".c++",
+    ".hh",
+    ".hpp",
+    ".hxx",
+    ".h",
     *sorted(INCLUDE_FRAGMENT_EXTENSIONS),
 )
 
@@ -142,11 +156,14 @@ class CppDynamicHints(DynamicHintExtractor):
                     if key in seen or target == rel:
                         continue
                     seen.add(key)
-                    edges.append(DynamicEdge(
-                        source=rel, target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:{kind}",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:{kind}",
+                        )
+                    )
 
             for m in _FN_PTR_ASSIGN_RE.finditer(text):
                 _emit(m.group(2), "fn_ptr")
@@ -168,11 +185,13 @@ class CppDynamicHints(DynamicHintExtractor):
                 _emit(m.group(2), "qt_slot")
 
             for m in _DLOPEN_RE.finditer(text):
-                edges.append(DynamicEdge(
-                    source=rel,
-                    target=f"external:dlopen:{m.group(1)}",
-                    edge_type="dynamic_imports",
-                    hint_source=f"{self.name}:dlopen",
-                ))
+                edges.append(
+                    DynamicEdge(
+                        source=rel,
+                        target=f"external:dlopen:{m.group(1)}",
+                        edge_type="dynamic_imports",
+                        hint_source=f"{self.name}:dlopen",
+                    )
+                )
 
         return edges

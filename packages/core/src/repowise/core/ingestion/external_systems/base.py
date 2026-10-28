@@ -44,5 +44,4 @@ class ManifestParser(Protocol):
 
     ecosystem: str
 
-    def parse(self, manifest_path: Path, repo_root: Path) -> list[ExternalSystemRecord]:
-        ...
+    def parse(self, manifest_path: Path, repo_root: Path) -> list[ExternalSystemRecord]: ...

@@ -194,9 +194,7 @@ def collect_csharp_source_texts(
     for path, parsed in parsed_files.items():
         if parsed.file_info.language != "csharp":
             continue
-        text = source_text(
-            path, parsed.file_info.abs_path, source_map, encoding="utf-8-sig"
-        )
+        text = source_text(path, parsed.file_info.abs_path, source_map, encoding="utf-8-sig")
         if text is not None:
             out[path] = text
     return out

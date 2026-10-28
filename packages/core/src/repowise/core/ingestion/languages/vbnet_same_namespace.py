@@ -41,15 +41,26 @@ _IMPORTS_NS_RE = re.compile(
 )
 
 # ``Imports Alias = Foo.Bar.Baz`` — the alias name shadows bare identifiers.
-_IMPORTS_ALIAS_RE = re.compile(
-    r"^\s*Imports\s+([^\W\d]\w*)\s*=", re.IGNORECASE | re.MULTILINE
-)
+_IMPORTS_ALIAS_RE = re.compile(r"^\s*Imports\s+([^\W\d]\w*)\s*=", re.IGNORECASE | re.MULTILINE)
 
 # VB intrinsic type names and the ``My`` root, on top of the shared BCL set.
-_VB_INTRINSICS = frozenset({
-    "Integer", "Long", "Short", "UInteger", "ULong", "UShort", "Date",
-    "Variant", "Nothing", "Me", "MyBase", "MyClass", "My",
-})
+_VB_INTRINSICS = frozenset(
+    {
+        "Integer",
+        "Long",
+        "Short",
+        "UInteger",
+        "ULong",
+        "UShort",
+        "Date",
+        "Variant",
+        "Nothing",
+        "Me",
+        "MyBase",
+        "MyClass",
+        "My",
+    }
+)
 
 _SKIP_NAMES = _BCL_COMMON_TYPES | _VB_INTRINSICS
 

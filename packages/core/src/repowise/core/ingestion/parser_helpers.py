@@ -349,7 +349,14 @@ def _template_parameter_names(parameters: Node, src: str) -> list[str | None]:
             parameter = parameter.named_children[-1]
         name = parameter.child_by_field_name("name") or parameter.child_by_field_name("declarator")
         if name is None:
-            name = next((c for c in parameter.named_children if c.type in ("type_identifier", "identifier")), None)
+            name = next(
+                (
+                    c
+                    for c in parameter.named_children
+                    if c.type in ("type_identifier", "identifier")
+                ),
+                None,
+            )
         names.append(node_text(name, src).lstrip("*&. ") if name is not None else None)
     return names
 
@@ -439,9 +446,16 @@ _JAVA_LITERAL_TYPES = {
     "null_literal": "null",
 }
 _JAVA_INTEGER_LITERALS = frozenset(
-    {"decimal_integer_literal", "hex_integer_literal", "octal_integer_literal", "binary_integer_literal"}
+    {
+        "decimal_integer_literal",
+        "hex_integer_literal",
+        "octal_integer_literal",
+        "binary_integer_literal",
+    }
 )
-_JAVA_FLOATING_LITERALS = frozenset({"decimal_floating_point_literal", "hex_floating_point_literal"})
+_JAVA_FLOATING_LITERALS = frozenset(
+    {"decimal_floating_point_literal", "hex_floating_point_literal"}
+)
 
 
 # Apex literal nodes and the type each one has; ``null`` matches no exact type.
@@ -516,7 +530,13 @@ def _argument_names(arguments: list[Node], src: str) -> tuple[str | None, ...] |
 
 
 # A unary operator on a literal, by operand type: ``-'a'`` promotes to int.
-_JAVA_SIGN_TYPES = {"char": "int", "int": "int", "long": "long", "float": "float", "double": "double"}
+_JAVA_SIGN_TYPES = {
+    "char": "int",
+    "int": "int",
+    "long": "long",
+    "float": "float",
+    "double": "double",
+}
 _JAVA_UNARY_TYPES: dict[str, dict[str, str]] = {
     "-": _JAVA_SIGN_TYPES,
     "+": _JAVA_SIGN_TYPES,

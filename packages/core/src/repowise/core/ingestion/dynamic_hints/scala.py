@@ -56,36 +56,47 @@ class ScalaDynamicHints(DynamicHintExtractor):
             for match in _CLASS_FORNAME_RE.finditer(text):
                 target = type_to_file.get(bare_type_name(match.group(1)))
                 if target and target != rel:
-                    edges.append(DynamicEdge(
-                        source=rel, target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:class_forname",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:class_forname",
+                        )
+                    )
 
             if _RUNTIME_MIRROR_RE.search(text) or _REFLECT_RUNTIME_RE.search(text):
-                edges.append(DynamicEdge(
-                    source=rel,
-                    target="external:scala_reflect",
-                    edge_type="dynamic_uses",
-                    hint_source=f"{self.name}:runtime_mirror",
-                ))
+                edges.append(
+                    DynamicEdge(
+                        source=rel,
+                        target="external:scala_reflect",
+                        edge_type="dynamic_uses",
+                        hint_source=f"{self.name}:runtime_mirror",
+                    )
+                )
 
             for match in _GIVEN_DECL_RE.finditer(text):
                 target = type_to_file.get(match.group(2))
                 if target and target != rel:
-                    edges.append(DynamicEdge(
-                        source=rel, target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:given",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:given",
+                        )
+                    )
 
             for match in _IMPLICIT_VAL_RE.finditer(text):
                 target = type_to_file.get(match.group(1))
                 if target and target != rel:
-                    edges.append(DynamicEdge(
-                        source=rel, target=target,
-                        edge_type="dynamic_uses",
-                        hint_source=f"{self.name}:implicit_val",
-                    ))
+                    edges.append(
+                        DynamicEdge(
+                            source=rel,
+                            target=target,
+                            edge_type="dynamic_uses",
+                            hint_source=f"{self.name}:implicit_val",
+                        )
+                    )
 
         return edges

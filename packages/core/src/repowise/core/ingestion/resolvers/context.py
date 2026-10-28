@@ -75,9 +75,7 @@ class ResolverContext:
     # for files the traverser does not index — ``META-INF/services`` entries,
     # ``spring.factories``, ``*.sln`` — so a snapshot of the indexed set would
     # answer "absent" for exactly the files they exist to find.
-    _walk_snapshot_cache: Any | None = field(
-        default=None, init=False, repr=False, compare=False
-    )
+    _walk_snapshot_cache: Any | None = field(default=None, init=False, repr=False, compare=False)
 
     @property
     def walk_snapshot(self) -> Any | None:
@@ -97,9 +95,7 @@ class ResolverContext:
                 root = self.repo_path.resolve()
             except OSError:
                 root = self.repo_path
-            self._walk_snapshot_cache = WalkSnapshot(
-                root, prune_nested_git=self.prune_nested_git
-            )
+            self._walk_snapshot_cache = WalkSnapshot(root, prune_nested_git=self.prune_nested_git)
         return self._walk_snapshot_cache
 
     @property
