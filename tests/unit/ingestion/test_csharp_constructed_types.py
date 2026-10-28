@@ -166,3 +166,17 @@ class TestRefusals:
         assert _calls_from_m(tmp_path, {"Pair.cs": pair, "C.cs": caller}) == {
             ("Pair.cs::Pair`2::Pair", "global_unique")
         }
+
+
+class TestTwoUsingsBringInTheSameName:
+    """Issue #4853: ``using A.B; using A.D;`` with an ``R`` in each is CS0104."""
+
+    CALLER_BOTH = "using A.B;\nusing A.D;\n" + CALLER
+
+    def test_two_usings_give_no_edge(self, tmp_path: Path) -> None:
+        files = {"R.cs": R_IN_AB, "R2.cs": R_IN_AD, "C.cs": self.CALLER_BOTH}
+        assert _calls_from_m(tmp_path, files) == set()
+
+    def test_one_using_still_binds(self, tmp_path: Path) -> None:
+        files = {"R.cs": R_IN_AB, "R2.cs": R_IN_AD, "C.cs": "using A.B;\n" + CALLER}
+        assert _calls_from_m(tmp_path, files) == {("R.cs::R::R", "import_merged")}

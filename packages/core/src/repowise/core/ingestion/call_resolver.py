@@ -101,6 +101,7 @@ from .models import (
 )
 from .resolved_call import ResolvedCall
 from .resolvers.cpp import _SOURCE_TU_EXTS
+from .resolvers.dotnet.namespace_map import declared_namespaces
 from .resolvers.jvm_workspace import classify_jvm_import
 from .return_types import (
     declared_return_type,
@@ -812,6 +813,29 @@ class CallResolver(
                     merged.setdefault(name, sym_id)
             self._merged_import_symbols[file_path] = merged
         return merged
+
+    def _csharp_imports_disagree(self, file_path: str, name: str) -> bool:
+        """Do two C# files *file_path* imports declare different top-level *name*s?
+
+        Namespaces live in the files, so a name declared by files of two
+        ``using`` namespaces is ambiguous to the compiler. Parts of one
+        ``partial`` type share a namespace and an id, so they do not disagree.
+        """
+        if self._language_of(file_path) != "csharp":
+            return False
+        ids = {
+            self._file_top_level.get(imported, {}).get(name)
+            for imported in self._bare_name_import_sources(file_path)
+            if not imported.startswith("external:")
+        }
+        ids.discard(None)
+        if len(ids) < 2:
+            return False
+        namespaces = {
+            frozenset(declared_namespaces("\n".join(self._lines_of(sym_id.split("::", 1)[0]))))
+            for sym_id in ids
+        }
+        return len(namespaces) > 1
 
     def _bare_name_import_sources(self, file_path: str) -> set[str]:
         """The imported files a bare name in *file_path* may be looked up in.
@@ -1611,6 +1635,11 @@ class CallResolver(
         """2b: the symbol in any imported file (pre-merged lookup)."""
         target_name = call.target_name
         sym_id = self._merged_symbols_for(file_path).get(target_name)
+        if sym_id is not None and self._csharp_imports_disagree(file_path, target_name):
+            # Two ``using``s bring in a type of this name (CS0104): the merge's
+            # first-wins pick is arbitrary. The C# strategies weigh every
+            # ``using`` as one level and refuse an ambiguity themselves.
+            return None
         # A data member is not callable, here as in tier 3.
         if sym_id is None or sym_id in self._non_callable_ids:
             return None
